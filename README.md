@@ -54,3 +54,4 @@ descriptive_GESAMT_matches.pl -t /path/to/PDB_titles.tsv -m *.gesamt -q 0.3 -o /
 # NOTES 
 Single fasta files for structure prediction with raptorx.pl can be created with split_Fasta.pl
 Files can be renamed using regular expressions with rename_files.pl
+RCSB PDB files can be split per chain with split_PDB.pl
