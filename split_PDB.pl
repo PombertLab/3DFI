@@ -1,6 +1,6 @@
 #!/usr/bin/perl
 ## Pombert Lab 2020
-my $version = 0.1;
+my $version = 0.2;
 my $name = 'split_PDB.pl';
 
 use strict; use warnings;
@@ -50,7 +50,7 @@ open PDB, "<$gzip", "$pdb" or die "Can't open PDB file: $pdb\n";
 my %chains; my $chain; my @header; my %ids; my $molecule; my $cpchain;
 while (my $line = <PDB>){
 	chomp $line;
-	if ($line =~ /^HEADER|TITLE/){push(@header, $line);}
+	if ($line =~ /^HEADER|TITLE|SOURCE|KEYWDS|EXPDTA|REVDAT|JRNL/){push(@header, $line);}
 	elsif ($line =~ /^COMPND\s+\d+\s+(MOLECULE:\s.*)$/){$molecule = $1;}
 	elsif ($line =~ /^COMPND\s+\d+\s+CHAIN:\s(.*);/){
 		my @chains = split(",", $1);
