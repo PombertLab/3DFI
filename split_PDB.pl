@@ -1,10 +1,11 @@
 #!/usr/bin/perl
 ## Pombert Lab 2020
-my $version = 0.2;
+my $version = 0.3;
 my $name = 'split_PDB.pl';
 
 use strict; use warnings;
-use PerlIO::gzip; use Getopt::Long qw(GetOptions);
+use PerlIO::gzip; use File::Basename;
+use Getopt::Long qw(GetOptions);
 
 ## Usage definition
 my $USAGE = <<"OPTIONS";
@@ -30,6 +31,9 @@ GetOptions(
 	'o|output=s' => \$out,
 	'e|ext=s'	=> \$ext
 );
+
+my ($filename, $dir) = fileparse($pdb);
+my ($prefix) = $filename =~ /^(\w+)/;
 
 ## Creating output folder
 if (!defined $out){
@@ -60,11 +64,11 @@ while (my $line = <PDB>){
 			$ids{$cpchain} = $molecule;
 		}
 	}
-	elsif ($line =~ /^ATOM\s+\d+\s+\S+\s+\w+\s+([^\d\s])+/){
+	elsif ($line =~ /^ATOM\s+\d+\s+\S+\s+\w{3}\s(\S)/){
 		$chain = $1;
 		push (@{$chains{$chain}}, $line);
 	}
-	elsif($line =~ /^TER\s+\d+\s+\w+\s+([^\d\s])+/){
+	elsif($line =~ /^TER\s+\d+\s+\w{3}\s(\S)/){
 		$chain = $1;
 		push (@{$chains{$chain}}, $line);
 	}
@@ -74,7 +78,7 @@ if ($gzip eq ':gzip'){binmode PDB, ":gzip(none)";}
 ## Working on chains
 for (keys %chains){
 	my $ch = $_;
-	open OUT, ">", "$out/${out}_$ch.$ext" or die "Can't create PDB file: $pdb in folder $out\n";
+	open OUT, ">", "$out/${prefix}_$ch.$ext" or die "Can't create PDB file: $pdb in folder $out\n";
 	foreach (@header){print OUT "$_\n";}
 	if (exists $ids{$ch}){
 		print OUT "COMPND    MOL_ID: 1;                                                            \n";
