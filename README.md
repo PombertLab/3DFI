@@ -7,11 +7,10 @@ Stuctures predicted are searched against a local copy the RSCB PDB database with
 Structural Alignment of Macromolecular Targets) from the CCP4 package.
 
 # REQUIREMENTS
-RaptorX - http://raptorx.uchicago.edu/
-MODELLER - https://salilab.org/modeller/
-GESAMT -  https://www.ccp4.ac.uk/
-
-Perl modules - File::Basename, File::Find, Getopt::Long, PerlIO::gzip
+I. RaptorX - http://raptorx.uchicago.edu/
+II. MODELLER - https://salilab.org/modeller/
+III. GESAMT -  https://www.ccp4.ac.uk/
+IV. Perl modules - File::Basename, File::Find, Getopt::Long, PerlIO::gzip
 
 # REFERENCES
 1) RCSB Protein Data Bank: Sustaining a living digital data resource that enables breakthroughs in scientific research and biomedical education
