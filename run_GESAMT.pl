@@ -1,9 +1,10 @@
 #!/usr/bin/perl
 ## Pombert Lab 2020
-my $version = 0.4;
+my $version = 0.5;
 my $name = 'run_GESAMT.pl';
 
-use strict; use warnings; use File::Find; use File::Basename; use Getopt::Long qw(GetOptions);
+use strict; use warnings; use File::Find; use File::Basename; use POSIX 'strftime'; use Getopt::Long qw(GetOptions);
+my @command = @ARGV; ## Keeping track of command line for log
 
 ## Usage definition
 my $USAGE = <<"OPTIONS";
@@ -63,6 +64,15 @@ GetOptions(
 	'd|mode=s' => \$mode
 );
 
+## Creating log
+my $date = strftime '%Y-%m-%d', localtime;
+my $start = localtime();
+my $tstart = time;
+open LOG, ">>", "GESAMT_$date.log" or die "Can't create log file GESAMT_$date.log.";
+print LOG "\nVERSION: $version\n"."COMMAND LINE: $name @command\n";
+print LOG "Started on: $start\n";
+
+
 ## Program check
 my $prog = `command -v gesamt`; chomp $prog; if ($prog eq ''){print "\nERROR: Cannot find gesamt. Please install GESAMT in your path\n\n"; exit;}
 
@@ -95,3 +105,9 @@ if ($query){
 		else {print "Skipping PDB file: $pdb => GESAMT result found in output directory $outdir\n";} ## Searches can take a while, best to skip if done previously
 	}
 }
+
+my $end = localtime();
+my $endtime = time - $tstart;
+print LOG "Completed on: $end\n";
+print LOG "Total run time: $endtime sec\n";
+close LOG;
