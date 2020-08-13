@@ -54,6 +54,7 @@ PDB_headers.pl -p /path/to/PDB/ -o /path/to/PDB_titles.tsv
 ```
 run_GESAMT.pl -cpu 10 -make -arch /path/to/GESAMT_ARCHIVE -pdb /path/to/PDB/	## CREATE DB
 ```
+```
 run_GESAMT.pl -cpu 10 -update -arch /path/to/GESAMT_ARCHIVE -pdb /path/to/PDB/	## UPDATE DB
 ```
 
