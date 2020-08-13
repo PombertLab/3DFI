@@ -1,5 +1,5 @@
 # 3DFI - Three dimensional function inference
-The 3DFI pipeline predicts the 3D structure of proteins and searches for structural homology in the 3D space
+**The 3DFI pipeline predicts the 3D structure of proteins and searches for structural homology in the 3D space**
 
 #### SYNOPSIS
 The 3DFI pipeline predicts the 3D structure of proteins and searches for structural homology in the 3D space.
