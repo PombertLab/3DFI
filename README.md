@@ -30,8 +30,8 @@ Winn MD et al. Acta Crystallogr D Biol Crystallogr. 2011 Apr;67(Pt 4):235-42. PM
 
 #### HOWTO
 1) Predict 3D structures with RaptorX/raptorX.pl
-> cd RAPTORX_INSTALLATION_DIRECTORY/
-raptorx.pl -t 10 -k 2 -i ~/FASTA/ -o ~/3D_predictions/
+```cd RAPTORX_INSTALLATION_DIRECTORY/```
+```raptorx.pl -t 10 -k 2 -i ~/FASTA/ -o ~/3D_predictions/```
 
 2) Download PDB files from RCSB ## see PDB_update.sh
 > rsync -rlpt -v -z --delete --port=33444 \
