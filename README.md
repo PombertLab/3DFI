@@ -1,18 +1,18 @@
 # 3DFI - Three dimensional function inference
 **The 3DFI pipeline predicts the 3D structure of proteins and searches for structural homology in the 3D space**
 
-#### SYNOPSIS
+### SYNOPSIS
 The 3DFI pipeline predicts the 3D structure of proteins and searches for structural homology in the 3D space.
 Stuctures predicted are searched against a local copy the RSCB PDB database with GESAMT (General Efficient
 Structural Alignment of Macromolecular Targets) from the CCP4 package.
 
-#### REQUIREMENTS
+##### REQUIREMENTS
 1. RaptorX - http://raptorx.uchicago.edu/
 2. MODELLER - https://salilab.org/modeller/
 3. GESAMT -  https://www.ccp4.ac.uk/
 4. Perl modules - File::Basename, File::Find, Getopt::Long, PerlIO::gzip
 
-#### REFERENCES
+##### REFERENCES
 1) RCSB Protein Data Bank: Sustaining a living digital data resource that enables breakthroughs in scientific research and biomedical education
 Burley SK, et al. Protein Sci. 2018 Jan;27(1):316-330. PMID: 29067736 PMCID: PMC5734314 DOI: 10.1002/pro.3331
 
@@ -28,7 +28,7 @@ Krissinel E. J Mol Biochem. 2012;1(2):76-85. PMID: 27882309 PMCID: PMC5117261
 5) Overview of the CCP4 suite and current developments
 Winn MD et al. Acta Crystallogr D Biol Crystallogr. 2011 Apr;67(Pt 4):235-42. PMID: 21460441 PMCID: PMC3069738 DOI: 10.1107/S0907444910045749
 
-#### HOWTO
+### HOWTO
 **1) Predict 3D structures with RaptorX/raptorX.pl**
 ```
 cd RAPTORX_INSTALLATION_DIRECTORY/
