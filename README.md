@@ -29,7 +29,7 @@ Krissinel E. J Mol Biochem. 2012;1(2):76-85. PMID: 27882309 PMCID: PMC5117261
 Winn MD et al. Acta Crystallogr D Biol Crystallogr. 2011 Apr;67(Pt 4):235-42. PMID: 21460441 PMCID: PMC3069738 DOI: 10.1107/S0907444910045749
 
 #### HOWTO
-1) Predict 3D structures with RaptorX/raptorX.pl
+**1) Predict 3D structures with RaptorX/raptorX.pl**
 ```
 cd RAPTORX_INSTALLATION_DIRECTORY/
 ```
@@ -37,7 +37,7 @@ cd RAPTORX_INSTALLATION_DIRECTORY/
 raptorx.pl -t 10 -k 2 -i ~/FASTA/ -o ~/3D_predictions/
 ```
 
-2) Download PDB files from RCSB ## see PDB_update.sh
+**2) Download PDB files from RCSB** ## see PDB_update.sh
 ```
 rsync -rlpt -v -z --delete --port=33444
 ```
@@ -45,12 +45,12 @@ rsync -rlpt -v -z --delete --port=33444
 rsync.rcsb.org::ftp_data/structures/divided/pdb/ /path/to/PDB/
 ```
 
-3) Create a tab-delimited list of PDB files and their titles from the downloaded RCSB gzipped files
+**3) Create a tab-delimited list of PDB files and their titles from the downloaded RCSB gzipped files**
 ```
 PDB_headers.pl -p /path/to/PDB/ -o /path/to/PDB_titles.tsv
 ```
 
-4) Create a GESAMT database
+**4) Create/update a GESAMT database**
 ```
 run_GESAMT.pl -cpu 10 -make -arch /path/to/GESAMT_ARCHIVE -pdb /path/to/PDB/	## CREATE DB
 ```
@@ -58,7 +58,7 @@ run_GESAMT.pl -cpu 10 -make -arch /path/to/GESAMT_ARCHIVE -pdb /path/to/PDB/	## 
 run_GESAMT.pl -cpu 10 -update -arch /path/to/GESAMT_ARCHIVE -pdb /path/to/PDB/	## UPDATE DB
 ```
 
-5) Query the GESAMT database for structural homology
+**5) Query the GESAMT database for structural homology**
 ```
 run_GESAMT.pl -cpu 10 -query -arch /path/to/GESAMT_ARCHIVE -input /path/to/*.pdb -o /path/to/RESULTS_FOLDER -mode normal
 ```
