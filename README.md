@@ -20,7 +20,7 @@ Insert text...
 1. RaptorX - http://raptorx.uchicago.edu/
 2. MODELLER - https://salilab.org/modeller/
 3. GESAMT -  https://www.ccp4.ac.uk/
-4. Perl modules - File::Basename, File::Find, Getopt::Long, PerlIO::gzip
+4. Perl modules - [File::Basename](https://perldoc.perl.org/File/Basename.html), [File::Find](https://perldoc.perl.org/File/Find.html), [Getopt::Long](https://perldoc.perl.org/Getopt/Long.html), [PerlIO::gzip](https://metacpan.org/pod/PerlIO::gzip)
 
 ### HOWTO
 #### 3D structure prediction
