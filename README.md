@@ -11,6 +11,7 @@ The 3DFI pipeline predicts the 3D structure of proteins, and then searches for s
   * [Creating a list of PDB titles](#creating-a-list-of-PDB-titles)
   * [Creating/updating a GESAMT database](#creating/updating-a-GESAMT-database)
   * [Structural homology searches with GESAMT](#structural-homology-searches-with-GESAMT)
+  * [Parsing the output of GESAMT searches](#Parsing-the-output-of-GESAMT-searches)
 * [Miscellaneous](#miscellaneous)
 * [References](#references)
 
@@ -80,23 +81,39 @@ The list created should look like this:
 ```
 
 #### Creating/updating a GESAMT database
-Insert text...
-
+Before performing structural homology searches with GESAMT, we should first create an archive to speed up the searches. We can also update the archive later as sequences are added (for example after the RCSB PDB files are updated with rsync). GESAMT archives can be created/updated with [run_GESAMT.pl](https://github.com/PombertLab/3DFI/blob/master/run_GESAMT.pl):
 ```
-run_GESAMT.pl -cpu 10 -make -arch /path/to/GESAMT_ARCHIVE -pdb /path/to/PDB/	## CREATE DB
+run_GESAMT.pl -cpu 10 -make -arch /path/to/GESAMT_ARCHIVE -pdb /path/to/PDB/	## To create a GESAMT archive
 ```
 ```
-run_GESAMT.pl -cpu 10 -update -arch /path/to/GESAMT_ARCHIVE -pdb /path/to/PDB/	## UPDATE DB
+run_GESAMT.pl -cpu 10 -update -arch /path/to/GESAMT_ARCHIVE -pdb /path/to/PDB/	## To update a GESAMT archive
+```
+Options for run_GESAMT.pl archive creation/updating are:
+```
+-c (--cpu)	CPU threads [Default: 10]
+-a (--arch)	GESAMT archive location [Default: ./]
+-m (--make)	Create a GESAMT archive
+-u (--update)	Update existing archive
+-p (--pdb)	Folder containing RCSB PDB files to archive
 ```
 
 #### Structural homology searches with GESAMT
-Insert text...
-
+Structural homology searches with GESAMT can also be performed with [run_GESAMT.pl](https://github.com/PombertLab/3DFI/blob/master/run_GESAMT.pl):
 ```
 run_GESAMT.pl -cpu 10 -query -arch /path/to/GESAMT_ARCHIVE -input /path/to/*.pdb -o /path/to/RESULTS_FOLDER -mode normal
 ```
+Options for run_GESAMT.pl homology searches are:
+```
+-c (--cpu)	CPU threads [Default: 10]
+-a (--arch)	GESAMT archive location [Default: ./]
+-q (--query)	Query a GESAMT archive
+-i (--input)	PDF files to query
+-o (--outdir)	Output directory [Default: ./]
+-d (--mode)	Query mode: normal of high [Default: normal]
+```
 
-6) Parse the GESAMT output to add definitions/products to the PDB matches found
+#### Parsing the output of GESAMT searches
+to add definitions/products to the PDB matches found
 ```
 descriptive_GESAMT_matches.pl -t /path/to/PDB_titles.tsv -m *.gesamt -q 0.3 -o /path/to/GESAMT.matches
 ```
