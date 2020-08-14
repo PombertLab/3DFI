@@ -43,6 +43,14 @@ Input files (in FASTA format) and the output location of the structures to be pr
 ```
 raptorx.pl -t 10 -k 2 -i ~/FASTA/ -o ~/3D_predictions/
 ```
+Options for raptorX.pl are:
+```
+-t (--threads)	Number of threads to use [Default: 10]
+-i (--input)	Folder containing fasta files
+-o (--output)	Output folder
+-k (--TopK)	Number of top template(s) to use per protein for model building [Default: 1]
+-m (--modeller)	MODELLER binary name [Default: mod9.23] ## Use absolute or relative path if not set in \$PATH
+```
 
 #### Downloading PDB files from RCSB
 Insert text... ## see PDB_update.sh
