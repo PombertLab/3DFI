@@ -53,7 +53,7 @@ Options for raptorX.pl are:
 ```
 
 #### Downloading PDB files from RCSB
-PDB files from the [Protein Data Bank](https://www.rcsb.org/) can be downloaded directly from its website. Detailed instructions are provided [here](https://www.wwpdb.org/ftp/pdb-ftp-sites). Because of the large size of this dataset, downloading it using [rsync](https://rsync.samba.org/) is recommended. This can be done as follows, wherein **/path/to/PDB/** should be replaced by the desired directory.
+PDB files from the [Protein Data Bank](https://www.rcsb.org/) can be downloaded directly from its website. Detailed instructions are provided [here](https://www.wwpdb.org/ftp/pdb-ftp-sites). Because of the large size of this dataset, downloading it using [rsync](https://rsync.samba.org/) is recommended. This can be done as follows, wherein **/path/to/PDB/** should be replaced by the desired directory. PDB files (pdb*.ent.gz) will be located in subdirectories therein.
 
 ```
 rsync -rlpt -v -z --delete --port=33444
@@ -62,10 +62,21 @@ rsync.rcsb.org::ftp_data/structures/divided/pdb/ /path/to/PDB/
 NOTE: For ease of use, [PDB_update.sh](https://github.com/PombertLab/3DFI/blob/master/PDB_update.sh) can also be modified, then used to rsync the PDB files.
 
 #### Creating a list of PDB titles
-Insert text... ## Create a tab-delimited list of PDB files and their titles from the downloaded RCSB gzipped files
-
+To create a tab-delimited list of PDB entries and their titles from the downloaded PDB gzipped files (pdb*.ent.gz), we can use [PDB_headers.pl](https://github.com/PombertLab/3DFI/blob/master/PDB_headers.pl):
 ```
 PDB_headers.pl -p /path/to/PDB/ -o /path/to/PDB_titles.tsv
+```
+Options for PDB_headers.pl are:
+```
+-p (--pdb)	Directory containing PDB files downloaded from RCSB PDB/PDBe (gzipped)
+-o (--output)	Output file in tsv format
+```
+The list created should look like this:
+```
+4hhg	CRYSTAL STRUCTURE OF THE PSEUDOMONAS AERUGINOSA AZURIN, RUH107NO YOH109
+5xqj	CRYSTAL STRUCTURE OF A PL 26 EXO-RHAMNOGALACTURONAN LYASE FROM PENICILLIUM CHRYSOGENUM COMPLEXED WITH UNSATURATED GALACTURONOSYL RHAMNOSE SUBSTITUTED WITH GALACTOSE
+1vqa	GENE V PROTEIN MUTANT WITH VAL 35 REPLACED BY ALA 35 AND ILE 47 REPLACED BY LEU 47 (V35A, I47L)
+6rxa	EDDS LYASE VARIANT D290M/Y320M WITH BOUND FORMATE
 ```
 
 #### Creating/updating a GESAMT database
