@@ -149,10 +149,36 @@ GPU96_01g00840-m1-5hvmA       2   5HVM   B     0.8639   0.5333   0.4419    430  
 ```
 
 #### Miscellaneous 
-1. Single fasta files for structure prediction with raptorx.pl can be created with split_Fasta.pl
-2. Files can be renamed using regular expressions with rename_files.pl
-3. RCSB PDB files can be split per chain with split_PDB.pl
+###### Splitting multifasta files
+Single fasta files for structure prediction with raptorx.pl can be created with [split_Fasta.pl](https://github.com/PombertLab/3DFI/blob/master/split_Fasta.pl):
+```
+split_Fasta.pl -f file.fasta -o output_folder -e fasta
 
+OPTIONS:
+-f (--fasta)	FASTA input file (supports gzipped files)
+-o (--output)	Output directory; defaults to file name prefix
+-e (--ext)	Desired file extension [Default: fasta]
+```
+###### Splitting PDB files
+RCSB PDB files can be split per chain with [split_PDB.pl](https://github.com/PombertLab/3DFI/blob/master/split_PDB.pl):
+```
+split_PDB.pl -p files.pdb -o output_folder -e pdb
+
+OPTIONS:
+-p (--pdb)	PDB input file (supports gzipped files)
+-o (--output)	Output directory. If blank, will create one folder per PDB file based on file prefix
+-e (--ext)	Desired file extension [Default: pdb]
+```
+###### Renaming files
+Files can be renamed using regular expressions with [rename_files.pl](https://github.com/PombertLab/3DFI/blob/master/rename_files.pl):
+```
+rename_files.pl -o 'i{0,1}-t26_1-p1' -n '' -f *.fasta
+
+OPTIONS:
+-o (--old)	Old pattern/regular expression to replace with new pattern
+-n (--new)	New pattern to replace with; defaults to blank [Default: '']
+-f (--files)	Files to rename
+```
 
 ##### REFERENCES
 1) [RCSB Protein Data Bank: Sustaining a living digital data resource that enables breakthroughs in scientific research and biomedical education
