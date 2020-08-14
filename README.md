@@ -6,6 +6,7 @@ Structural Alignment of Macromolecular Targets) from the [CCP4](https://www.ccp4
 # Table of contents
 * [Requirements](#requirements)
 * [Howto](#howto)
+  * [3D structure prediction](#3D-structure-prediction)
 * [Notes](#notes)
 * [References](#references)
 
@@ -16,7 +17,8 @@ Structural Alignment of Macromolecular Targets) from the [CCP4](https://www.ccp4
 4. Perl modules - File::Basename, File::Find, Getopt::Long, PerlIO::gzip
 
 ### HOWTO
-**1) Predict 3D structures with RaptorX/raptorX.pl**
+#### 3D structure prediction
+Text
 ```
 cd RAPTORX_INSTALLATION_DIRECTORY/
 ```
