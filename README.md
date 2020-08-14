@@ -2,6 +2,7 @@
 The 3DFI pipeline predicts the 3D structure of proteins and searches for structural homology in the 3D space. Stuctures predicted are searched against a local copy the [RSCB PDB](https://www.rcsb.org/) database with GESAMT (General Efficient Structural Alignment of Macromolecular Targets) from the [CCP4](https://www.ccp4.ac.uk/) package. Known PDB structures can also be searched against a set of predicted structures to identify potential sructural homologs in the predicted dataset.
 
 # Table of contents
+* [Introduction](#introduction)
 * [Requirements](#requirements)
 * [Howto](#howto)
   * [3D structure prediction](#3D-structure-prediction)
@@ -12,6 +13,9 @@ The 3DFI pipeline predicts the 3D structure of proteins and searches for structu
 * [Miscellaneous](#miscellaneous)
 * [References](#references)
 
+### Introduction
+Insert text...
+
 ##### REQUIREMENTS
 1. RaptorX - http://raptorx.uchicago.edu/
 2. MODELLER - https://salilab.org/modeller/
@@ -20,7 +24,8 @@ The 3DFI pipeline predicts the 3D structure of proteins and searches for structu
 
 ### HOWTO
 #### 3D structure prediction
-Text
+Insert text...
+
 ```
 cd RAPTORX_INSTALLATION_DIRECTORY/
 ```
@@ -29,7 +34,8 @@ raptorx.pl -t 10 -k 2 -i ~/FASTA/ -o ~/3D_predictions/
 ```
 
 #### Downloading PDB files from RCSB
-Text. see PDB_update.sh
+Insert text... ## see PDB_update.sh
+
 ```
 rsync -rlpt -v -z --delete --port=33444
 ```
@@ -38,12 +44,15 @@ rsync.rcsb.org::ftp_data/structures/divided/pdb/ /path/to/PDB/
 ```
 
 #### Creating a list of PDB titles
-Create a tab-delimited list of PDB files and their titles from the downloaded RCSB gzipped files
+Insert text... ## Create a tab-delimited list of PDB files and their titles from the downloaded RCSB gzipped files
+
 ```
 PDB_headers.pl -p /path/to/PDB/ -o /path/to/PDB_titles.tsv
 ```
 
 #### Creating/updating a GESAMT database
+Insert text...
+
 ```
 run_GESAMT.pl -cpu 10 -make -arch /path/to/GESAMT_ARCHIVE -pdb /path/to/PDB/	## CREATE DB
 ```
@@ -52,6 +61,8 @@ run_GESAMT.pl -cpu 10 -update -arch /path/to/GESAMT_ARCHIVE -pdb /path/to/PDB/	#
 ```
 
 #### Structural homology searches with GESAMT
+Insert text...
+
 ```
 run_GESAMT.pl -cpu 10 -query -arch /path/to/GESAMT_ARCHIVE -input /path/to/*.pdb -o /path/to/RESULTS_FOLDER -mode normal
 ```
