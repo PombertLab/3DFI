@@ -35,11 +35,11 @@ Although predicting the structure of a protein and searching for structural homo
 
 ### Howto
 #### 3D structure prediction
-Insert text...
-
+To perform 3D structure predictions locally with [RaptorX](http://raptorx.uchicago.edu/), the standalone programs should be [downloaded](http://raptorx.uchicago.edu/download/) and installed according to the authors’ instructions. Because of how RaptorX is implemented, 3D structure predictions should be performed from inside the RaptorX installation directory:
 ```
 cd RAPTORX_INSTALLATION_DIRECTORY/
 ```
+Input files (in FASTA format) and the output location of the structures to be predicted can be specified with [raptorX.pl](https://github.com/PombertLab/3DFI/blob/master/raptorx.pl):
 ```
 raptorx.pl -t 10 -k 2 -i ~/FASTA/ -o ~/3D_predictions/
 ```
