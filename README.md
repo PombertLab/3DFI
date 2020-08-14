@@ -7,7 +7,11 @@ Structural Alignment of Macromolecular Targets) from the [CCP4](https://www.ccp4
 * [Requirements](#requirements)
 * [Howto](#howto)
   * [3D structure prediction](#3D-structure-prediction)
-* [Notes](#notes)
+  * [Downloading PDB files from RCSB](#downloading-PDB-files-from-RCSB)
+  * [Creating a list of PDB titles](#creating-a-list-of-PDB-titles)
+  * [Creating/updating a GESAMT database](#creating/updating-a-GESAMT-database)
+  * [Structural homology searches with GESAMT](#structural-homology-searches-with-GESAMT)
+* [Miscellaneous](#miscellaneous)
 * [References](#references)
 
 ##### REQUIREMENTS
@@ -26,7 +30,8 @@ cd RAPTORX_INSTALLATION_DIRECTORY/
 raptorx.pl -t 10 -k 2 -i ~/FASTA/ -o ~/3D_predictions/
 ```
 
-**2) Download PDB files from RCSB** ## see PDB_update.sh
+#### Downloading PDB files from RCSB
+Text. see PDB_update.sh
 ```
 rsync -rlpt -v -z --delete --port=33444
 ```
@@ -34,12 +39,13 @@ rsync -rlpt -v -z --delete --port=33444
 rsync.rcsb.org::ftp_data/structures/divided/pdb/ /path/to/PDB/
 ```
 
-**3) Create a tab-delimited list of PDB files and their titles from the downloaded RCSB gzipped files**
+#### Creating a list of PDB titles
+Create a tab-delimited list of PDB files and their titles from the downloaded RCSB gzipped files
 ```
 PDB_headers.pl -p /path/to/PDB/ -o /path/to/PDB_titles.tsv
 ```
 
-**4) Create/update a GESAMT database**
+#### Creating/updating a GESAMT database
 ```
 run_GESAMT.pl -cpu 10 -make -arch /path/to/GESAMT_ARCHIVE -pdb /path/to/PDB/	## CREATE DB
 ```
@@ -47,7 +53,7 @@ run_GESAMT.pl -cpu 10 -make -arch /path/to/GESAMT_ARCHIVE -pdb /path/to/PDB/	## 
 run_GESAMT.pl -cpu 10 -update -arch /path/to/GESAMT_ARCHIVE -pdb /path/to/PDB/	## UPDATE DB
 ```
 
-**5) Query the GESAMT database for structural homology**
+#### Structural homology searches with GESAMT
 ```
 run_GESAMT.pl -cpu 10 -query -arch /path/to/GESAMT_ARCHIVE -input /path/to/*.pdb -o /path/to/RESULTS_FOLDER -mode normal
 ```
@@ -57,7 +63,7 @@ run_GESAMT.pl -cpu 10 -query -arch /path/to/GESAMT_ARCHIVE -input /path/to/*.pdb
 descriptive_GESAMT_matches.pl -t /path/to/PDB_titles.tsv -m *.gesamt -q 0.3 -o /path/to/GESAMT.matches
 ```
 
-###### NOTES 
+#### Miscellaneous 
 1. Single fasta files for structure prediction with raptorx.pl can be created with split_Fasta.pl
 2. Files can be renamed using regular expressions with rename_files.pl
 3. RCSB PDB files can be split per chain with split_PDB.pl
