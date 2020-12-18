@@ -75,7 +75,7 @@ conda activate tfcpu
 pip install tensorflow-cpu==1.15
 ```
 ###### Running trRosetta
-Running [trRosetta](https://github.com/gjoni/trRosetta) involves 3 main steps: I. searches with [HHsuite3](https://github.com/soedinglab/hh-suite)'s hhblits to generate alignments (.a3m); II. prediction of protein inter-residue geometries (.npz) with [trRosetta](https://github.com/gjoni/trRosetta)'s predict.py; and III. prediction of 3D structures (.pdb) with trRosetta.py and [PyRosetta](http://www.pyrosetta.org/). Performing these predictions on several proteins can be automated with 3DFI scripts.
+Running [trRosetta](https://github.com/gjoni/trRosetta) involves 3 main steps: 1) searches with [HHsuite3](https://github.com/soedinglab/hh-suite)'s hhblits to generate alignments (.a3m); 2) prediction of protein inter-residue geometries (.npz) with [trRosetta](https://github.com/gjoni/trRosetta)'s predict.py; and 3) prediction of 3D structures (.pdb) with trRosetta.py and [PyRosetta](http://www.pyrosetta.org/). Performing these predictions on several proteins can be automated with 3DFI scripts.
 
 1. Converting FASTA sequences to single string FASTA sequences with [fasta_oneliner.pl](https://raw.githubusercontent.com/PombertLab/3DFI/master/trRosetta/fasta_oneliner.pl):
 ```Bash
