@@ -7,6 +7,8 @@ The 3DFI pipeline predicts the 3D structure of proteins, and then searches for s
 * [Requirements](#requirements)
 * [Howto](#howto)
   * [3D structure prediction](#3D-structure-prediction)
+    *[RaptorX](#Raptorx)
+    *[trRosetta](#trRosetta)
   * [Downloading PDB files from RCSB](#downloading-PDB-files-from-RCSB)
   * [Creating a list of PDB titles](#creating-a-list-of-PDB-titles)
   * [Creating/updating a GESAMT database](#creating/updating-a-GESAMT-database)
@@ -30,7 +32,7 @@ Although predicting the structure of a protein and searching for structural homo
 
 #### Requirements
 1. RaptorX - http://raptorx.uchicago.edu/ and/or trRosetta - https://github.com/gjoni/trRosetta
-2. MODELLER - https://salilab.org/modeller/
+2. MODELLER - https://salilab.org/modeller/ ## For RaptorX
 3. GESAMT -  https://www.ccp4.ac.uk/
 4. Perl modules - [File::Basename](https://perldoc.perl.org/File/Basename.html), [File::Find](https://perldoc.perl.org/File/Find.html), [Getopt::Long](https://perldoc.perl.org/Getopt/Long.html), [PerlIO::gzip](https://metacpan.org/pod/PerlIO::gzip)
 
