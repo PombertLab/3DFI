@@ -38,7 +38,7 @@ Although predicting the structure of a protein and searching for structural homo
 
 ### Howto
 #### 3D structure prediction
-##### RaptorX
+##### RaptorX - template-based protein structure modeling
 To perform 3D structure predictions locally with [RaptorX](http://raptorx.uchicago.edu/), the standalone programs should be [downloaded](http://raptorx.uchicago.edu/download/) and installed according to the authors’ instructions. Because of how RaptorX is implemented, 3D structure predictions should be performed from inside the RaptorX installation directory:
 ```Bash
 cd RAPTORX_INSTALLATION_DIRECTORY/
@@ -56,7 +56,7 @@ Options for raptorX.pl are:
 -m (--modeller)	MODELLER binary name [Default: mod9.23] ## Use absolute or relative path if not set in \$PATH
 ```
 
-##### trRosetta
+##### trRosetta - deep-learning-based protein structure modeling
 To perform 3D structure predictions locally with [trRosetta](https://github.com/gjoni/trRosetta), [tensorflow](https://www.tensorflow.org/) version 1.15, [HH-suite3](https://github.com/soedinglab/hh-suite) and [PyRosetta](http://www.pyrosetta.org/) must be installed. A database for HHsuite3's hhblits, such as [Uniclust](https://uniclust.mmseqs.com/), should also be installed. For ease of use, [tensorflow](https://www.tensorflow.org/) 1.15 can be installed in a conda environment.
 
 ###### Tensorflow 1.15 in conda
