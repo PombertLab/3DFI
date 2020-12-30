@@ -1,6 +1,6 @@
 #!/usr/bin/perl
 ## Pombert Lab 2020
-my $version = 0.1;
+my $version = 0.2;
 my $name = 'fasta_oneliner.pl';
 
 use strict; use warnings; use Getopt::Long qw(GetOptions); use File::Basename;
@@ -26,6 +26,9 @@ GetOptions(
     'f|fasta=s@{1,}' => \@fasta,
     'o|output=s' => \$out,
 );
+
+if (!defined $out){$out = './';}
+unless (-d $out){mkdir $out;}
 
 ## Converting fasta files
 while (my $fasta = shift@fasta){
