@@ -77,7 +77,7 @@ pip install tensorflow-cpu==1.15
 ###### Running trRosetta
 Running [trRosetta](https://github.com/gjoni/trRosetta) involves 3 main steps: 1) searches with [HHsuite3](https://github.com/soedinglab/hh-suite)'s hhblits to generate alignments (.a3m); 2) prediction of protein inter-residue geometries (.npz) with [trRosetta](https://github.com/gjoni/trRosetta)'s predict.py; and 3) prediction of 3D structures (.pdb) with trRosetta.py and [PyRosetta](http://www.pyrosetta.org/). Performing these predictions on several proteins can be automated with 3DFI scripts.
 
-1. Converting FASTA sequences to single string FASTA sequences with [fasta_oneliner.pl](https://raw.githubusercontent.com/PombertLab/3DFI/master/trRosetta/fasta_oneliner.pl):
+1. Converting FASTA sequences to single string FASTA sequences with [fasta_oneliner.pl](https://github.com/PombertLab/3DFI/blob/master/trRosetta/fasta_oneliner.pl):
 ```Bash
 fasta_oneliner.pl -f *.fasta -o FASTA_OL
 
@@ -86,7 +86,7 @@ OPTIONS:
 -o (--output)   Output folder
 ```
 
-2. Running hhblits searches with [run_hhblits.pl](https://raw.githubusercontent.com/PombertLab/3DFI/master/trRosetta/run_hhblits.pl):
+2. Running hhblits searches with [run_hhblits.pl](https://github.com/PombertLab/3DFI/blob/master/trRosetta/run_hhblits.pl):
 ```Bash
 ## Running hhblits on multiple evalues independently
 run_hhblits.pl \
@@ -121,7 +121,7 @@ OPTIONS:
 -ns (--num_sq)      # of hhblits iteration per sequential evalue (-s) [Default: 1] 
 ```
 
-3. Create .npz files containing inter-residue geometries with [create_npz.pl](https://raw.githubusercontent.com/PombertLab/3DFI/master/trRosetta/create_npz.pl):
+3. Create .npz files containing inter-residue geometries with [create_npz.pl](https://github.com/PombertLab/3DFI/blob/master/trRosetta/create_npz.pl):
 ```Bash
 create_npz.pl \
    -a HHBLITS/*.a3m \
@@ -136,7 +136,7 @@ OPTIONS:
 -m (--model)    Path to trRosetta model directory
 ```
 
-4. Generate .pdb files containing 3D models from the .npz fil3s with [create_pdb.pl](https://raw.githubusercontent.com/PombertLab/3DFI/master/trRosetta/create_pdb.pl):
+4. Generate .pdb files containing 3D models from the .npz fil3s with [create_pdb.pl](https://github.com/PombertLab/3DFI/blob/master/trRosetta/create_pdb.pl):
 ```Bash
 create_pdb.pl \
    -c 10 \
@@ -153,7 +153,7 @@ OPTIONS:
 -t (--trosetta) Path to trRosetta.py from trRosetta
 ```
 
-5. The .pdb files thus generated contain lines that are not standard and that can prevent applications such as [PDBeFOLD](https://www.ebi.ac.uk/msd-srv/ssm/) to run on the corresponding files. We can clean up the PDB files with [sanitize_pdb.pl](https://raw.githubusercontent.com/PombertLab/3DFI/master/trRosetta/sanitize_pdb.pl):
+5. The .pdb files thus generated contain lines that are not standard and that can prevent applications such as [PDBeFOLD](https://www.ebi.ac.uk/msd-srv/ssm/) to run on the corresponding files. We can clean up the PDB files with [sanitize_pdb.pl](https://github.com/PombertLab/3DFI/blob/master/trRosetta/sanitize_pdb.pl):
 ```Bash
 sanitize_pdb.pl -p PDB/*.pdb -o PDB_clean
 
