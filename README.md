@@ -88,21 +88,37 @@ OPTIONS:
 
 2. Running hhblits searches with [run_hhblits.pl](https://raw.githubusercontent.com/PombertLab/3DFI/master/trRosetta/run_hhblits.pl):
 ```Bash
+## Running hhblits on multiple evalues independently
 run_hhblits.pl \
    -t 10 \
    -f FASTA_OL/ \
    -o HHBLITS/ \
-   -e 1e-40 1e-10 1e-03 \
-   -d /media/Data_3/Uniclust/UniRef30_2020_06
+   -d /media/Data_3/Uniclust/UniRef30_2020_06 \
+   -e 1e-40 1e-10 1e-03 1e+01
+
+## Running hhblits on evalues sequentially, from stricter to more permissive
+run_hhblits.pl \
+   -t 10 \
+   -f FASTA_OL/ \
+   -o HHBLITS/ \
+   -d /media/Data_3/Uniclust/UniRef30_2020_06 \
+   -s \
+   -se 1e-70 1e-50 1e-30 1e-10 1e-06 1e-04 1e+01
 
 OPTIONS:
 -t (--threads)	    Number of threads to use [Default: 10]
 -f (--fasta)	    Folder containing fasta files
 -o (--output)	    Output folder
--e (--evalues)      Desired evalues to query
 -d (--database)     Uniclust database to query
--n (--num_it)       Number of hhblits iteration [Default: 3]
 -v (--verbosity)    hhblits verbosity; 0, 1 or 2 [Default: 2]
+
+## E-value options
+-e (--evalues)      Desired evalue(s) to query independently
+-s (--seq_it)       Iterates sequentially through evalues
+-se (--seq_ev)      Evalues to iterate through sequentially [Default:
+                    1e-70 1e-60 1e-50 1e-40 1e-30 1e-20 1e-10 1e-08 1e-06 1e-04 1e+01 ]
+-ne (--num_it)      # of hhblits iteration per evalue (-e) [Default: 3]
+-ns (--num_sq)      # of hhblits iteration per sequential evalue (-s) [Default: 1] 
 ```
 
 3. Create .npz files containing inter-residue geometries with [create_npz.pl](https://raw.githubusercontent.com/PombertLab/3DFI/master/trRosetta/create_npz.pl):
@@ -120,13 +136,13 @@ OPTIONS:
 -m (--model)    Path to trRosetta model directory
 ```
 
-4. Generate .pdb files containing 3D models from the .npz fiels with [create_pdb.pl](https://raw.githubusercontent.com/PombertLab/3DFI/master/trRosetta/create_pdb.pl):
+4. Generate .pdb files containing 3D models from the .npz fil3s with [create_pdb.pl](https://raw.githubusercontent.com/PombertLab/3DFI/master/trRosetta/create_pdb.pl):
 ```Bash
 create_pdb.pl \
    -c 10 \
    -n NPZ/*.npz \
    -o PDB/ \
-   -f TEST/ \
+   -f FASTA_OL/ \
    -t /media/Data_3/opt/trRosetta/pdb/trRosetta.py
 
 OPTIONS:
