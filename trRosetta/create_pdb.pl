@@ -1,6 +1,6 @@
 #!/usr/bin/perl
 ## Pombert Lab 2020
-my $version = 0.1;
+my $version = '0.1a';
 my $name = 'create_pdb.pl';
 
 use strict; use warnings; use Getopt::Long qw(GetOptions); use File::Basename; use threads; use threads::shared;
@@ -58,9 +58,8 @@ sub exe{
     while (my $npz = shift@files){
         my($name, $dir) = fileparse($npz);
         my ($prefix, $evalue) = $name =~ /^(\S+)\.(\S+)\.(\w+)$/;
+        print "\nWorking on file: $name\n\n";
         system "python $trosetta $npz $fasta/$prefix.fasta $out/$prefix.$evalue.pdb";
     }
 	threads->exit();
 }
-
-# python /media/Data_3/opt/trRosetta/trRosetta.py ECU05_1030.1e40.npz ECU05_1030.fasta ECU05_1030.1e40.pdb
