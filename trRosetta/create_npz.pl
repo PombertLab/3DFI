@@ -1,6 +1,6 @@
 #!/usr/bin/perl
 ## Pombert Lab 2020
-my $version = 0.1;
+my $version = '0.1a';
 my $name = 'create_npz.pl';
 
 use strict; use warnings; use Getopt::Long qw(GetOptions); use File::Basename;
@@ -45,6 +45,7 @@ unless (-d $out){mkdir $out;}
 while (my $a3m = shift@a3m){
     my($name, $dir) = fileparse($a3m);
     my ($prefix) = $name =~ /^(\S+)\.(\w+)$/;
+    print "\nWorking on file: $name\n\n";
     system "python $pred -m $model $a3m $out/$prefix.npz";
 }
 
