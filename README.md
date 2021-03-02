@@ -15,6 +15,7 @@ The 3DFI pipeline predicts the 3D structure of proteins, and then searches for s
   * [Structural homology searches with GESAMT](#structural-homology-searches-with-GESAMT)
   * [Parsing the output of GESAMT searches](#Parsing-the-output-of-GESAMT-searches)
 * [Miscellaneous](#miscellaneous)
+* [Funding and acknowledgments](#Funding-and-acknowledgments)
 * [References](#references)
 
 ### Introduction
@@ -288,6 +289,9 @@ OPTIONS:
 -n (--new)	New pattern to replace with; defaults to blank [Default: '']
 -f (--files)	Files to rename
 ```
+
+## Funding and acknowledgments
+This work was supported in part by the National Institute of Allergy and Infectious Diseases of the National Institutes of Health (award number R15AI128627) to Jean-Francois Pombert. The content is solely the responsibility of the authors and does not necessarily represent the official views of the National Institutes of Health.
 
 ##### REFERENCES
 1) [RCSB Protein Data Bank: Sustaining a living digital data resource that enables breakthroughs in scientific research and biomedical education](https://pubmed.ncbi.nlm.nih.gov/29067736/). **Burley SK, et al.** Protein Sci. 2018 Jan;27(1):316-330. PMID: 29067736 PMCID: PMC5734314 DOI: 10.1002/pro.3331
