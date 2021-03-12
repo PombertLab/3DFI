@@ -4,9 +4,8 @@ my $version = '0.2a';
 my $name = 'PDB_headers.pl';
 my $updated = '12/03/2021';
 
-use strict; use warnings;
-use File::Find; use File::Basename;
-use PerlIO::gzip; use Getopt::Long qw(GetOptions);
+use strict; use warnings; use Getopt::Long qw(GetOptions); use File::Basename;
+use File::Find; use PerlIO::gzip; 
 
 ## Usage definition
 my $USAGE = <<"OPTIONS";
@@ -43,7 +42,7 @@ find(
 );
 
 ## Parsing PDB files (*.ent.gz)
-open OUT, ">", "$out" or die "Can't open file $out: $!\n";
+open OUT, ">", "$out" or die "Can't create file $out: $!\n";
 while (my $pb = shift@pdb){
 	if ($pb =~ /.ent.gz$/){ ## skipping other files if present
 		open PDB, "<:gzip", "$pb" or die "Can't open file $pb: $!\n";
