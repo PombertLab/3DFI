@@ -54,8 +54,6 @@ unless (-e "$out/PDB"){mkdir ("$out/PDB",0755) or die "Can't create output folde
 unless (-e "$out/CNFPRED"){mkdir ("$out/CNFPRED",0755) or die "Can't create output folder $out/CNFPRED: $!\n";}
 unless (-e "$out/RANK"){mkdir ("$out/RANK",0755) or die "Can't create output folder $out/RANK: $!\n";}
 
-exit;
-
 ## Reading from folder
 opendir (DIR, $dir) or die "Can't open input directory $dir: $!\n";
 my @fasta;
