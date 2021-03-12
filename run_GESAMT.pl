@@ -1,22 +1,25 @@
 #!/usr/bin/perl
 ## Pombert Lab 2020
-my $version = 0.5;
+my $version = '0.5a';
 my $name = 'run_GESAMT.pl';
+my $updated = '12/03/2021';
 
-use strict; use warnings; use File::Find; use File::Basename; use POSIX 'strftime'; use Getopt::Long qw(GetOptions);
+use strict; use warnings; use File::Find; use File::Basename;
+use POSIX 'strftime'; use Getopt::Long qw(GetOptions);
 my @command = @ARGV; ## Keeping track of command line for log
 
 ## Usage definition
 my $USAGE = <<"OPTIONS";
-NAME		$name
-VERSION		$version
+NAME		${name}
+VERSION		${version}
+UPDATED		${updated}
 SYNOPSIS	Run GESAMT structural searches against PDB structures
 REQUIREMENTS	PDB files downloaded from RCSB PDB; e.g. pdb2zvl.ent.gz
 		GESAMT; see https://www.ccp4.ac.uk/
 
-CREATE DB	run_GESAMT.pl -cpu 10 -make -arch /media/Data_2/GESAMT_ARCHIVE -pdb /media/Data_2/PDB/
-UPDATE DB	run_GESAMT.pl -cpu 10 -update -arch /media/Data_2/GESAMT_ARCHIVE -pdb /media/Data_2/PDB/
-QUERY DB	run_GESAMT.pl -cpu 10 -query -arch /media/Data_2/GESAMT_ARCHIVE -input *.pdb -o ./ -mode normal 
+CREATE DB	${name} -cpu 10 -make -arch /media/Data_2/GESAMT_ARCHIVE -pdb /media/Data_2/PDB/
+UPDATE DB	${name} -cpu 10 -update -arch /media/Data_2/GESAMT_ARCHIVE -pdb /media/Data_2/PDB/
+QUERY DB	${name} -cpu 10 -query -arch /media/Data_2/GESAMT_ARCHIVE -input *.pdb -o ./ -mode normal 
 
 OPTIONS:
 -c (--cpu)	CPU threads [Default: 10]
@@ -68,13 +71,15 @@ GetOptions(
 my $date = strftime '%Y-%m-%d', localtime;
 my $start = localtime();
 my $tstart = time;
-open LOG, ">>", "GESAMT_$date.log" or die "Can't create log file GESAMT_$date.log.";
+open LOG, ">>", "GESAMT_$date.log" or die "Can't create log file GESAMT_$date.log: $!\n";
 print LOG "\nVERSION: $version\n"."COMMAND LINE: $name @command\n";
 print LOG "Started on: $start\n";
 
 
 ## Program check
-my $prog = `command -v gesamt`; chomp $prog; if ($prog eq ''){print "\nERROR: Cannot find gesamt. Please install GESAMT in your path\n\n"; exit;}
+my $prog = `command -v gesamt`;
+chomp $prog;
+if ($prog eq ''){die "\nERROR: Cannot find gesamt. Please install GESAMT in your path\n\n";}
 
 ## Checking for unknown task
 if (!defined $update and !defined $make and !defined $query){
@@ -82,12 +87,12 @@ if (!defined $update and !defined $make and !defined $query){
 }
 
 ## Creating/updating GESAMT archive
-unless (-e $arch){system "mkdir $arch";}
+unless (-e $arch){ mkdir ($arch, 0755); }
 if ($update){system "gesamt --update-archive $arch -pdb $pdb -nthreads=$cpu";}
 elsif ($make){system "gesamt --make-archive $arch -pdb $pdb -nthreads=$cpu";}
 
 ## Running GESAMT queries/Skipping previously done searches
-unless (-e $outdir){system "mkdir $outdir";}
+unless (-e $outdir){ mkdir ($outdir, 0755);}
 my @gsm; my %results;
 find (sub {push @gsm, $File::Find::name unless -d}, $outdir);
 
@@ -101,8 +106,15 @@ if ($query){
 	while (my $file = shift@input){
 		my ($pdb, $dir) = fileparse($file);
 		$pdb =~ s/.pdb$//;
-		unless (exists $results{$pdb}){system "gesamt $file -archive $arch -nthreads=$cpu -$mode -o $outdir/$pdb.$mode.gesamt";}
-		else {print "Skipping PDB file: $pdb => GESAMT result found in output directory $outdir\n";} ## Searches can take a while, best to skip if done previously
+		unless (exists $results{$pdb}){
+			system "gesamt $file \\
+			  -archive $arch \\
+			  -nthreads=$cpu \\
+			  -$mode \\
+			  -o $outdir/$pdb.$mode.gesamt";
+		}
+		## Searches can take a while, best to skip if done previously
+		else {print "Skipping PDB file: $pdb => GESAMT result found in output directory $outdir\n";}
 	}
 }
 

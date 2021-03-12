@@ -2,6 +2,7 @@
 ## Pombert Lab 2020
 my $version = '0.3a';
 my $name = 'split_PDB.pl';
+my $updated = '12/03/2021';
 
 use strict; use warnings;
 use PerlIO::gzip; use File::Basename;
@@ -9,11 +10,12 @@ use Getopt::Long qw(GetOptions);
 
 ## Usage definition
 my $USAGE = <<"OPTIONS";
-NAME		$name
-VERSION		$version
+NAME		${name}
+VERSION		${version}
+UPDATED		${updated}
 SYNOPSIS	Splits a PDB file into separate files, one per chain
 		
-USAGE EXAMPLE	$name -p files.pdb -o output_folder -e pdb
+USAGE EXAMPLE	${name} -p files.pdb -o output_folder -e pdb
 
 OPTIONS:
 -p (--pdb)	PDB input file (supports gzipped files)
@@ -37,12 +39,12 @@ while (my $pdb = shift@pdb){
 	my ($prefix) = $filename =~ /^(\w+)/;
 
 	## Creating output folder
-	if (!defined $out){unless (-e $prefix) {mkdir $prefix or die "Can't create folder: $prefix. Please check file permissions\n";}}
-	else {unless (-e $out) {mkdir $out or die "Can't create folder: $out. Please check file permissions\n";}}
+	if (!defined $out){unless (-e $prefix) {mkdir ($prefix,0755) or die "Can't create folder $prefix: $!\n";}}
+	else {unless (-e $out) {mkdir ($out,0755) or die "Can't create folder $out: $!\n";}}
 
 	## Working on PDB file
 	my $gzip = ''; if ($pdb =~ /.gz$/){$gzip = ':gzip';}
-	open PDB, "<$gzip", "$pdb" or die "Can't open PDB file: $pdb\n";
+	open PDB, "<$gzip", "$pdb" or die "Can't open PDB file $pdb: $!\n";
 	my %chains; my $chain; my @header; my %ids; my $molecule; my $cpchain;
 	while (my $line = <PDB>){
 		chomp $line;
@@ -70,8 +72,8 @@ while (my $pdb = shift@pdb){
 	## Working on chains
 	for (keys %chains){
 		my $ch = $_;
-		if (defined $out){open OUT, ">", "$out/${prefix}_$ch.$ext" or die "Can't create PDB file: $pdb in folder $out\n";}
-		else{open OUT, ">", "$prefix/${prefix}_$ch.$ext" or die "Can't create PDB file: $pdb in folder $out\n";}
+		if (defined $out){open OUT, ">", "$out/${prefix}_$ch.$ext" or die "Can't create PDB file $pdb in folder $out: $!\n";}
+		else{open OUT, ">", "$prefix/${prefix}_$ch.$ext" or die "Can't create PDB file $pdb in folder $out: $!\n";}
 		foreach (@header){print OUT "$_\n";}
 		if (exists $ids{$ch}){
 			print OUT "COMPND    MOL_ID: 1;                                                            \n";

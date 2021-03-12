@@ -1,7 +1,8 @@
 #!/usr/bin/perl
 ## Pombert Lab 2020
-my $version = 0.2;
+my $version = '0.2a';
 my $name = 'PDB_headers.pl';
+my $updated = '12/03/2021';
 
 use strict; use warnings;
 use File::Find; use File::Basename;
@@ -9,13 +10,14 @@ use PerlIO::gzip; use Getopt::Long qw(GetOptions);
 
 ## Usage definition
 my $USAGE = <<"OPTIONS";
-NAME		$name
-VERSION		$version
+NAME		${name}
+VERSION		${version}
+UPDATED		${updated}
 SYNOPSIS	Generates a Tab-delimited list of PDB structures and their titles from the PDB files headers
 REQUIREMENTS	PDB files downloaded from RCSB PDB; e.g. pdb2zvl.ent.gz
 		PerlIO::gzip
 		
-USAGE EXAMPLE	PDB_headers.pl -p PDB/ -o PDB_titles.tsv
+USAGE EXAMPLE	${name} -p PDB/ -o PDB_titles.tsv
 
 OPTIONS:
 -p (--pdb)	Directory containing PDB files downloaded from RCSB PDB/PDBe (gzipped)
@@ -41,10 +43,10 @@ find(
 );
 
 ## Parsing PDB files (*.ent.gz)
-open OUT, ">$out";
+open OUT, ">", "$out" or die "Can't open file $out: $!\n";
 while (my $pb = shift@pdb){
 	if ($pb =~ /.ent.gz$/){ ## skipping other files if present
-		open PDB, "<:gzip", "$pb" or die "Could not open $pb for reading: $!\n";
+		open PDB, "<:gzip", "$pb" or die "Can't open file $pb: $!\n";
 		my ($pdb, $folder) = fileparse($pb);
 		$pdb =~ s/^pdb//;
 		$pdb =~ s/.ent.gz$//;

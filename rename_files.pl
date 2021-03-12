@@ -1,17 +1,22 @@
 #!/usr/bin/perl
 ## Pombert Lab 2020
-my $version = 0.1;
+my $version = '0.2';
 my $name = 'rename_files.pl';
+my $updated = '12/03/2021';
 
 use strict; use warnings; use Getopt::Long qw(GetOptions);
 
 ## Usage definition
 my $USAGE = <<"OPTIONS";
-NAME		$name
-VERSION		$version
+NAME		${name}
+VERSION		${version}
+UPDATED		${updated}
 SYNOPSIS	Rename file(s) using regular expressions 
 		
-USAGE EXAMPLE	$name -o 'i{0,1}-t26_1-p1' -n '' -f *.fasta
+USAGE EXAMPLE	${name} \\
+		  -o 'i{0,1}-t26_1-p1' \\
+		  -n '' \\
+		  -f *.fasta
 
 OPTIONS:
 -o (--old)	Old pattern/regular expression to replace with new pattern

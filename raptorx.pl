@@ -1,22 +1,29 @@
 #!/usr/bin/perl
 ## Pombert Lab 2019
-my $version = 0.3;
+my $version = '0.3a';
 my $name = 'raptorx.pl';
+my $updated = '12/03/2021';
 
 use strict; use warnings; use Getopt::Long qw(GetOptions);
 my @command = @ARGV; ## Keeping track of command line for log
 
 ## Usage definition
 my $USAGE = <<"OPTIONS";
-NAME		$name
-VERSION		$version
+NAME		${name}
+VERSION		${version}
+UPDATED		${updated}
 SYNOPSIS	Runs raptorX 3D structure prediction on provided fasta files
 REQUIREMENTS	RaptorX - http://raptorx.uchicago.edu/
 		MODELLER - https://salilab.org/modeller/
+
 NOTE		Due to RaptorX's architecture, 3D predictions must be launched from within RaptorX's installation directory.
 
-USAGE EXAMPLE	cd RAPTORX_INSTALLATION DIRECTORY/
-		raptorx.pl -t 10 -k 2 -i ~/FASTA/ -o ~/3D_predictions/
+USAGE EXAMPLE	cd RAPTORX_INSTALLATION_DIRECTORY/
+		${name} \\
+		  -t 10 \\
+		  -k 2 \\
+		  -i ~/FASTA/ \\
+		  -o ~/3D_predictions/
 
 OPTIONS:
 -t (--threads)	Number of threads to use [Default: 10]
@@ -41,9 +48,16 @@ GetOptions(
 	'm|modeller=s' => \$modeller
 );
 
+## Creating output folders
+unless (-e $out){mkdir ($out,0755) or die "Can't create output folder $out: $!\n";}
+unless (-e "$out/PDB"){mkdir ("$out/PDB",0755) or die "Can't create output folder $out/PDB: $!\n";}
+unless (-e "$out/CNFPRED"){mkdir ("$out/CNFPRED",0755) or die "Can't create output folder $out/CNFPRED: $!\n";}
+unless (-e "$out/RANK"){mkdir ("$out/RANK",0755) or die "Can't create output folder $out/RANK: $!\n";}
+
+exit;
+
 ## Reading from folder
-system "mkdir $out; mkdir $out/PDB; mkdir $out/CNFPRED; mkdir $out/RANK";
-opendir (DIR, $dir) or die $!;
+opendir (DIR, $dir) or die "Can't open input directory $dir: $!\n";
 my @fasta;
 while (my $fasta = readdir(DIR)){
 	unless (-d){
@@ -55,7 +69,7 @@ while (my $fasta = readdir(DIR)){
 
 ## Running RaptorX
 my $start = localtime(); my $tstart = time;
-open LOG, ">$out/raptorx.log";
+open LOG, ">", "$out/raptorx.log";
 print LOG "COMMAND LINE:\nraptorx.pl @command\n"."raptorx.pl version = $version\n";
 print LOG "Using MODELLER binary version $modeller\n";
 print LOG "3D Folding started on: $start\n";
