@@ -87,12 +87,12 @@ if (!defined $update and !defined $make and !defined $query){
 }
 
 ## Creating/updating GESAMT archive
-unless (-e $arch){ mkdir ($arch, 0755); }
+unless (-d $arch){ mkdir ($arch, 0755) or die "Can't create folder $arch: $!\n";}
 if ($update){system "gesamt --update-archive $arch -pdb $pdb -nthreads=$cpu";}
 elsif ($make){system "gesamt --make-archive $arch -pdb $pdb -nthreads=$cpu";}
 
 ## Running GESAMT queries/Skipping previously done searches
-unless (-e $outdir){ mkdir ($outdir, 0755);}
+unless (-d $outdir){ mkdir ($outdir, 0755) or die "Can't create folder $outdir: $!\n";}
 my @gsm; my %results;
 find (sub {push @gsm, $File::Find::name unless -d}, $outdir);
 
