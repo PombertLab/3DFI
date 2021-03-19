@@ -36,7 +36,7 @@ Although predicting the structure of a protein and searching for structural homo
 2. [trRosetta](https://github.com/gjoni/trRosetta)  ## Deep-learning-based predictions 
 3. [MODELLER](https://salilab.org/modeller/)        ## For RaptorX
 4. [PyRosetta](http://www.pyrosetta.org/)           ## For trRosetta
-5. [GESAMT](https://www.ccp4.ac.uk/)
+5. [GESAMT](https://www.ccp4.ac.uk/)                ## From the CCP4 package
 6. [Perl 5](https://www.perl.org/) modules - [File::Basename](https://perldoc.perl.org/File/Basename.html), [File::Find](https://perldoc.perl.org/File/Find.html), [Getopt::Long](https://perldoc.perl.org/Getopt/Long.html), [PerlIO::gzip](https://metacpan.org/pod/PerlIO::gzip)
 
 ### Howto
