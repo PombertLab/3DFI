@@ -32,11 +32,12 @@ To perform structure-based predictions we need 3D structures —either determine
 Although predicting the structure of a protein and searching for structural homologs can be done online, for example by using [SWISS-MODEL](https://swissmodel.expasy.org/) and [PDBeFold](https://www.ebi.ac.uk/msd-srv/ssm/), genomes often code for thousands of proteins and applying this approach on a genome scale would be time consuming and error prone. We implemented the 3DFI pipeline to enable the use of structure-based homology searches at a genome-wide level.
 
 #### Requirements
-1. RaptorX - http://raptorx.uchicago.edu/          ## Template-based predictions
-2. trRosetta - https://github.com/gjoni/trRosetta  ## Deep-learning-based predictions 
-3. MODELLER - https://salilab.org/modeller/        ## For RaptorX
-4. GESAMT -  https://www.ccp4.ac.uk/
-5. Perl modules - [File::Basename](https://perldoc.perl.org/File/Basename.html), [File::Find](https://perldoc.perl.org/File/Find.html), [Getopt::Long](https://perldoc.perl.org/Getopt/Long.html), [PerlIO::gzip](https://metacpan.org/pod/PerlIO::gzip)
+1. [RaptorX](http://raptorx.uchicago.edu/)          ## Template-based predictions
+2. [trRosetta](https://github.com/gjoni/trRosetta)  ## Deep-learning-based predictions 
+3. [MODELLER](https://salilab.org/modeller/)        ## For RaptorX
+4. [PyRosetta](http://www.pyrosetta.org/)           ## For trRosetta
+5. [GESAMT](https://www.ccp4.ac.uk/)
+6. [Perl 5](https://www.perl.org/) modules - [File::Basename](https://perldoc.perl.org/File/Basename.html), [File::Find](https://perldoc.perl.org/File/Find.html), [Getopt::Long](https://perldoc.perl.org/Getopt/Long.html), [PerlIO::gzip](https://metacpan.org/pod/PerlIO::gzip)
 
 ### Howto
 #### 3D structure prediction
