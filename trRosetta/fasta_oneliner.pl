@@ -17,19 +17,18 @@ COMMAND		${name} -f *.fasta -o FASTA_OL
 
 OPTIONS:
 -f (--fasta)	FASTA files to convert
--o (--output)	Output folder
+-o (--output)	Output folder [default = FASTA_OL]
 OPTIONS
 die "\n$USAGE\n" unless @ARGV;
 
 ## Defining options
 my @fasta;
-my $out;
+my $out = "FASTA_OL";
 GetOptions(
 	'f|fasta=s@{1,}' => \@fasta,
 	'o|output=s' => \$out,
 );
 
-if (!defined $out){$out = './';}
 unless (-d $out){mkdir ($out,0755) or die "Can't create folder $out: $!\n";}
 
 ## Converting fasta files
@@ -42,7 +41,6 @@ while (my $fasta = shift@fasta){
 		if ($line =~ /^>/){$header = $line;}
 		else{$seq .= $line;}
 	}
-	$name =~ s/\.fasta/\.oneliner\.fasta/;
 	open OUT, ">", "$out/$name";
 	print OUT "$header\n"."$seq\n";
 	close FASTA; close OUT;
