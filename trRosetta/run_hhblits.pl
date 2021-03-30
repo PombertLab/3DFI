@@ -104,6 +104,11 @@ while (my $fasta = shift@fasta){
 		if (@seqev){@seqit = @seqev;}
 		my $start = shift@seqit;
 		
+		if(-f "$out/$prefix.sqit.a3m"){
+			print "File exists, skipping...";
+			next;
+		}
+
 		print "\nIterating on file $dir/$fasta with evalue $start ...\n\n";
 		system "hhblits \\
 		  -cpu $threads \\
