@@ -42,6 +42,7 @@ while (my $fasta = shift@fasta){
 		if ($line =~ /^>/){$header = $line;}
 		else{$seq .= $line;}
 	}
+	$name =~ s/\.fasta/\.oneliner\.fasta/;
 	open OUT, ">", "$out/$name";
 	print OUT "$header\n"."$seq\n";
 	close FASTA; close OUT;
