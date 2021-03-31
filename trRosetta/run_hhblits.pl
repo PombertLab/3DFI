@@ -1,8 +1,8 @@
 #!/usr/bin/perl
 ## Pombert Lab 2020
-my $version = '0.2a';
+my $version = '0.2b';
 my $name = 'run_hhblits.pl';
-my $updated = '12/03/2021';
+my $updated = '31/03/2021';
 
 use strict; use warnings; use Getopt::Long qw(GetOptions);
 my @command = @ARGV; ## Keeping track of command line for log
@@ -100,12 +100,13 @@ while (my $fasta = shift@fasta){
 	## Running iterative searches, from stricter to more permissive evalues
 	if ($sqit){
 		
+		my $filename = "$out/$prefix.sqit.a3m";
 		my @seqit = (1e-70, 1e-60, 1e-50, 1e-40, 1e-30, 1e-20, 1e-10, 1e-08, 1e-06, 1e-04, 1e+01);
 		if (@seqev){@seqit = @seqev;}
 		my $start = shift@seqit;
 		
-		if(-f "$out/$prefix.sqit.a3m"){
-			print "File exists, skipping...";
+		if(-f $filename){
+			print "File $filename exists, skipping...\n";
 			next;
 		}
 
@@ -113,7 +114,7 @@ while (my $fasta = shift@fasta){
 		system "hhblits \\
 		  -cpu $threads \\
 		  -i $dir/$fasta \\
-		  -oa3m $out/$prefix.sqit.a3m \\
+		  -oa3m $filename \\
 		  -d $uniclust \\
 		  -e $start \\
 		  -n $nseq \\
@@ -123,8 +124,8 @@ while (my $fasta = shift@fasta){
 			print "\nIterating on file $dir/$fasta with evalue $eval ...\n\n";
 			system "hhblits \\
 			  -cpu $threads \\
-			  -i $out/$prefix.sqit.a3m \\
-			  -oa3m $out/$prefix.sqit.a3m \\
+			  -i $filename \\
+			  -oa3m $filename \\
 			  -d $uniclust \\
 			  -e $eval \\
 			  -n $nseq \\
