@@ -30,7 +30,8 @@ OPTIONS:
 -i (--input)	Folder containing fasta files
 -o (--output)	Output folder
 -k (--TopK)	Number of top template(s) to use per protein for model building [Default: 1]
--m (--modeller)	MODELLER binary name [Default: mod10.1] ## Use absolute or relative path if not set in \$PATH
+-m (--modeller)	MODELLER binary name [Default: mod10.1]
+		## Use absolute or relative path if not set in \$PATH
 OPTIONS
 die "\n$USAGE\n" unless @ARGV;
 
