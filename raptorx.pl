@@ -1,6 +1,6 @@
 #!/usr/bin/perl
 ## Pombert Lab 2019
-my $version = '0.3b';
+my $version = '0.3c';
 my $name = 'raptorx.pl';
 my $updated = '2021-04-05';
 
@@ -49,10 +49,10 @@ GetOptions(
 );
 
 ## Creating output folders
-unless (-e $out){mkdir ($out,0755) or die "Can't create output folder $out: $!\n";}
-unless (-e "$out/PDB"){mkdir ("$out/PDB",0755) or die "Can't create output folder $out/PDB: $!\n";}
-unless (-e "$out/CNFPRED"){mkdir ("$out/CNFPRED",0755) or die "Can't create output folder $out/CNFPRED: $!\n";}
-unless (-e "$out/RANK"){mkdir ("$out/RANK",0755) or die "Can't create output folder $out/RANK: $!\n";}
+unless (-d $out){mkdir ($out,0755) or die "Can't create output folder $out: $!\n";}
+unless (-d "$out/PDB"){mkdir ("$out/PDB",0755) or die "Can't create output folder $out/PDB: $!\n";}
+unless (-d "$out/CNFPRED"){mkdir ("$out/CNFPRED",0755) or die "Can't create output folder $out/CNFPRED: $!\n";}
+unless (-d "$out/RANK"){mkdir ("$out/RANK",0755) or die "Can't create output folder $out/RANK: $!\n";}
 
 ## Reading from folder
 opendir (DIR, $dir) or die "Can't open input directory $dir: $!\n";
@@ -71,19 +71,45 @@ open LOG, ">", "$out/raptorx.log";
 print LOG "COMMAND LINE:\nraptorx.pl @command\n"."raptorx.pl version = $version\n";
 print LOG "Using MODELLER binary version $modeller\n";
 print LOG "3D Folding started on: $start\n";
+
 while (my $fasta = shift@fasta){
 	my $pstart = time;
 	my ($protein, $ext) = $fasta =~ /^(\S+?).(\w+)$/;
-	system "buildFeature -i ${dir}$protein.$ext -o TGT/$protein.tgt -c $threads";	## Generating the feature file (.tgt)
-	system "CNFsearch -a $threads -q $protein -o $protein.rank";	##  Searching databases for top hits
-	open IN, "<$protein.rank"; ## Creating list of top models from rank file
+	
+	## Generating the feature file (.tgt)
+	system "buildFeature \\
+	  -i ${dir}/$protein.$ext \\
+	  -o TGT/$protein.tgt \\
+	  -c $threads";
+	
+	##  Searching databases for top hits
+	system "CNFsearch \\
+	  -a $threads \\
+	  -q $protein \\
+	  -o $protein.rank";
+
+	## Creating list of top models from rank file
+	open IN, "<", "$protein.rank";
 	my @models;
 		while (my $line = <IN>){
 			chomp $line;
 			if ($line =~ />(\w+)$/){push (@models, $1);}
 		}
-	for (0..$topk-1){system "CNFalign_lite -t $models[$_] -q $protein -d .";}	## Aligning fasta to top models
-		system "buildTopModels -i $protein.rank -k $topk -m $modeller";	## Creating 3D models
+
+	## Aligning fasta to top models
+	for (0..$topk-1){
+		system "CNFalign_lite \\
+		  -t $models[$_] \\
+		  -q $protein \\
+		  -d .";
+	}
+	
+	## Creating 3D models
+	system "buildTopModels \\
+		-i $protein.rank \\
+		-k $topk \\
+		-m $modeller";	
+	
 	my $run_time = time - $tstart; ## Cumulative time elapsed
 	my $pfold_time = time - $pstart; ## Time elapsed per protein
 	print LOG "Time to fold $protein.$ext = $pfold_time seconds\n";
