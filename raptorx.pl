@@ -1,8 +1,8 @@
 #!/usr/bin/perl
 ## Pombert Lab 2019
-my $version = '0.3a';
+my $version = '0.3b';
 my $name = 'raptorx.pl';
-my $updated = '12/03/2021';
+my $updated = '2021-04-05';
 
 use strict; use warnings; use Getopt::Long qw(GetOptions);
 my @command = @ARGV; ## Keeping track of command line for log
@@ -30,7 +30,7 @@ OPTIONS:
 -i (--input)	Folder containing fasta files
 -o (--output)	Output folder
 -k (--TopK)	Number of top template(s) to use per protein for model building [Default: 1]
--m (--modeller)	MODELLER binary name [Default: mod9.23] ## Use absolute or relative path if not set in \$PATH
+-m (--modeller)	MODELLER binary name [Default: mod10.1] ## Use absolute or relative path if not set in \$PATH
 OPTIONS
 die "\n$USAGE\n" unless @ARGV;
 
@@ -38,7 +38,7 @@ die "\n$USAGE\n" unless @ARGV;
 my $threads = 10;
 my $dir;
 my $out;
-my $modeller = 'mod9.23';
+my $modeller = 'mod10.1';
 my $topk = 1;
 GetOptions(
 	't|threads=i' => \$threads,
