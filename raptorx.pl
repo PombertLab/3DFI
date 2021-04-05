@@ -59,10 +59,8 @@ unless (-d "$out/RANK"){mkdir ("$out/RANK",0755) or die "Can't create output fol
 opendir (DIR, $dir) or die "Can't open input directory $dir: $!\n";
 my @fasta;
 while (my $fasta = readdir(DIR)){
-	unless (-d){
-		if (($fasta eq '.') || ($fasta eq '..')){next;}
-		else{push (@fasta, $fasta);}
-	}
+	if (($fasta eq '.') || ($fasta eq '..')){ next; }
+	else{push (@fasta, $fasta);}
 }
 @fasta = sort@fasta;
 
