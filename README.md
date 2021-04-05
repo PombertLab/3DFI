@@ -50,7 +50,8 @@ Input files (in FASTA format) and the output location of the structures to be pr
 ```Bash
 raptorx.pl \
    -t 10 \
-   -k 2 -i ~/FASTA/ \
+   -k 2 \
+   -i ~/FASTA/ \
    -o ~/3D_predictions/
 ```
 Options for raptorX.pl are:
