@@ -2,7 +2,7 @@
 ## Pombert Lab 2020
 my $version = '0.2a';
 my $name = 'PDB_headers.pl';
-my $updated = '12/03/2021';
+my $updated = '2021-04-06';
 
 use strict; use warnings; use Getopt::Long qw(GetOptions); use File::Basename;
 use File::Find; use PerlIO::gzip; 
@@ -16,7 +16,9 @@ SYNOPSIS	Generates a Tab-delimited list of PDB structures and their titles from 
 REQUIREMENTS	PDB files downloaded from RCSB PDB; e.g. pdb2zvl.ent.gz
 		PerlIO::gzip
 		
-USAGE EXAMPLE	${name} -p PDB/ -o PDB_titles.tsv
+USAGE EXAMPLE	${name} \\
+		  -p PDB/ \\
+		  -o PDB_titles.tsv
 
 OPTIONS:
 -p (--pdb)	Directory containing PDB files downloaded from RCSB PDB/PDBe (gzipped)
