@@ -2,7 +2,7 @@
 ## Pombert Lab 2020
 my $version = '0.5a';
 my $name = 'descriptive_GESAMT_matches.pl';
-my $updated = '12/03/2021';
+my $updated = '2021-04-06';
 
 use strict; use warnings; use Getopt::Long qw(GetOptions);
 
@@ -58,9 +58,11 @@ while (my $line = <DB>){
 ## Iterating through Gesamt matches
 open OUT, ">", "$output" or die "Can't create output file $output: $!\n";
 while (my $match = shift@matches){
+
 	open MA, "<", "$match" or die "Can't read file $match: $!\n";
 	my ($prefix, $suffix) = $match =~ /^(\S+)\.(\w+.gesamt)$/;
 	print OUT '### '."$prefix\n";
+
 	while (my $line = <MA>){
 		chomp $line;
 		if ($line =~ /^\s+(\d+)\s+(\w+)\s+(\w+)\s+(\S+)/){
@@ -69,8 +71,12 @@ while (my $match = shift@matches){
 			my $chain = $3;
 			my $qscore = $4;
 			if ($qscore >= $qthreshold){
-				if ($best){if ($best >= $hit_number){print OUT "$prefix\t$line\t$RCSB{$pdb_code}\n";}}
-				else {print OUT "$prefix\t$line\t$RCSB{$pdb_code}\n";}
+				if ($best){
+					if ($best >= $hit_number){
+						print OUT "$prefix\t$line\t$RCSB{$pdb_code}\n";
+					}
+				}
+				else { print OUT "$prefix\t$line\t$RCSB{$pdb_code}\n"; }
 			}
 		}
 	}
