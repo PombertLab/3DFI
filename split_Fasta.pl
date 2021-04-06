@@ -1,11 +1,10 @@
 #!/usr/bin/perl
 ## Pombert Lab 2020
-my $version = '0.1';
+my $version = '0.1a';
 my $name = 'split_Fasta.pl';
-my $updated = '12/03/2021';
+my $updated = '2021-04-06';
 
-use strict; use warnings;
-use PerlIO::gzip; use Getopt::Long qw(GetOptions);
+use strict; use warnings; use PerlIO::gzip; use Getopt::Long qw(GetOptions);
 
 ## Usage definition
 my $USAGE = <<"OPTIONS";
@@ -14,7 +13,10 @@ VERSION		${version}
 UPDATED		${updated}
 SYNOPSIS	Splits a multifasta file into separate files, one per sequence
 		
-USAGE EXAMPLE	${name} -f file.fasta -o output_folder -e fasta
+USAGE EXAMPLE	${name} \\
+		  -f file.fasta \\
+		  -o output_folder \\
+		  -e fasta
 
 OPTIONS:
 -f (--fasta)	FASTA input file (supports gzipped files)
@@ -35,33 +37,39 @@ GetOptions(
 
 ## Creating output folder
 if (!defined $out){
-	if ($fasta =~ /.gz$/){($out) = $fasta =~ /^(.*?).\w+.gz$/;}
-	else{($out) = $fasta =~ /^(.*?).\w+$/;}
+	if ($fasta =~ /.gz$/){ ($out) = $fasta =~ /^(.*?).\w+.gz$/; }
+	else{ ($out) = $fasta =~ /^(.*?).\w+$/; }
 }
-if (-e $out){
+if (-d $out){
 	print "Folder $out already exists... Do you want to continue? (y or n)\n";
 	my $answer = <STDIN>;
-	chomp $answer; $answer = lc($answer);
-	if ($answer eq 'n'){die "Stopping as requested\n";}
+	chomp $answer;
+	$answer = lc($answer);
+	if ($answer eq 'n'){ die "Stopping as requested\n"; }
 }
-else {mkdir ($out,0755) or die "Can't create folder $out: $!\n";}
+else { mkdir ($out,0755) or die "Can't create folder $out: $!\n"; }
 
 ## Working on multifasta file
-my $gzip = ''; if ($fasta =~ /.gz$/){$gzip = ':gzip';}
+my $gzip = '';
+if ($fasta =~ /.gz$/){ $gzip = ':gzip'; }
 open FASTA, "<$gzip", "$fasta" or die "Can't open FASTA file $fasta: $!\n";
+
 my %sequences; my $seq;
 while (my $line = <FASTA>){
 	chomp $line;
-	if ($line =~ />(\S+)/){$seq = $1; print "$seq\n";}
-	else {$sequences{$seq} .= $line;}
+	if ($line =~ />(\S+)/){
+		$seq = $1;
+		print "$seq\n";
+	}
+	else { $sequences{$seq} .= $line; }
 }
-if ($gzip eq ':gzip'){binmode FASTA, ":gzip(none)";}
+if ($gzip eq ':gzip'){ binmode FASTA, ":gzip(none)"; }
 
 ## working on sequences
 for (keys %sequences){
 	open OUT, ">", "$out/$_.$ext" or die "Can't create FASTA file $fasta in folder $out: $!\n";
 	print OUT ">$_\n";
 	my @fsa = unpack ("(A60)*", $sequences{$_});
-	while (my $fsa = shift @fsa){print OUT "$fsa\n";}
+	while (my $fsa = shift @fsa){ print OUT "$fsa\n"; }
 	close OUT;
 }
