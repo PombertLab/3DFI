@@ -1,8 +1,8 @@
 #!/usr/bin/perl
 ## Pombert Lab 2020
-my $version = '0.5a';
+my $version = '0.5b';
 my $name = 'run_GESAMT.pl';
-my $updated = '12/03/2021';
+my $updated = '2021-04-06';
 
 use strict; use warnings; use File::Find; use File::Basename;
 use POSIX 'strftime'; use Getopt::Long qw(GetOptions);
@@ -75,11 +75,10 @@ open LOG, ">>", "GESAMT_$date.log" or die "Can't create log file GESAMT_$date.lo
 print LOG "\nVERSION: $version\n"."COMMAND LINE: $name @command\n";
 print LOG "Started on: $start\n";
 
-
 ## Program check
 my $prog = `command -v gesamt`;
 chomp $prog;
-if ($prog eq ''){die "\nERROR: Cannot find gesamt. Please install GESAMT in your path\n\n";}
+if ($prog eq ''){ die "\nERROR: Cannot find gesamt. Please install GESAMT in your path\n\n"; }
 
 ## Checking for unknown task
 if (!defined $update and !defined $make and !defined $query){
@@ -87,12 +86,22 @@ if (!defined $update and !defined $make and !defined $query){
 }
 
 ## Creating/updating GESAMT archive
-unless (-d $arch){ mkdir ($arch, 0755) or die "Can't create folder $arch: $!\n";}
-if ($update){system "gesamt --update-archive $arch -pdb $pdb -nthreads=$cpu";}
-elsif ($make){system "gesamt --make-archive $arch -pdb $pdb -nthreads=$cpu";}
+unless (-d $arch){ mkdir ($arch, 0755) or die "Can't create folder $arch: $!\n"; }
+if ($update){
+	system "gesamt \\
+	  --update-archive $arch \\
+	  -pdb $pdb \\
+	  -nthreads=$cpu";
+}
+elsif ($make){
+	system "gesamt \\
+	  --make-archive $arch \\
+	  -pdb $pdb \\
+	  -nthreads=$cpu";
+}
 
 ## Running GESAMT queries/Skipping previously done searches
-unless (-d $outdir){ mkdir ($outdir, 0755) or die "Can't create folder $outdir: $!\n";}
+unless (-d $outdir){ mkdir ($outdir, 0755) or die "Can't create folder $outdir: $!\n"; }
 my @gsm; my %results;
 find (sub {push @gsm, $File::Find::name unless -d}, $outdir);
 
@@ -114,7 +123,7 @@ if ($query){
 			  -o $outdir/$pdb.$mode.gesamt";
 		}
 		## Searches can take a while, best to skip if done previously
-		else {print "Skipping PDB file: $pdb => GESAMT result found in output directory $outdir\n";}
+		else { print "Skipping PDB file: $pdb => GESAMT result found in output directory $outdir\n"; }
 	}
 }
 
