@@ -2,7 +2,7 @@
 ## Pombert Lab 2020
 my $version = '0.2b';
 my $name = 'run_hhblits.pl';
-my $updated = '31/03/2021';
+my $updated = '2021-03-31';
 
 use strict; use warnings; use Getopt::Long qw(GetOptions);
 my @command = @ARGV; ## Keeping track of command line for log

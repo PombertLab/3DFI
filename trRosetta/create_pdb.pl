@@ -2,7 +2,7 @@
 ## Pombert Lab 2020
 my $version = '0.1a';
 my $name = 'create_pdb.pl';
-my $updated = '12/03/2021';
+my $updated = '2021-03-12';
 
 use strict; use warnings; use Getopt::Long qw(GetOptions); use File::Basename; use threads; use threads::shared;
 
