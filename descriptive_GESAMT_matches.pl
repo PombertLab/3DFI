@@ -1,8 +1,8 @@
 #!/usr/bin/perl
 ## Pombert Lab 2020
-my $version = '0.5a';
+my $version = '0.6';
 my $name = 'descriptive_GESAMT_matches.pl';
-my $updated = '2021-04-06';
+my $updated = '2021-04-07';
 
 use strict; use warnings; use Getopt::Long qw(GetOptions);
 
@@ -44,14 +44,31 @@ GetOptions(
 	'o|output=s' => \$output
 );
 
-## Creating a database of RSCB stuctures and their descriptions; PDB 4-letter code => description
-open DB, "<", "$tsv" or die "Can't open tab-delimited file $tsv: $!\n";
+### Creating a database of RSCB stuctures and their descriptions; PDB 4-letter code => description
 my %RCSB;
+
+# Doing a first pass for memory management, grabbing only pdb codes from the GESAMT searches
+foreach my $match (@matches){
+	open MA, "<", "$match" or die "Can't read file $match: $!\n";
+	while (my $line = <MA>){
+		chomp $line;
+		if ($line =~ /^\s+(\d+)\s+(\w+)\s+(\w+)\s+(\S+)/){
+			my $hit_number = $1;
+			my $pdb_code = $2;
+			$RCSB{$pdb_code} = 1;
+		}
+	}
+	close MA;
+}
+
+# Populating RCSB database if key is present in our matches
+open DB, "<", "$tsv" or die "Can't open tab-delimited file $tsv: $!\n";
 while (my $line = <DB>){
 	chomp $line;
 	if ($line =~ /^(\S+)\t(.*)$/){
 		my $key = uc($1);
-		$RCSB{$key} = $2;
+		my $description = $2;
+		if (exists $RCSB{$key}){ $RCSB{$key} = $description; }
 	}
 }
 
