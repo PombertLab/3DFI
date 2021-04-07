@@ -48,8 +48,9 @@ GetOptions(
 my %RCSB;
 
 # Doing a first pass for memory management, grabbing only pdb codes from the GESAMT searches
-foreach my $match (@matches){
-	open MA, "<", "$match" or die "Can't read file $match: $!\n";
+my @files = @matches;
+while (my $file = shift@files){
+	open FH, "<", "$file" or die "Can't read file $file: $!\n";
 	while (my $line = <MA>){
 		chomp $line;
 		if ($line =~ /^\s+(\d+)\s+(\w+)\s+(\w+)\s+(\S+)/){
@@ -58,7 +59,7 @@ foreach my $match (@matches){
 			$RCSB{$pdb_code} = 1;
 		}
 	}
-	close MA;
+	close FH;
 }
 
 # Populating RCSB database if key is present in our matches
