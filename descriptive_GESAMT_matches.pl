@@ -51,7 +51,7 @@ my %RCSB;
 my @files = @matches;
 while (my $file = shift@files){
 	open FH, "<", "$file" or die "Can't read file $file: $!\n";
-	while (my $line = <MA>){
+	while (my $line = <FH>){
 		chomp $line;
 		if ($line =~ /^\s+(\d+)\s+(\w+)\s+(\w+)\s+(\S+)/){
 			my $hit_number = $1;
