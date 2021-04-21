@@ -1,8 +1,8 @@
 #!/usr/bin/perl
 ## Pombert Lab 2020
-my $version = '0.2b';
+my $version = '0.2c';
 my $name = 'run_hhblits.pl';
-my $updated = '2021-03-31';
+my $updated = '2021-04-21';
 
 use strict; use warnings; use Getopt::Long qw(GetOptions);
 my @command = @ARGV; ## Keeping track of command line for log
@@ -26,7 +26,7 @@ COMMAND		${name} \\
 OPTIONS:
 -t (--threads)		Number of threads to use [Default: 10]
 -f (--fasta)		Folder containing fasta files
--o (--output)		Output folder
+-o (--output)		Output folder [Default: ./]
 -d (--database)		Uniclust database to query
 -v (--verbosity)	hhblits verbosity; 0, 1 or 2 [Default: 2]
 
@@ -43,7 +43,7 @@ die "\n$USAGE\n" unless @ARGV;
 ## Defining options
 my $threads = 10;
 my $dir;
-my $out;
+my $out = './';
 my $uniclust;
 my $verb = 2;
 my @evalues;
@@ -65,7 +65,6 @@ GetOptions(
 );
 
 ## Reading from folder
-if (!defined $out){$out = './';}
 unless (-d $out){mkdir ($out,0755) or die "Can't create folder $out: $!\n";}
 opendir (DIR, $dir) or die $!;
 my @fasta;
