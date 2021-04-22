@@ -99,6 +99,12 @@ sub exe{
 			my $total_memory = $cols[1];
 			my $available_memory = $cols[-1];
 
+			if ($total_memory < $memory){
+				print "\nTotal memory detected ($total_memory Gb) is less than specified ($memory Gb) to launch threads\n";
+				print "\nExiting to prevent forever loop\n";
+				exit;
+			}
+
 			if ($available_memory >= $memory){
 				last MEM;
 			}
