@@ -1,8 +1,8 @@
 #!/usr/bin/perl
 ## Pombert Lab 2020
-my $version = '0.5a';
+my $version = '0.5b';
 my $name = 'descriptive_GESAMT_matches.pl';
-my $updated = '2021-04-06';
+my $updated = '2021-04-21';
 
 use strict; use warnings; use Getopt::Long qw(GetOptions);
 
@@ -14,15 +14,16 @@ UPDATED		${updated}
 SYNOPSIS	Adds descriptive information from PDB headers to the gesamt matches;
 		Parses results by Q-scores, and concatenates the output into a single file
 
-EXAMPLE		${name} \\
-		  -t /media/Data_2/PDB/PDB_titles.tsv \\
-		  -m *.gesamt \\
-		  -q 0.3 \\
-		  -b 5 \\
+EXAMPLE		${name} \
+		  -r /media/Data_2/PDB/PDB_titles.tsv \
+		  -m *.gesamt \
+		  -q 0.3 \
+		  -b 5 \
 		  -o GESAMT.matches 
 
 OPTIONS:
--t (--tsv)	Tab-delimited list of RCSB structures and their titles ## see PDB_headers.pl 
+-r (--rcsb)	Tab-delimited list of RCSB structures and their titles ## see PDB_headers.pl 
+-p (--pfam)	Tab-delimeted list of PFAM stuctures and their titles (http://ftp.ebi.ac.uk/pub/databases/Pfam/current_release/Pfam-A.clans.tsv.gz)
 -m (--matches)	Results from GESAMT searches ## see run_GESAMT.pl
 -q (--qscore)	Q-score cut-off [Default: 0.3]
 -b (--best)	Keep the best match(es) only (top X hits)
@@ -31,27 +32,40 @@ OPTIONS
 die "\n$USAGE\n" unless @ARGV;
 
 ## Defining options
-my $tsv;
+my $rcsb;
+my $pfam;
 my @matches;
 my $qthreshold = 0.3;
 my $best;
 my $output = 'GESAMT.matches';
 GetOptions(
-	't|tsv=s' => \$tsv,
+	'r|rcsb=s' => \$rcsb,
+	'p|pfam=s' => \$pfam,
 	'm|matches=s@{1,}' => \@matches,
 	'q|qscore=s' => \$qthreshold,
 	'b|best=i' => \$best,
 	'o|output=s' => \$output
 );
 
-## Creating a database of RSCB stuctures and their descriptions; PDB 4-letter code => description
-open DB, "<", "$tsv" or die "Can't open tab-delimited file $tsv: $!\n";
-my %RCSB;
-while (my $line = <DB>){
-	chomp $line;
-	if ($line =~ /^(\S+)\t(.*)$/){
-		my $key = uc($1);
-		$RCSB{$key} = $2;
+my %db_titles;
+if ($rcsb){
+	## Creating a database of RSCB stuctures and their descriptions; PDB 4-letter code => description
+	open DB, "<", "$rcsb" or die "Can't open tab-delimited file $rcsb: $!\n";
+	while (my $line = <DB>){
+		chomp $line;
+		if ($line =~ /^(\S+)\t(.*)$/){
+			my $key = uc($1);
+			$db_titles{$key} = $2;
+		}
+	}
+}
+elsif ($pfam){
+	## Creating a database of PFAM structures and their descriptions; PFAM 5-number code => description
+	open DB, "<", "$pfam" or die "Can't open tab-delimited file $pfam: $!\n";
+	while (my $line = <DB>){
+		chomp $line;
+		my @data = split("\t",$line);
+		$db_titles{$data[0]} = $data[4];
 	}
 }
 
@@ -65,18 +79,53 @@ while (my $match = shift@matches){
 
 	while (my $line = <MA>){
 		chomp $line;
-		if ($line =~ /^\s+(\d+)\s+(\w+)\s+(\w+)\s+(\S+)/){
-			my $hit_number = $1;
-			my $pdb_code = $2;
-			my $chain = $3;
-			my $qscore = $4;
-			if ($qscore >= $qthreshold){
-				if ($best){
-					if ($best >= $hit_number){
-						print OUT "$prefix\t$line\t$RCSB{$pdb_code}\n";
+		my @data = split(/\s+/,$line);
+
+		if($line =~ /^#/){
+			next;
+		}
+
+		my $hit_number = $data[1];
+		my $pdb_code;
+		my $chain;
+		my $qscore;
+		my $file;
+		
+		if($rcsb){
+			$pdb_code = $data[2];
+			$chain = $data[3];
+			$qscore = $data[4];
+		}
+		elsif ($pfam){
+			$chain = $data[2];
+			$qscore = $data[3];
+			$file = $data[8];
+			$file =~ s/.pdb//;
+		}
+
+		if ($qscore >= $qthreshold){
+			if ($best){
+				if ($best >= $hit_number){
+					if($rcsb){
+						print OUT "$prefix\t$line\t$db_titles{$pdb_code}\n";
+					}
+					elsif($pfam){
+						print OUT "$prefix\t$line\t$db_titles{$file}\n";
 					}
 				}
-				else { print OUT "$prefix\t$line\t$RCSB{$pdb_code}\n"; }
+			}
+			else { 
+				if($rcsb){
+					print OUT "$prefix\t$line\t$db_titles{$pdb_code}\n";
+				}
+				elsif($pfam){
+					if(exists $db_titles{$file}){
+						print OUT "$prefix\t$line\t$db_titles{$file}\n";
+					}
+					else{
+						print "\nFile $file.pdb has no match in PFAM clan file\n\n";
+					}
+				}
 			}
 		}
 	}
