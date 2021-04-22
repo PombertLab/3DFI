@@ -1,6 +1,6 @@
 #!/usr/bin/perl
 ## Pombert Lab 2020
-my $version = '0.2';
+my $version = '0.2a';
 my $name = 'create_pdb.pl';
 my $updated = '2021-04-22';
 
@@ -32,6 +32,8 @@ OPTIONS:
 OPTIONS
 die "\n$USAGE\n" unless @ARGV;
 
+my @commands = @ARGV;
+
 ## Defining options
 my @npz;
 my $out = './';
@@ -55,6 +57,13 @@ unless (-d $out){
 	mkdir ($out,0755) or die "Can't create folder $out: $!\n";
 }
 
+## Creating log file
+open LOG, ">", "$out/create_pdb.log" or die "Can't create create_pbd.log in $out: $!\n";
+my $time = `date`;
+print LOG "$name started on $time\n";
+print LOG "COMMANDS:\n";
+print LOG "$name @commands\n";
+
 ## Initialize # of threads specified
 my @threads = initThreads();
 
@@ -71,8 +80,11 @@ for my $thread (@threads){
 	$thread -> join();
 }
 
-## Subroutines
+## Closing log entry
+my $end = `date`;
+print LOG "$name ended on $end\n";
 
+## Subroutines
 sub initThreads{ 
 	# An array to place our threads in
 	my @initThreads;
