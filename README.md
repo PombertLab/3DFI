@@ -279,7 +279,8 @@ descriptive_GESAMT_matches.pl \
 ```
 Options for [descriptive_GESAMT_matches.pl](https://github.com/PombertLab/3DFI/blob/master/descriptive_GESAMT_matches.pl) are:
 ```
--t (--tsv)	Tab-delimited list of RCSB structures and their titles ## see PDB_headers.pl 
+-r (--rcsb)	Tab-delimited list of RCSB structures and their titles ## see PDB_headers.pl 
+-p (--pfam)	Tab-delimeted list of PFAM stuctures and their titles (http://ftp.ebi.ac.uk/pub/databases/Pfam/current_release/Pfam-A.clans.tsv.gz)
 -m (--matches)	Results from GESAMT searches ## see run_GESAMT.pl
 -q (--qscore)	Q-score cut-off [Default: 0.3]
 -b (--best)	Keep the best match(es) only (top X hits)
