@@ -60,7 +60,7 @@ unless (-d $out){
 ## Creating log file
 open LOG, ">", "$out/create_pdb.log" or die "Can't create create_pbd.log in $out: $!\n";
 my $time = `date`;
-print LOG "$name started on $time\n";
+print LOG "$name version $version started on $time\n";
 print LOG "COMMANDS:\n";
 print LOG "$name @commands\n";
 
