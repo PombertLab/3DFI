@@ -58,7 +58,7 @@ unless (-d $out){
 }
 
 ## Creating log file
-open LOG, ">", "$out/create_pdb.log" or die "Can't create create_pbd.log in $out: $!\n";
+open LOG, ">", "$out/create_pdb.log" or die "Can't create create_pdb.log in $out: $!\n";
 my $time = `date`;
 print LOG "$name version $version started on $time\n";
 print LOG "COMMANDS:\n";
