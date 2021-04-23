@@ -188,7 +188,7 @@ Options for [sanitize_pdb.pl](https://github.com/PombertLab/3DFI/blob/master/trR
 PDB files from the [Protein Data Bank](https://www.rcsb.org/) can be downloaded directly from its website. Detailed instructions are provided [here](https://www.wwpdb.org/ftp/pdb-ftp-sites). Because of the large size of this dataset, downloading it using [rsync](https://rsync.samba.org/) is recommended. This can be done as follows, wherein **/path/to/PDB/** should be replaced by the desired directory. PDB files (pdb*.ent.gz) will be located in subdirectories therein.
 
 ```Bash
-rsync -rlpt -v -z --delete --port=33444
+rsync -rlpt -v -z --delete --port=33444 \
 rsync.rcsb.org::ftp_data/structures/divided/pdb/ /path/to/PDB/
 ```
 NOTE: For ease of use, [PDB_update.sh](https://github.com/PombertLab/3DFI/blob/master/PDB_update.sh) can also be modified, then used to rsync the PDB files.
