@@ -2,7 +2,7 @@
 ## Pombert Lab 2020
 my $version = '0.5b';
 my $name = 'run_GESAMT.pl';
-my $updated = '2021-04-06';
+my $updated = '2021-04-25';
 
 use strict; use warnings; use File::Find; use File::Basename;
 use POSIX 'strftime'; use Getopt::Long qw(GetOptions);
@@ -78,7 +78,9 @@ print LOG "Started on: $start\n";
 ## Program check
 my $prog = `command -v gesamt`;
 chomp $prog;
-if ($prog eq ''){ die "\nERROR: Cannot find gesamt. Please install GESAMT in your path\n\n"; }
+if ($prog eq ''){ 
+	die "\nERROR: Cannot find gesamt. Please install GESAMT in your path\n\n";
+}
 
 ## Checking for unknown task
 if (!defined $update and !defined $make and !defined $query){
@@ -86,7 +88,10 @@ if (!defined $update and !defined $make and !defined $query){
 }
 
 ## Creating/updating GESAMT archive
-unless (-d $arch){ mkdir ($arch, 0755) or die "Can't create folder $arch: $!\n"; }
+unless (-d $arch){ 
+	mkdir ($arch, 0755) or die "Can't create folder $arch: $!\n";
+}
+
 if ($update){
 	system "gesamt \\
 	  --update-archive $arch \\
@@ -101,18 +106,22 @@ elsif ($make){
 }
 
 ## Running GESAMT queries/Skipping previously done searches
-unless (-d $outdir){ mkdir ($outdir, 0755) or die "Can't create folder $outdir: $!\n"; }
-my @gsm; my %results;
+unless (-d $outdir){ 
+	mkdir ($outdir, 0755) or die "Can't create folder $outdir: $!\n";
+}
+
+my @gsm;
+my %results;
 find (sub {push @gsm, $File::Find::name unless -d}, $outdir);
 
-while (my $gsm = shift@gsm){
+while (my $gsm = shift(@gsm)){
 	my ($result, $folder) = fileparse($gsm);
 	$result =~ s/\.\w+\.gesamt$//;
 	$results{$result} = 'done';
 }
 
 if ($query){
-	while (my $file = shift@input){
+	while (my $file = shift(@input)){
 		my ($pdb, $dir) = fileparse($file);
 		$pdb =~ s/.pdb$//;
 		unless (exists $results{$pdb}){
@@ -123,7 +132,9 @@ if ($query){
 			  -o $outdir/$pdb.$mode.gesamt";
 		}
 		## Searches can take a while, best to skip if done previously
-		else { print "Skipping PDB file: $pdb => GESAMT result found in output directory $outdir\n"; }
+		else { 
+			print "Skipping PDB file: $pdb => GESAMT result found in output directory $outdir\n";
+		}
 	}
 }
 
