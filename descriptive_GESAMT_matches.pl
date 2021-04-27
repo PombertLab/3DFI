@@ -47,6 +47,8 @@ GetOptions(
 	'o|output=s' => \$output
 );
 
+open LOG, ">", "$name.log";
+
 my %db_titles;
 if ($rcsb){
 	## Creating a database of RSCB stuctures and their descriptions; PDB 4-letter code => description
@@ -71,8 +73,14 @@ elsif ($pfam){
 
 ## Iterating through Gesamt matches
 open OUT, ">", "$output" or die "Can't create output file $output: $!\n";
+my $total_matches = scalar(@matches);
 while (my $match = shift@matches){
-
+	system "clear";
+	my $remaining = "." x (int((scalar(@matches)/$total_matches)*100));
+	my $progress = "|" x (100-int((scalar(@matches)/$total_matches)*100));
+	my $status = "[".$progress.$remaining."]";
+	print("Getting match descriptions\n");
+	print("\n\t$status\t".($total_matches-scalar(@matches))."/$total_matches\n");
 	open MA, "<", "$match" or die "Can't read file $match: $!\n";
 	my ($prefix, $suffix) = $match =~ /^(\S+)\.(\w+.gesamt)$/;
 	print OUT '### '."$prefix\n";
@@ -123,7 +131,7 @@ while (my $match = shift@matches){
 						print OUT "$prefix\t$line\t$db_titles{$file}\n";
 					}
 					else{
-						print "\nFile $file.pdb has no match in PFAM clan file\n\n";
+						print LOG "\nFile $file.pdb has no match in PFAM clan file\n\n";
 					}
 				}
 			}
