@@ -75,7 +75,7 @@ my $max_file_memory :shared  = 0.0078125*($memory*(10**9));
 my $max_file_memory_p = $max_file_memory/(10**6);
 my $file_memory :shared = $max_file_memory;
 my @large_files :shared;
-my $total_files :shared = scalar(@large_files);
+my $total_files :shared = scalar(@files);
 my @output_pdb;
 
 ## Create threads that run the exe subroutine
@@ -88,15 +88,14 @@ for my $thread (@threads){
 	$thread -> join();
 }
 
+$total_files = scalar(@large_files);
+
 while (my $npz = shift(@large_files)){
 
 	my ($name, $dir) = fileparse($npz);
 	my ($prefix, $evalue) = $name =~ /^(\S+)\.(\S+)\.(\w+)$/;
 
-	my $printout;
 	my $buffer = "-" x 100;
-	$printout .= "\n$buffer\n";
-	$printout .= "File $name is ".((-s $npz)/(10**6))."Mb\n";
 
 	system "$python \\
 		$trosetta \\
@@ -105,16 +104,16 @@ while (my $npz = shift(@large_files)){
 		$out/$prefix.$evalue.pdb"
 	;
 
-	$printout .= "Main thread is working on $name\n";
-	$printout .= "$buffer\n\n";
-	print "$printout";
+	system "clear";
+	my $remaining = "." x (int((scalar(@large_files)/$total_files)*100));
+	my $progress = "|" x (100-int((scalar(@large_files)/$total_files)*100));
+	my $status = "[".$progress.$remaining."]";
+	print("Folding Proteins with Single-threading\n");
+	print("\n\t$status\t".($total_files-scalar(@large_files))."/$total_files\n");
 
 	unless(-e "$out/$prefix.$evalue.pdb"){
 		print LOG "$out/$prefix.$evalue.pdb";
 		print LOG "\n$buffer\nMain thread has failed to fold file $name\n$buffer\n\n";
-	}
-	else{
-		print LOG "\n$buffer\nMain thread has completed on file $name\n$buffer\n\n";
 	}
 
 }
@@ -145,17 +144,14 @@ sub exe{
 			my $remaining = "." x (int((scalar(@files)/$total_files)*100));
 			my $progress = "|" x (100-int((scalar(@files)/$total_files)*100));
 			my $status = "[".$progress.$remaining."]";
-			print("Folding Proteins\n");
+			print("Folding Proteins with Multi-threading\n");
 			print("\n\t$status\t".($total_files-scalar(@files))."/$total_files\n");
 		}
 
 		my ($name, $dir) = fileparse($npz);
 		my ($prefix, $evalue) = $name =~ /^(\S+)\.(\S+)\.(\w+)$/;
 
-		my $printout;
 		my $buffer = "-" x 100;
-		$printout .= "\n$buffer\n";
-		$printout .= "File $name is ".((-s $npz)/(10**6))." Mb\n";
 
 		if(-e "$out/$prefix.$evalue.pdb"){
 			print LOG "$out/$prefix.$evalue.pdb already exists, moving to next npz...\n";
@@ -164,7 +160,6 @@ sub exe{
 
 		## Check if file size is greater than maximum
 		if ((-s $npz) < $max_file_memory){
-			$printout .= "Available/Allowable file size is ".(($file_memory)/(10**6))."/$max_file_memory_p Mb\n";
 			## Check if file can be opened given the alloted resources
 
 			for my $i (1){
@@ -175,10 +170,6 @@ sub exe{
 
 			if (0 < $file_memory){
 				## If file can be run, run it
-				
-				$printout .= "Thread $id is working on $name\n";
-				$printout .= "$buffer\n\n";
-				print LOG "$printout";
 
 				system "$python \\
 					$trosetta \\
@@ -212,6 +203,8 @@ sub exe{
 		else{
 			## If file is large, need to run it one by one
 			## Add large file to $large_files
+			lock($total_files);
+			$total_files -= 1;
 			push(@large_files,$npz);
 			sleep(15);
 
