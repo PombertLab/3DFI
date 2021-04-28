@@ -136,11 +136,22 @@ sub exe{
 	my $id = threads->tid();
 
 	## While files remain to be folded
-	while (my $npz = shift(@files)){
 
+	PROCESS: while (0==0){
+
+		my $npz;
+
+		unless (scalar(@files) > 0){
+			last PROCESS;
+		}
+		else{
+			lock(@files);
+			$npz = shift(@files);
+		}
+		
 		for my $i (1){
 			lock(@files);
-			system "clear";
+			# system "clear";
 			my $remaining = "." x (int((scalar(@files)/$total_files)*100));
 			my $progress = "|" x (100-int((scalar(@files)/$total_files)*100));
 			my $status = "[".$progress.$remaining."]";
@@ -188,9 +199,16 @@ sub exe{
 			}
 			else{
 				## If file can't be run, put it at the back of the line and try again later
-				push(@files,$npz);
+				if((-s $npz) > .5*$max_file_memory){
+					push(@large_files,$npz);
+				}
+				elsif(scalar(@files) < $threads){
+					push(@large_files,$npz);
+				}
+				else{
+					push(@files,$npz);
+				}
 				sleep(15);
-
 			}
 
 			for my $i (1){
@@ -206,12 +224,11 @@ sub exe{
 			lock($total_files);
 			$total_files -= 1;
 			push(@large_files,$npz);
-			sleep(15);
 
 		}
 		
 	}
-
+	sleep(1);
 	threads -> exit();
 
 }
