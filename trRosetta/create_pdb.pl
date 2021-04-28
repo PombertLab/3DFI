@@ -151,7 +151,7 @@ sub exe{
 		
 		for my $i (1){
 			lock(@files);
-			# system "clear";
+			system "clear";
 			my $remaining = "." x (int((scalar(@files)/$total_files)*100));
 			my $progress = "|" x (100-int((scalar(@files)/$total_files)*100));
 			my $status = "[".$progress.$remaining."]";
