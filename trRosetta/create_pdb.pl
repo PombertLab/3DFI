@@ -76,6 +76,8 @@ my $max_file_memory_p = $max_file_memory/(10**6);
 my $file_memory :shared = $max_file_memory;
 my @large_files :shared;
 my $total_files :shared = scalar(@files);
+my @status :shared;
+my $running_threads :shared = 0;
 my @output_pdb;
 
 ## Create threads that run the exe subroutine
@@ -149,14 +151,19 @@ sub exe{
 			$npz = shift(@files);
 		}
 		
-		for my $i (1){
+		if ($0){
 			lock(@files);
+			lock(@status);
 			system "clear";
 			my $remaining = "." x (int((scalar(@files)/$total_files)*100));
 			my $progress = "|" x (100-int((scalar(@files)/$total_files)*100));
 			my $status = "[".$progress.$remaining."]";
 			print("Folding Proteins with Multi-threading\n");
-			print("\n\t$status\t".($total_files-scalar(@files))."/$total_files\n");
+			print("\n\t$status\t".($total_files-scalar(@files))."/$total_files\t$running_threads/$threads\n\n\nProcess Updates\n\n");
+			foreach my $line (@status){
+				chomp($line);
+				print "$line\n";
+			}
 		}
 
 		my ($name, $dir) = fileparse($npz);
@@ -176,11 +183,21 @@ sub exe{
 			for my $i (1){
 				## Remove file memory from memory available
 				lock($file_memory);
+				lock($running_threads);
 				$file_memory -= -s $npz;
+				$running_threads++;
 			}
 
 			if (0 < $file_memory){
 				## If file can be run, run it
+
+				if($0){
+					lock(@status);
+					push(@status,"Thread $id is running $npz.\n");
+					if(scalar(@status)>30){
+						shift(@status);
+					}
+				}
 
 				system "$python \\
 					$trosetta \\
@@ -190,9 +207,19 @@ sub exe{
 				;
 
 				unless(-e "$out/$prefix.$evalue.pdb"){
+					lock(@status);
+					push(@status,"Thread $id failed to fold $npz. Placing back in the queue.\n");
+					if(scalar(@status)>30){
+						shift(@status);
+					}
 					push(@files,$npz);
 				}
 				else{
+					lock(@status);
+					push(@status,"Thread $id has completed on file $name.\n");
+					if(scalar(@status)>30){
+						shift(@status);
+					}
 					print LOG "\n$buffer\nThread $id has completed on file $name\n$buffer\n\n";
 				}
 
@@ -200,21 +227,36 @@ sub exe{
 			else{
 				## If file can't be run, put it at the back of the line and try again later
 				if((-s $npz) > .5*$max_file_memory){
-					push(@large_files,$npz);
+					push(@status,"$npz is to large to be run Multi-threaded. Being passed to Single-threaded queue.\n");
+					if(scalar(@status)>30){
+						shift(@status);
+					}
+					push(@files,$npz);
 				}
 				elsif(scalar(@files) < $threads){
+					lock(@status);
+					push(@status,"$npz is to large to be run Multi-threaded. Being passed to Single-threaded queue.\n");
+					if(scalar(@status)>30){
+						shift(@status);
+					}
 					push(@large_files,$npz);
 				}
 				else{
+					push(@status,"Thread $id does not have the required memory clearance to run on $npz. Placing back in the queue.\n");
+					if(scalar(@status)>30){
+						shift(@status);
+					}
 					push(@files,$npz);
 				}
-				sleep(15);
+				sleep(int($id+15));
 			}
 
 			for my $i (1){
 				## Add file memory to total memory available
 				lock($file_memory);
+				lock($running_threads);
 				$file_memory += -s $npz;
+				$running_threads++;
 			}
 
 		}
@@ -223,12 +265,21 @@ sub exe{
 			## Add large file to $large_files
 			lock($total_files);
 			$total_files -= 1;
+			lock(@status);
+			push(@status,"$npz is to large to be run Multi-threaded. Being passed to Single-threaded queue.\n");
+			if(scalar(@status)>30){
+				shift(@status);
+			}
 			push(@large_files,$npz);
 
 		}
 		
 	}
-	sleep(1);
+	lock(@status);
+	push(@status,"Thread $id has no more jobs to run to run on.\n");
+	if(scalar(@status)>30){
+		shift(@status);
+	}
 	threads -> exit();
 
 }
