@@ -76,9 +76,11 @@ my $max_file_memory_p = $max_file_memory/(10**6);
 my $file_memory :shared = $max_file_memory;
 my @large_files :shared;
 my $total_files :shared = scalar(@files);
-my @status :shared;
+my %running_processes :shared;
 my $running_threads :shared = 0;
+my $folding_threads:shared = 0;
 my @output_pdb;
+my $buffer = "-" x 100;
 
 ## Create threads that run the exe subroutine
 for my $thread (@threads){
@@ -135,7 +137,12 @@ sub initThreads{
 sub exe{
 
 	## Get the thread id. Allows each thread to be identified.
-	my $id = threads->tid();
+	my $t_id = threads->tid();
+	my $id = sprintf("%02d",$t_id);
+	if($0){
+		lock($running_threads);
+		$running_threads++;
+	}
 
 	## While files remain to be folded
 
@@ -153,17 +160,24 @@ sub exe{
 		
 		if ($0){
 			lock(@files);
-			lock(@status);
+			lock(%running_processes);
+			lock($running_threads);
+			lock($file_memory);
 			system "clear";
 			my $remaining = "." x (int((scalar(@files)/$total_files)*100));
 			my $progress = "|" x (100-int((scalar(@files)/$total_files)*100));
 			my $status = "[".$progress.$remaining."]";
-			print("Folding Proteins with Multi-threading\n");
-			print("\n\t$status\t".($total_files-scalar(@files))."/$total_files\t$running_threads/$threads\n\n\nProcess Updates\n\n");
-			foreach my $line (@status){
-				chomp($line);
-				print "$line\n";
+			print "\nFolding Proteins with Multi-threading\n";
+			print "\n\t$status\t".($total_files-scalar(@files))."/$total_files";
+			print "\n\n\tThreads Running:\t$running_threads/$threads\n";
+			print "\tThreads Folding:\t$folding_threads/$threads\n";
+			print "\tAvailable Memory:\t".sprintf("%.2f",($file_memory/1000000))."/".($max_file_memory/1000000)." Mb\n\n\n";
+			print "Thread Status:\n$buffer\n";
+			foreach my $key (sort(keys(%running_processes))){
+				chomp($running_processes{$key});
+				print("$running_processes{$key}\n");
 			}
+			print("\n\n");
 		}
 
 		my ($name, $dir) = fileparse($npz);
@@ -183,20 +197,17 @@ sub exe{
 			for my $i (1){
 				## Remove file memory from memory available
 				lock($file_memory);
-				lock($running_threads);
 				$file_memory -= -s $npz;
-				$running_threads++;
 			}
 
 			if (0 < $file_memory){
 				## If file can be run, run it
 
 				if($0){
-					lock(@status);
-					push(@status,"Thread $id is running $npz.\n");
-					if(scalar(@status)>30){
-						shift(@status);
-					}
+					lock(%running_processes);
+					lock($folding_threads);
+					$running_processes{$id} = "Thread $id: Folding $npz.\n";
+					$folding_threads ++;
 				}
 
 				system "$python \\
@@ -207,56 +218,40 @@ sub exe{
 				;
 
 				unless(-e "$out/$prefix.$evalue.pdb"){
-					lock(@status);
-					push(@status,"Thread $id failed to fold $npz. Placing back in the queue.\n");
-					if(scalar(@status)>30){
-						shift(@status);
-					}
+					lock(%running_processes);
+					$running_processes{$id} = "Thread $id: Failed to fold $npz. Placing back in the queue.\n";
 					push(@files,$npz);
 				}
 				else{
-					lock(@status);
-					push(@status,"Thread $id has completed on file $name.\n");
-					if(scalar(@status)>30){
-						shift(@status);
-					}
+					lock(%running_processes);
+					$running_processes{$id} = "Thread $id: Folding on $npz has completed.\n";
 					print LOG "\n$buffer\nThread $id has completed on file $name\n$buffer\n\n";
+				}
+
+				if($0){
+					lock($folding_threads);
+					$folding_threads--;
 				}
 
 			}
 			else{
 				## If file can't be run, put it at the back of the line and try again later
 				if((-s $npz) > .5*$max_file_memory){
-					push(@status,"$npz is to large to be run Multi-threaded. Being passed to Single-threaded queue.\n");
-					if(scalar(@status)>30){
-						shift(@status);
-					}
-					push(@files,$npz);
-				}
-				elsif(scalar(@files) < $threads){
-					lock(@status);
-					push(@status,"$npz is to large to be run Multi-threaded. Being passed to Single-threaded queue.\n");
-					if(scalar(@status)>30){
-						shift(@status);
-					}
+					lock(%running_processes);
+					$running_processes{$id} = "Thread $id: $npz is too large for Multi-threading. Sending to Single-threaded queue.\n";
 					push(@large_files,$npz);
 				}
 				else{
-					push(@status,"Thread $id does not have the required memory clearance to run on $npz. Placing back in the queue.\n");
-					if(scalar(@status)>30){
-						shift(@status);
-					}
+					lock(%running_processes);
+					$running_processes{$id} = "Thread $id: Not enough memory clearance to fold $npz. Placing back in the queue.\n";
 					push(@files,$npz);
 				}
-				sleep(int($id+15));
 			}
 
 			for my $i (1){
 				## Add file memory to total memory available
 				lock($file_memory);
-				lock($running_threads);
 				$file_memory += -s $npz;
-				$running_threads++;
 			}
 
 		}
@@ -264,22 +259,19 @@ sub exe{
 			## If file is large, need to run it one by one
 			## Add large file to $large_files
 			lock($total_files);
+			lock(%running_processes);
 			$total_files -= 1;
-			lock(@status);
-			push(@status,"$npz is to large to be run Multi-threaded. Being passed to Single-threaded queue.\n");
-			if(scalar(@status)>30){
-				shift(@status);
-			}
+			$running_processes{$id} = "Thread $id: $npz is too large for Multi-threading. Sending to Single-threaded queue.\n";
 			push(@large_files,$npz);
 
 		}
+		sleep(15);
 		
 	}
-	lock(@status);
-	push(@status,"Thread $id has no more jobs to run to run on.\n");
-	if(scalar(@status)>30){
-		shift(@status);
-	}
+	lock($running_threads);
+	lock(%running_processes);
+	$running_threads--;
+	$running_processes{$id} = "Thread $id: No more jobs to run.\n";
 	threads -> exit();
 
 }
