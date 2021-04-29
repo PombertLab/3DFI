@@ -1,6 +1,6 @@
 #!/usr/bin/perl
 ## Pombert Lab 2020
-my $version = '0.6';
+my $version = '0.6a';
 my $name = 'descriptive_GESAMT_matches.pl';
 my $updated = '2021-04-29';
 
@@ -86,7 +86,7 @@ while (my $match = shift@matches){
 	print "Getting match descriptions\n";
 	print "\n\t$status\t".($total_matches-scalar(@matches))."/$total_matches\n";
 
-	## Working on file
+	## Working on GESAMT file
 	open MA, "<", "$match" or die "Can't read file $match: $!\n";
 	my ($prefix, $suffix) = $match =~ /^(\S+)\.(\w+.gesamt)$/;
 	print OUT '### '."$prefix\n";
@@ -99,6 +99,17 @@ while (my $match = shift@matches){
 
 		## Working on matches
 		my @data = split(/\s+/, $line);
+
+		## Data columns for GESAMT files are:
+		# Hit number
+		# PDB code
+		# Chain ID
+		# Q-score
+		# RMSD
+		# Sequence identity
+		# Number of aligned residues
+		# Number of residues
+		# File
 
 		my $hit_number = $data[1];
 		my $pdb_code;
