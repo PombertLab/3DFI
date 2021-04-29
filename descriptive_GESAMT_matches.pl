@@ -1,8 +1,8 @@
 #!/usr/bin/perl
 ## Pombert Lab 2020
-my $version = '0.5b';
+my $version = '0.6';
 my $name = 'descriptive_GESAMT_matches.pl';
-my $updated = '2021-04-21';
+my $updated = '2021-04-29';
 
 use strict; use warnings; use Getopt::Long qw(GetOptions);
 
@@ -23,7 +23,7 @@ EXAMPLE		${name} \
 
 OPTIONS:
 -r (--rcsb)	Tab-delimited list of RCSB structures and their titles ## see PDB_headers.pl 
--p (--pfam)	Tab-delimeted list of PFAM stuctures and their titles (http://ftp.ebi.ac.uk/pub/databases/Pfam/current_release/Pfam-A.clans.tsv.gz)
+-p (--pfam)	Tab-delimited list of PFAM structures and their titles (http://ftp.ebi.ac.uk/pub/databases/Pfam/current_release/Pfam-A.clans.tsv.gz)
 -m (--matches)	Results from GESAMT searches ## see run_GESAMT.pl
 -q (--qscore)	Q-score cut-off [Default: 0.3]
 -b (--best)	Keep the best match(es) only (top X hits)
@@ -49,16 +49,18 @@ GetOptions(
 
 open LOG, ">", "$name.log";
 
-my %db_titles;
+my %rcsb_titles;
+my %pfam_titles;
 if ($rcsb){
 	## Creating a database of RSCB stuctures and their descriptions; PDB 4-letter code => description
 	open DB, "<", "$rcsb" or die "Can't open tab-delimited file $rcsb: $!\n";
 	while (my $line = <DB>){
 		chomp $line;
-		if ($line =~ /^(\S+)\t(.*)$/){
-			my $key = uc($1);
-			$db_titles{$key} = $2;
-		}
+		my @columns = split ("\t", $line);
+		my $pdb_locus = $columns[0];
+		my $chain_or_title = $columns[1];
+		my $description = $columns[2];
+		$rcsb_titles{$pdb_locus}{$chain_or_title} = $description;
 	}
 }
 elsif ($pfam){
@@ -67,7 +69,7 @@ elsif ($pfam){
 	while (my $line = <DB>){
 		chomp $line;
 		my @data = split("\t",$line);
-		$db_titles{$data[0]} = $data[4];
+		$pfam_titles{$data[0]} = $data[4];
 	}
 }
 
@@ -75,32 +77,38 @@ elsif ($pfam){
 open OUT, ">", "$output" or die "Can't create output file $output: $!\n";
 my $total_matches = scalar(@matches);
 while (my $match = shift@matches){
+
+	## Progress bar
 	system "clear";
 	my $remaining = "." x (int((scalar(@matches)/$total_matches)*100));
 	my $progress = "|" x (100-int((scalar(@matches)/$total_matches)*100));
 	my $status = "[".$progress.$remaining."]";
-	print("Getting match descriptions\n");
-	print("\n\t$status\t".($total_matches-scalar(@matches))."/$total_matches\n");
+	print "Getting match descriptions\n";
+	print "\n\t$status\t".($total_matches-scalar(@matches))."/$total_matches\n";
+
+	## Working on file
 	open MA, "<", "$match" or die "Can't read file $match: $!\n";
 	my ($prefix, $suffix) = $match =~ /^(\S+)\.(\w+.gesamt)$/;
 	print OUT '### '."$prefix\n";
 
 	while (my $line = <MA>){
 		chomp $line;
-		my @data = split(/\s+/,$line);
 
-		if($line =~ /^#/){
-			next;
-		}
+		## Skipping comments
+		if($line =~ /^#/){ next; }
+
+		## Working on matches
+		my @data = split(/\s+/, $line);
 
 		my $hit_number = $data[1];
 		my $pdb_code;
 		my $chain;
 		my $qscore;
 		my $file;
-		
+
+		## Accounting for variation between data structures between RCSB and PFAM matches
 		if($rcsb){
-			$pdb_code = $data[2];
+			$pdb_code = lc($data[2]);
 			$chain = $data[3];
 			$qscore = $data[4];
 		}
@@ -111,24 +119,33 @@ while (my $match = shift@matches){
 			$file =~ s/.pdb//;
 		}
 
+		## Printing information
 		if ($qscore >= $qthreshold){
 			if ($best){
 				if ($best >= $hit_number){
 					if($rcsb){
-						print OUT "$prefix\t$line\t$db_titles{$pdb_code}\n";
+						print OUT "$prefix\t";
+						for (1..$#data){ print OUT "$data[$_]\t"; }
+						print OUT "$rcsb_titles{$pdb_code}{$chain}\n";
 					}
 					elsif($pfam){
-						print OUT "$prefix\t$line\t$db_titles{$file}\n";
+						print OUT "$prefix\t";
+						for (1..$#data){ print OUT "$data[$_]\t"; }
+						print OUT "$pfam_titles{$file}\n";
 					}
 				}
 			}
-			else { 
+			else {
 				if($rcsb){
-					print OUT "$prefix\t$line\t$db_titles{$pdb_code}\n";
+					print OUT "$prefix\t";
+					for (1..$#data){ print OUT "$data[$_]\t"; }
+					print OUT "$rcsb_titles{$pdb_code}{$chain}\n";
 				}
 				elsif($pfam){
-					if(exists $db_titles{$file}){
-						print OUT "$prefix\t$line\t$db_titles{$file}\n";
+					if(exists $pfam_titles{$file}){
+						print OUT "$prefix\t";
+						for (1..$#data){ print OUT "$data[$_]\t"; }
+						print OUT "\t$pfam_titles{$file}\n";
 					}
 					else{
 						print LOG "\nFile $file.pdb has no match in PFAM clan file\n\n";
