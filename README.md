@@ -295,7 +295,7 @@ descriptive_GESAMT_matches.pl \
 Options for [descriptive_GESAMT_matches.pl](https://github.com/PombertLab/3DFI/blob/master/descriptive_GESAMT_matches.pl) are:
 ```
 -r (--rcsb)	Tab-delimited list of RCSB structures and their titles ## see PDB_headers.pl 
--p (--pfam)	Tab-delimeted list of PFAM stuctures and their titles (http://ftp.ebi.ac.uk/pub/databases/Pfam/current_release/Pfam-A.clans.tsv.gz)
+-p (--pfam)	Tab-delimited list of PFAM structures and their titles (http://ftp.ebi.ac.uk/pub/databases/Pfam/current_release/Pfam-A.clans.tsv.gz)
 -m (--matches)	Results from GESAMT searches ## see run_GESAMT.pl
 -q (--qscore)	Q-score cut-off [Default: 0.3]
 -b (--best)	Keep the best match(es) only (top X hits)
@@ -304,16 +304,18 @@ Options for [descriptive_GESAMT_matches.pl](https://github.com/PombertLab/3DFI/b
 
 The concatenated list generated should look like:
 ```
-### GPU96_01g00180-m1-3se6A
-GPU96_01g00180-m1-3se6A       1   3SE6   B     0.8635   0.4638   0.2713    811    860   pdb3se6.ent.gz   CRYSTAL STRUCTURE OF THE HUMAN ENDOPLASMIC RETICULUM AMINOPEPTIDASE 2
-GPU96_01g00180-m1-3se6A       2   3SE6   A     0.8611   0.4749   0.2699    815    870   pdb3se6.ent.gz   CRYSTAL STRUCTURE OF THE HUMAN ENDOPLASMIC RETICULUM AMINOPEPTIDASE 2
-### GPU96_01g00200-m1-1j3iC
-GPU96_01g00200-m1-1j3iC       1   5H39   A     0.8836   0.8169   0.6064    282    285   pdb5h39.ent.gz   STRUCTURAL ANALYSIS OF KSHV THYMIDYLATE SYNTHASE
-GPU96_01g00200-m1-1j3iC       2   3IHI   B     0.8829   0.7784   0.6464    280    283   pdb3ihi.ent.gz   CRYSTAL STRUCTURE OF MOUSE THYMIDYLATE SYNTHASE
-### GPU96_01g00840-m1-5hvmA
-GPU96_01g00840-m1-5hvmA       1   5HVM   A     0.8841   0.4410   0.4465    430    446   pdb5hvm.ent.gz   STRUCTURE OF ASPERGILLUS FUMIGATUS TREHALOSE-6-PHOSPHATE SYNTHASE A INCOMPLEX WITH UDP AND VALIDOXYLAMINE A
-GPU96_01g00840-m1-5hvmA       2   5HVM   B     0.8639   0.5333   0.4419    430    452   pdb5hvm.ent.gz   STRUCTURE OF ASPERGILLUS FUMIGATUS TREHALOSE-6-PHOSPHATE SYNTHASE A INCOMPLEX WITH UDP AND VALIDOXYLAMINE A
-
+### GPK93_01g00370-m1-5nw4V
+GPK93_01g00370-m1-5nw4V	1	5ADX	H	0.9729	0.3574	0.7811	370	370	pdb5adx.ent.gz	ACTIN, CYTOPLASMIC 1
+GPK93_01g00370-m1-5nw4V	2	5AFU	H	0.9729	0.3574	0.7811	370	370	pdb5afu.ent.gz	ACTIN, CYTOPLASMIC 1
+GPK93_01g00370-m1-5nw4V	3	5NW4	V	0.9729	0.3574	0.7811	370	370	pdb5nw4.ent.gz	BETA-ACTIN
+GPK93_01g00370-m1-5nw4V	4	6F1T	H	0.9503	0.5867	0.7811	370	370	pdb6f1t.ent.gz	ACTIN, CYTOPLASMIC 1
+GPK93_01g00370-m1-5nw4V	5	6UBY	D	0.9189	0.7482	0.7717	368	370	pdb6uby.ent.gz	ACTIN, ALPHA SKELETAL MUSCLE
+### GPK93_01g00390-m1-2v3jA
+GPK93_01g00390-m1-2v3jA	1	5JPQ	e	0.6203	0.7328	0.3354	158	211	pdb5jpq.ent.gz	EMG1
+GPK93_01g00390-m1-2v3jA	2	5TZS	j	0.6203	0.7329	0.3354	158	211	pdb5tzs.ent.gz	RIBOSOMAL RNA SMALL SUBUNIT METHYLTRANSFERASE NEP1
+GPK93_01g00390-m1-2v3jA	3	3OIJ	A	0.6174	0.7328	0.3354	158	212	pdb3oij.ent.gz	ESSENTIAL FOR MITOTIC GROWTH 1
+GPK93_01g00390-m1-2v3jA	4	3OII	A	0.6073	0.6866	0.3354	158	217	pdb3oii.ent.gz	ESSENTIAL FOR MITOTIC GROWTH 1
+GPK93_01g00390-m1-2v3jA	5	3OIN	A	0.6035	0.7288	0.3354	158	217	pdb3oin.ent.gz	ESSENTIAL FOR MITOTIC GROWTH 1
 ```
 
 #### Miscellaneous 
