@@ -1,6 +1,6 @@
 #!/usr/bin/perl
 ## Pombert Lab 2020
-my $version = '0.3';
+my $version = '0.3a';
 my $name = 'PDB_headers.pl';
 my $updated = '2021-04-29';
 
@@ -14,7 +14,7 @@ VERSION		${version}
 UPDATED		${updated}
 SYNOPSIS	Generates a Tab-delimited list of PDB structures, their titles and 
 		chains from the PDB files headers
-		
+
 REQUIREMENTS	PDB files downloaded from RCSB PDB; e.g. pdb2zvl.ent.gz
 		PerlIO::gzip
 		
@@ -92,8 +92,16 @@ while (my $pb = shift@pdb){
 		## Printing chain(s)
 		foreach my $id (sort (keys %molecules)){
 
-			my ($molecule) = $molecules{$id} =~ /MOLECULE: (.*?);/;
+			my $molecule;
 			my $chains;
+
+			if ($molecules{$id} =~ /MOLECULE: (.*?);/){
+				$molecule = $1;
+			}
+			elsif($molecules{$id} =~ /MOLECULE: (.*?)/){
+				$molecule = $1;
+				## If at end of COMPND section, no semicolon to after the molecule(s)
+			}
 
 			if ($molecules{$id} =~ /CHAIN: (.*?);/){
 				$chains = $1;
@@ -101,9 +109,6 @@ while (my $pb = shift@pdb){
 			elsif ($molecules{$id} =~ /CHAIN: (.*?)/){
 				$chains = $1;
 				## If at end of COMPND section, no semicolon to after the chain(s)
-			}
-			else {
-				print STDERR "Check $pb for issue(s) with chain\n";
 			}
 
 			$chains =~ s/ //g;
