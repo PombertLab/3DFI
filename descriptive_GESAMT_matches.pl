@@ -95,7 +95,7 @@ while (my $match = shift@matches){
 		chomp $line;
 
 		## Skipping comments
-		if($line =~ /^#/){ next; }
+		if ($line =~ /^#/){ next; }
 
 		## Working on matches
 		my @data = split(/\s+/, $line);
@@ -118,7 +118,7 @@ while (my $match = shift@matches){
 		my $file;
 
 		## Accounting for variation between data structures between RCSB and PFAM matches
-		if($rcsb){
+		if ($rcsb){
 			$pdb_code = lc($data[2]);
 			$chain = $data[3];
 			$qscore = $data[4];
@@ -134,12 +134,12 @@ while (my $match = shift@matches){
 		if ($qscore >= $qthreshold){
 			if ($best){
 				if ($best >= $hit_number){
-					if($rcsb){
+					if ($rcsb){
 						print OUT "$prefix\t";
 						for (1..$#data){ print OUT "$data[$_]\t"; }
 						print OUT "$rcsb_titles{$pdb_code}{$chain}\n";
 					}
-					elsif($pfam){
+					elsif ($pfam){
 						print OUT "$prefix\t";
 						for (1..$#data){ print OUT "$data[$_]\t"; }
 						print OUT "$pfam_titles{$file}\n";
@@ -147,18 +147,18 @@ while (my $match = shift@matches){
 				}
 			}
 			else {
-				if($rcsb){
+				if ($rcsb){
 					print OUT "$prefix\t";
 					for (1..$#data){ print OUT "$data[$_]\t"; }
 					print OUT "$rcsb_titles{$pdb_code}{$chain}\n";
 				}
-				elsif($pfam){
+				elsif ($pfam){
 					if(exists $pfam_titles{$file}){
 						print OUT "$prefix\t";
 						for (1..$#data){ print OUT "$data[$_]\t"; }
 						print OUT "\t$pfam_titles{$file}\n";
 					}
-					else{
+					else {
 						print LOG "\nFile $file.pdb has no match in PFAM clan file\n\n";
 					}
 				}
