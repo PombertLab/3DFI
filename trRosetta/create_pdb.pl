@@ -185,7 +185,7 @@ sub exe{
 
 		my $buffer = "-" x 100;
 
-		if(-e "$out/$prefix.$evalue.pdb"){
+		if (-e "$out/$prefix.$evalue.pdb"){
 			print LOG "$out/$prefix.$evalue.pdb already exists, moving to next npz...\n";
 			next;
 		}
@@ -194,7 +194,7 @@ sub exe{
 		if ((-s $npz) < $max_file_memory){
 			## Check if file can be opened given the alloted resources
 
-			if($file_memory - (-s $npz) > 0){
+			if ($0){
 				## Remove file memory from memory available
 				lock($file_memory);
 				$file_memory -= -s $npz;
@@ -206,7 +206,7 @@ sub exe{
 				if($0){
 					lock(%running_processes);
 					lock($folding_threads);
-					$running_processes{$id} = "Thread $id: Folding $name started on ".time()."\n";
+					$running_processes{$id} = "Thread $id: Folding $name started on ".localtime()."\n";
 					$folding_threads ++;
 				}
 
@@ -228,17 +228,15 @@ sub exe{
 					print LOG "\n$buffer\nThread $id has completed on file $name\n$buffer\n\n";
 				}
 
-				if($0){
+				if ($0){
 					lock($folding_threads);
-					lock($file_memory);
 					$folding_threads--;
-					$file_memory += -s $npz;
 				}
 
 			}
 			else{
 				## If file can't be run, put it at the back of the line and try again later
-				if((-s $npz) > .5*$max_file_memory){
+				if ((-s $npz) > .5*$max_file_memory){
 					lock(%running_processes);
 					$running_processes{$id} = "Thread $id: $name is too large for Multi-threading. Sending to Single-threaded queue.\n";
 					push(@large_files,$npz);
@@ -248,6 +246,11 @@ sub exe{
 					$running_processes{$id} = "Thread $id: Not enough memory clearance to fold $name. Placing back in the queue.\n";
 					push(@files,$npz);
 				}
+			}
+
+			if ($0){
+				lock($file_memory);
+				$file_memory += -s $npz;
 			}
 		}
 		else{
@@ -265,6 +268,6 @@ sub exe{
 	lock($running_threads);
 	lock(%running_processes);
 	$running_threads--;
-	$running_processes{$id} = "Thread $id: No more jobs to run. Exited on".time()."\n";
+	$running_processes{$id} = "Thread $id: No more jobs to run. Exited on".localtime()."\n";
 	threads -> exit();
 }
