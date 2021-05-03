@@ -78,13 +78,15 @@ my @large_files :shared;
 my $total_files :shared = scalar(@files);
 my %running_processes :shared;
 my $running_threads :shared = 0;
-my $folding_threads:shared = 0;
+my $folding_threads :shared = 0;
+my $completed :shared = 0;
+my $start :shared;
 my @output_pdb;
 my $buffer = "-" x 100;
 
 ## Create threads that run the exe subroutine
 for my $thread (@threads){
-	$thread = threads -> create(\&exe);
+	$thread = threads -> create(\&mt_exe);
 }
 
 ## Run until threads are done
@@ -94,32 +96,11 @@ for my $thread (@threads){
 
 $total_files = scalar(@large_files);
 
-while (my $npz = shift(@large_files)){
-
-	my ($name, $dir) = fileparse($npz);
-	my ($prefix, $evalue) = $name =~ /^(\S+)\.(\S+)\.(\w+)$/;
-
-	my $buffer = "-" x 100;
-
-	system "$python \\
-		$trosetta \\
-		$npz \\
-		$fasta/$prefix.fasta \\
-		$out/$prefix.$evalue.pdb"
-	;
-
-	system "clear";
-	my $remaining = "." x (int((scalar(@large_files)/$total_files)*100));
-	my $progress = "|" x (100-int((scalar(@large_files)/$total_files)*100));
-	my $status = "[".$progress.$remaining."]";
-	print("Folding Proteins with Single-threading\n");
-	print("\n\t$status\t".($total_files-scalar(@large_files))."/$total_files\n");
-
-	unless(-e "$out/$prefix.$evalue.pdb"){
-		print LOG "$out/$prefix.$evalue.pdb";
-		print LOG "\n$buffer\nMain thread has failed to fold file $name\n$buffer\n\n";
-	}
-
+if (@large_files){
+	my $thr1 = threads -> create(\&st_exe);
+	my $thr2 = threads -> create(\&st_po);
+	$thr1 -> join();
+	$thr2 -> join();
 }
 
 ## End time
@@ -134,7 +115,7 @@ sub initThreads{
 	return @initThreads;
 }
 
-sub exe{
+sub mt_exe{
 
 	## Get the thread id. Allows each thread to be identified.
 	my $t_id = threads->tid();
@@ -219,7 +200,7 @@ sub exe{
 
 				unless(-e "$out/$prefix.$evalue.pdb"){
 					lock(%running_processes);
-					$running_processes{$id} = "Thread $id: Failed to fold $name. Placing back in the queue.\n";
+					$running_processes{$id} = "Thread $id: Failed to fold $name. Placing back in the queue on ".localtime()."\n";
 					push(@files,$npz);
 				}
 				else{
@@ -238,12 +219,12 @@ sub exe{
 				## If file can't be run, put it at the back of the line and try again later
 				if ((-s $npz) > .5*$max_file_memory){
 					lock(%running_processes);
-					$running_processes{$id} = "Thread $id: $name is too large for Multi-threading. Sending to Single-threaded queue.\n";
+					$running_processes{$id} = "Thread $id: $name is too large for Multi-threading. Sendt to Single-threaded queue on ".localtime()."\n";
 					push(@large_files,$npz);
 				}
 				else{
 					lock(%running_processes);
-					$running_processes{$id} = "Thread $id: Not enough memory clearance to fold $name. Placing back in the queue.\n";
+					$running_processes{$id} = "Thread $id: Not enough memory clearance to fold $name. Placed back in the queue on ".localtime()."\n";
 					push(@files,$npz);
 				}
 			}
@@ -259,7 +240,7 @@ sub exe{
 			lock($total_files);
 			lock(%running_processes);
 			$total_files -= 1;
-			$running_processes{$id} = "Thread $id: $name is too large for Multi-threading. Sending to Single-threaded queue.\n";
+			$running_processes{$id} = "Thread $id: $name is too large for Multi-threading. Sent to Single-threaded queue on ".localtime()."\n";
 			push(@large_files,$npz);
 
 		}
@@ -268,6 +249,52 @@ sub exe{
 	lock($running_threads);
 	lock(%running_processes);
 	$running_threads--;
-	$running_processes{$id} = "Thread $id: No more jobs to run. Exited on".localtime()."\n";
+	$running_processes{$id} = "Thread $id: No more jobs to run. Exited on ".localtime()."\n";
+	threads -> exit();
+}
+
+sub st_exe{
+	while (my $npz = shift(@large_files)){
+
+		my ($name, $dir) = fileparse($npz);
+		my ($prefix, $evalue) = $name =~ /^(\S+)\.(\S+)\.(\w+)$/;
+
+		my $buffer = "-" x 100;
+		
+		if($0) {
+			lock($start);
+			$start = localtime();
+		}
+
+		system "$python \\
+			$trosetta \\
+			$npz \\
+			$fasta/$prefix.fasta \\
+			$out/$prefix.$evalue.pdb"
+		;
+
+		unless(-e "$out/$prefix.$evalue.pdb"){
+			print LOG "$out/$prefix.$evalue.pdb";
+			print LOG "\n$buffer\nMain thread has failed to fold file $name\n$buffer\n\n";
+		}
+	}
+	lock($completed);
+	$completed = 1;
+	threads -> exit();
+}
+
+sub st_po{
+	WHILE: while (0 == 0){
+		if($completed == 0){
+			last WHILE;
+		}
+		system "clear";
+		my $remaining = "." x (int((scalar(@large_files)/$total_files)*100));
+		my $progress = "|" x (100-int((scalar(@large_files)/$total_files)*100));
+		my $status = "[".$progress.$remaining."]";
+		print("Folding Proteins with Single-threading started on $start\n");
+		print("\n\t$status\t".($total_files-scalar(@large_files))."/$total_files\n");
+		sleep(2);
+	}
 	threads -> exit();
 }
