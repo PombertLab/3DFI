@@ -191,7 +191,7 @@ sub mt_exe{
 					$folding_threads ++;
 				}
 
-				system "$python \\
+				system "$python 2>trRosetta.ERROR.log \\
 					$trosetta \\
 					$npz \\
 					$fasta/$prefix.fasta \\
@@ -266,7 +266,7 @@ sub st_exe{
 			$start = localtime();
 		}
 
-		system "$python \\
+		system "$python 2>trRosetta.ERROR.log \\
 			$trosetta \\
 			$npz \\
 			$fasta/$prefix.fasta \\
