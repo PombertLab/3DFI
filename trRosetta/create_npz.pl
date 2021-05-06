@@ -57,7 +57,7 @@ while (my $a3m = shift@a3m){
 
 	print "\nWorking on file: $name\n\n";
 
-	system "python \\
+	system "python 2>npz.ERROR.log \\
 	  $pred \\
 	  -m $model \\
 	  $a3m \\
