@@ -191,10 +191,9 @@ sub mt_exe{
 					$running_processes{$id} = "Thread $id: Folding $name started on ".localtime()."\n";
 					$folding_threads ++;
 				}
-
 				## Get starttime, run process, and get stop time
 				my $starttime = `date`;
-				system "$python \\
+				system "$python 2>trRosetta.ERROR.log \\
 					$trosetta \\
 					$npz \\
 					$fasta/$prefix.fasta \\
@@ -308,8 +307,7 @@ sub st_exe{
 		}
 
 		my $starttime = `date`;
-
-		system "$python \\
+		system "$python 2>trRosetta.ERROR.log \\
 			$trosetta \\
 			$npz \\
 			$fasta/$prefix.fasta \\
