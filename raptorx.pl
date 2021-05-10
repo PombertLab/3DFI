@@ -68,17 +68,6 @@ while (my $fasta = readdir(DIR)){
 @fasta = sort@fasta;
 closedir DIR;
 
-<<<<<<< HEAD
-=======
-my @existing_pdb;
-opendir (DIR,"$out/PDB") or die "Can't open PDB output directory $out: $!\n";
-while (my $pdb = readdir(DIR)){
-	if ($pdb =~ /\w+/){
-		push(@existing_pdb,$pdb);
-	}
-}
-
->>>>>>> 04950f486ee6fe1afb0e1fa153e9c42501d6b26b
 my $start = localtime(); my $tstart = time;
 open LOG, ">", "$out/raptorx.log";
 print LOG "COMMAND LINE:\nraptorx.pl @command\n"."raptorx.pl version = $version\n";
