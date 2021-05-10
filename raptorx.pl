@@ -69,7 +69,7 @@ while (my $fasta = readdir(DIR)){
 closedir DIR;
 
 my @existing_pdb;
-open (DIR,"$out/PDB") or die "Can't open PDB output directory $out: $!\n";
+opendir (DIR,"$out/PDB") or die "Can't open PDB output directory $out: $!\n";
 while (my $pdb = readdir(DIR)){
 	if ($pdb =~ /\w+/){
 		push(@existing_pdb,$pdb);
