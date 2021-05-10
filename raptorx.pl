@@ -1,8 +1,8 @@
 #!/usr/bin/perl
 ## Pombert Lab 2019
-my $version = '0.3c';
+my $version = '0.3d';
 my $name = 'raptorx.pl';
-my $updated = '2021-04-05';
+my $updated = '2021-05-09';
 
 use strict; use warnings; use Getopt::Long qw(GetOptions);
 my @command = @ARGV; ## Keeping track of command line for log
@@ -18,7 +18,9 @@ REQUIREMENTS	RaptorX - http://raptorx.uchicago.edu/
 
 NOTE		Due to RaptorX's architecture, 3D predictions must be launched from within RaptorX's installation directory.
 
-USAGE EXAMPLE	cd RAPTORX_INSTALLATION_DIRECTORY/
+USAGE	
+		cd RAPTORX_INSTALLATION_DIRECTORY/
+		
 		${name} \\
 		  -t 10 \\
 		  -k 2 \\
@@ -56,28 +58,43 @@ unless (-d "$out/CNFPRED"){mkdir ("$out/CNFPRED",0755) or die "Can't create outp
 unless (-d "$out/RANK"){mkdir ("$out/RANK",0755) or die "Can't create output folder $out/RANK: $!\n";}
 
 ## Reading from folder
-opendir (DIR, $dir) or die "Can't open input directory $dir: $!\n";
+opendir (DIR, $dir) or die "Can't open FASTA input directory $dir: $!\n";
 my @fasta;
 while (my $fasta = readdir(DIR)){
-	if (($fasta eq '.') || ($fasta eq '..')){ next; }
-	else{push (@fasta, $fasta);}
+	if ($fasta =~ /\w+/){ 
+		push(@fasta,$fasta);
+	}
 }
 @fasta = sort@fasta;
+closedir DIR;
 
-## Running RaptorX
+my @existing_pdb;
+open (DIR,"$out/PDB") or die "Can't open PDB output directory $out: $!\n";
+while (my $pdb = readdir(DIR)){
+	if ($pdb =~ /\w+/){
+		push(@existing_pdb,$pdb);
+	}
+}
+
 my $start = localtime(); my $tstart = time;
 open LOG, ">", "$out/raptorx.log";
 print LOG "COMMAND LINE:\nraptorx.pl @command\n"."raptorx.pl version = $version\n";
 print LOG "Using MODELLER binary version $modeller\n";
 print LOG "3D Folding started on: $start\n";
 
+## Running RaptorX
 while (my $fasta = shift@fasta){
 	my $pstart = time;
 	my ($protein, $ext) = $fasta =~ /^(\S+?).(\w+)$/;
+
+	if(-e "$out/$protein.pdb"){
+		print LOG "PDB has already been created for $fasta, moving to next file\n";
+		next;
+	}
 	
 	## Generating the feature file (.tgt)
 	system "buildFeature \\
-	  -i ${dir}/$protein.$ext \\
+	  -i $dir/$fasta \\
 	  -o TGT/$protein.tgt \\
 	  -c $threads";
 	
@@ -92,7 +109,9 @@ while (my $fasta = shift@fasta){
 	my @models;
 		while (my $line = <IN>){
 			chomp $line;
-			if ($line =~ />(\w+)$/){push (@models, $1);}
+			if ($line =~ />(\w+)$/){
+				push (@models, $1);
+			}
 		}
 
 	## Aligning fasta to top models
@@ -100,20 +119,25 @@ while (my $fasta = shift@fasta){
 		system "CNFalign_lite \\
 		  -t $models[$_] \\
 		  -q $protein \\
-		  -d .";
+		  -d ."
+		;
 	}
 	
 	## Creating 3D models
 	system "buildTopModels \\
 		-i $protein.rank \\
 		-k $topk \\
-		-m $modeller";	
+		-m $modeller"
+	;	
 	
 	my $run_time = time - $tstart; ## Cumulative time elapsed
 	my $pfold_time = time - $pstart; ## Time elapsed per protein
-	print LOG "Time to fold $protein.$ext = $pfold_time seconds\n";
-	print LOG "Time to fold $protein.$ext = $run_time seconds".' (cumulative)'."\n";
-	system "mv *.pdb $out/PDB/; mv *.cnfpred $out/CNFPRED/; mv *.rank $out/RANK/";
+	print LOG "Time to fold $fasta = $pfold_time seconds\n";
+	print LOG "Time to fold $fasta = $run_time seconds".' (cumulative)'."\n";
+	system "mv *.pdb $out/PDB/$protein.pdb; \\
+			mv *.cnfpred $out/CNFPRED/$protein.cnfpred; \\
+			mv *.rank $out/RANK/$protein.rank"
+	;
 }
 my $mend = localtime();
 print LOG "3D Folding ended on $mend\n\n";
