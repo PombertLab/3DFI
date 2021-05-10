@@ -68,14 +68,6 @@ while (my $fasta = readdir(DIR)){
 @fasta = sort@fasta;
 closedir DIR;
 
-my @existing_pdb;
-open (DIR,"$out/PDB") or die "Can't open PDB output directory $out: $!\n";
-while (my $pdb = readdir(DIR)){
-	if ($pdb =~ /\w+/){
-		push(@existing_pdb,$pdb);
-	}
-}
-
 my $start = localtime(); my $tstart = time;
 open LOG, ">", "$out/raptorx.log";
 print LOG "COMMAND LINE:\nraptorx.pl @command\n"."raptorx.pl version = $version\n";
@@ -87,8 +79,9 @@ while (my $fasta = shift@fasta){
 	my $pstart = time;
 	my ($protein, $ext) = $fasta =~ /^(\S+?).(\w+)$/;
 
-	if(-e "$out/$protein.pdb"){
+	if(-e "$out/PDB/$protein.pdb"){
 		print LOG "PDB has already been created for $fasta, moving to next file\n";
+		print "PDB has already been created for $fasta, moving to next file\n";
 		next;
 	}
 	
