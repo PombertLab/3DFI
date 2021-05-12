@@ -49,7 +49,7 @@ while (my $locus = readdir(EXT)){
 open LOG, ">>", "$indir/Visualizations.notes";
 system "clear";
 my ($filename,$dir) = fileparse($0);
-my $script = "$dir/Restore_ChimeraX_Session.py";
+my $script = "$dir/Helper_Scripts/Restore_ChimeraX_Session.py";
 ## Start visualization
 my @loci = sort(keys(%visuals));
 my $pos = 0;
