@@ -349,6 +349,28 @@ Inspect_3D_Structures.pl \
 ```
 
 The output should result in something similar to the following:
+```
+Available 3D visualizations for GPK93_01g00070:
+
+		1. GPK93_01g00070.pdb
+		2. GPK93_01g00070_pdb4kx7.cxs
+		3. GPK93_01g00070_pdb4kx9.cxs
+		4. GPK93_01g00070_pdb4kxb.cxs
+		5. GPK93_01g00070_pdb4kxc.cxs
+		6. GPK93_01g00070_pdb4kxa.cxs
+
+
+	Options:
+
+		[1-6] open corresponding file
+		[a] advance to next locus tag
+		[p] return to previous locus tag
+		[n] to create a note for locus tag
+		[x] to exit 3D inspection
+
+		Selection:  
+
+```
 
 #### Miscellaneous 
 ###### Splitting multifasta files
