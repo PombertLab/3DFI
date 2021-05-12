@@ -38,6 +38,7 @@ Although predicting the structure of a protein and searching for structural homo
 4. [PyRosetta](http://www.pyrosetta.org/)           ## For trRosetta
 5. [GESAMT](https://www.ccp4.ac.uk/)                ## From the CCP4 package
 6. [Perl 5](https://www.perl.org/) modules - [File::Basename](https://perldoc.perl.org/File/Basename.html), [File::Find](https://perldoc.perl.org/File/Find.html), [Getopt::Long](https://perldoc.perl.org/Getopt/Long.html), [PerlIO::gzip](https://metacpan.org/pod/PerlIO::gzip)
+7. [ChimeraX](https://www.rbvi.ucsf.edu/chimerax/download.html) ## Visualization of folded proteins and structural homologs
 
 ### Howto
 #### 3D structure prediction
@@ -317,6 +318,37 @@ GPK93_01g00390-m1-2v3jA	3	3OIJ	A	0.6174	0.7328	0.3354	158	212	pdb3oij.ent.gz	ESS
 GPK93_01g00390-m1-2v3jA	4	3OII	A	0.6073	0.6866	0.3354	158	217	pdb3oii.ent.gz	ESSENTIAL FOR MITOTIC GROWTH 1
 GPK93_01g00390-m1-2v3jA	5	3OIN	A	0.6035	0.7288	0.3354	158	217	pdb3oin.ent.gz	ESSENTIAL FOR MITOTIC GROWTH 1
 ```
+
+### Structural Visualization
+#### Purpose
+Visually inspecting the predicted 3D structure of a protein in an important step in determing the validity of any identified structural homolog. Though a .pdb file may be obtained from RaptorX or trRosetta, the quality of the fold may be low. Alternatively, though GESAMT may return a structural homolog with a reasonable Q-score, the quality of the alignment may be low. A low fold/alilgnment-quality can result in both false-positives (finding a structural homolog when one doesn't exist) and false-negatives (not finding a structural homolog when one exists).
+#### Process
+To prepare visualizations for inspection, we can use [Visualize_PDB.pl](https://github.com/PombertLab/3DFI/blob/master/Visualize_PDB.pl) to automatically align predicted proteins with their GESAMT determined structural homologs.
+```
+Visualize_PDB.pl \
+    -m Microsporidia/intestinalis_50506/Annotations/3D/RaptorX/E_int_GESAMT_RESULTS.matches \
+    -p ~/Microsporidia/intestinalis_50506/Annotations/3D/RaptorX/Eintestinalis_proteins_PDB_20200121/PDB/ \
+    -r /media/FatCat/Databases/RCSB_PDB/PDB_UNZIPPED/ \
+    -o EXAMPLE
+```
+
+If only the predicted 3D structures want to be visualized, Visualize_PDB.pl can be run with the ```-j``` flag, as follows:
+```
+Visualize_PDB.pl \
+    -m Microsporidia/intestinalis_50506/Annotations/3D/RaptorX/E_int_GESAMT_RESULTS.matches \
+    -p ~/Microsporidia/intestinalis_50506/Annotations/3D/RaptorX/Eintestinalis_proteins_PDB_20200121/PDB/ \
+    -r /media/FatCat/Databases/RCSB_PDB/PDB_UNZIPPED/ \
+    -o EXAMPLE \
+    -j
+```
+
+To inspect the 3D structures, we run Inspect_3D_Structures.
+```
+Inspect_3D_Structures.pl \
+    -v EXAMPLE
+```
+
+The output should result in something similar to the following:
 
 #### Miscellaneous 
 ###### Splitting multifasta files
