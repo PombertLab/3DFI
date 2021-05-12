@@ -321,7 +321,15 @@ GPK93_01g00390-m1-2v3jA	5	3OIN	A	0.6035	0.7288	0.3354	158	217	pdb3oin.ent.gz	ESS
 
 ### Structural Visualization
 #### Purpose
-Visually inspecting the predicted 3D structure of a protein in an important step in determing the validity of any identified structural homolog. Though a .pdb file may be obtained from RaptorX or trRosetta, the quality of the fold may be low. Alternatively, though GESAMT may return a structural homolog with a reasonable Q-score, the quality of the alignment may be low. A low fold/alilgnment-quality can result in both false-positives (finding a structural homolog when one doesn't exist) and false-negatives (not finding a structural homolog when one exists).
+Visually inspecting the predicted 3D structure of a protein is an important step in determing the validity of any identified structural homolog. Though a .pdb file may be obtained from RaptorX or trRosetta, the quality of the fold may be low. Alternatively, though GESAMT may return a structural homolog with a reasonable Q-score, the quality of the alignment may be low. A low fold/alilgnment-quality can result in both false-positives (finding a structural homolog when one doesn't exist) and false-negatives (not finding a structural homolog when one exists). Visually inspecting protein structure and structural homolog alignment is an easy way to prevent these outcomes.
+
+An example of a false-negative, where the quality of the protein folding is low, resulting in a failure to find a structural homolog.
+<img src="https://github.com/PombertLab/3DFI/blob/master/Misc/Bad_Predicted_Fold.png">
+
+
+An example of a false-positive, where the quality of the fold is high, but the alignment-quality is low and a psuedo-structural homolog is found.
+<img src="https://github.com/PombertLab/3DFI/blob/master/Misc/Bad_Match.png">
+
 #### Process
 To prepare visualizations for inspection, we can use [Visualize_PDB.pl](https://github.com/PombertLab/3DFI/blob/master/Visualize_PDB.pl) to automatically align predicted proteins with their GESAMT determined structural homologs.
 ```
@@ -371,6 +379,13 @@ Available 3D visualizations for GPK93_01g00070:
 		Selection:  
 
 ```
+
+In this example, selecting [1] will open the visualization of the predicted 3D structure.
+<img src="https://github.com/PombertLab/3DFI/blob/master/Misc/Just_PDB.png">
+
+
+Alternatively, selecting [2-6] will open the visualization of the alignment of the predicted 3D structure with it's structural homologs.
+<img src="https://github.com/PombertLab/3DFI/blob/master/Misc/With_Alignment.png">
 
 #### Miscellaneous 
 ###### Splitting multifasta files
