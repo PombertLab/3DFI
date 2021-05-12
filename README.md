@@ -44,11 +44,7 @@ Although predicting the structure of a protein and searching for structural homo
 ### Howto
 #### 3D structure prediction
 ##### RaptorX - template-based protein structure modeling
-To perform 3D structure predictions locally with [RaptorX](http://raptorx.uchicago.edu/), the standalone programs should be [downloaded](http://raptorx.uchicago.edu/download/) and installed according to the authors’ instructions. Because of how RaptorX is implemented, 3D structure predictions should be performed from inside the RaptorX installation directory:
-```Bash
-cd RAPTORX_INSTALLATION_DIRECTORY/
-```
-Input files (in FASTA format) and the output location of the structures to be predicted can be specified with [raptorX.pl](https://github.com/PombertLab/3DFI/blob/master/raptorx.pl):
+To perform 3D structure predictions locally with [RaptorX](http://raptorx.uchicago.edu/), the standalone programs should be [downloaded](http://raptorx.uchicago.edu/download/) and installed according to the authors’ instructions. Input files (in FASTA format) and the output location of the structures to be predicted can be specified with [raptorx.pl](https://github.com/PombertLab/3DFI/blob/master/raptorx.pl):
 ```Bash
 raptorx.pl \
    -t 10 \
@@ -56,7 +52,7 @@ raptorx.pl \
    -i ~/FASTA/ \
    -o ~/3D_predictions/
 ```
-Options for raptorX.pl are:
+Options for raptorx.pl are:
 ```
 -t (--threads)	Number of threads to use [Default: 10]
 -i (--input)	Folder containing fasta files
