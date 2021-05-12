@@ -334,7 +334,7 @@ An example of a false-positive, where the quality of the fold is high, but the a
 <p align="center"><img src="https://github.com/PombertLab/3DFI/blob/master/Misc/Bad_Match.png" alt="Example of a bad alignment" width="400"></p>
 
 #### Process
-To prepare visualizations for inspection, we can use [Visualize_PDB.pl](https://github.com/PombertLab/3DFI/blob/master/Visualize_PDB.pl) to automatically align predicted proteins with their GESAMT-determined structural homologs.
+To prepare visualizations for inspection, we can use [Visualize_PDB.pl](https://github.com/PombertLab/3DFI/blob/master/Visualization/Visualize_PDB.pl) to automatically align predicted proteins with their GESAMT-determined structural homologs.
 ```
 Visualize_PDB.pl \
     -m Microsporidia/intestinalis_50506/Annotations/3D/RaptorX/E_int_GESAMT_RESULTS.matches \
@@ -353,7 +353,7 @@ Visualize_PDB.pl \
     -j
 ```
 
-To inspect the 3D structures, we run Inspect_3D_Structures.
+To inspect the 3D structures, we run [Inspect_3D_Structures.pl](https://github.com/PombertLab/3DFI/blob/master/Visualization/Inspect_3D_Structures.pl):
 ```
 Inspect_3D_Structures.pl \
     -v EXAMPLE
