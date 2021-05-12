@@ -334,7 +334,7 @@ An example of a false-positive, where the quality of the fold is high, but the a
 <p align="center"><img src="https://github.com/PombertLab/3DFI/blob/master/Misc/Bad_Match.png" alt="Example of a bad alignment" width="400"></p>
 
 #### Process
-To prepare visualizations for inspection, we can use [Visualize_PDB.pl](https://github.com/PombertLab/3DFI/blob/master/Visualization/Visualize_PDB.pl) to automatically align predicted proteins with their GESAMT-determined structural homologs. This tool leverages the excellent [ChimeraX](https://www.rbvi.ucsf.edu/chimerax/) 3D protein visualization program.
+To prepare visualizations for inspection, we can use [Visualize_PDB.pl](https://github.com/PombertLab/3DFI/blob/master/Visualization/Visualize_PDB.pl) to automatically align predicted proteins with their GESAMT-determined structural homologs. These alignments are performed with [ChimeraX](https://www.rbvi.ucsf.edu/chimerax/) via its API.
 ```
 ## Creating shortcut to working directory
 export RAPTORX="~/Microsporidia/intestinalis_50506/Annotations/3D/RaptorX"
@@ -346,7 +346,7 @@ Visualize_PDB.pl \
     -o $RAPTORX/EXAMPLE
 ```
 
-If only the predicted 3D structures want to be visualized, Visualize_PDB.pl can be run with the ```-j``` flag, as follows:
+If we only want to visualize the predicted 3D structures but not the alignment(s), Visualize_PDB.pl can be run with the ```-j``` flag, as follows:
 ```
 Visualize_PDB.pl \
     -m $RAPTORX/E_int_GESAMT_RESULTS.matches \
