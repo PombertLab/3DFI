@@ -356,7 +356,7 @@ Visualize_PDB.pl \
     -j
 ```
 
-To inspect the 3D structures, we run [Inspect_3D_Structures.pl](https://github.com/PombertLab/3DFI/blob/master/Visualization/Inspect_3D_Structures.pl):
+To inspect the 3D structures, we can run [Inspect_3D_Structures.pl](https://github.com/PombertLab/3DFI/blob/master/Visualization/Inspect_3D_Structures.pl):
 ```
 Inspect_3D_Structures.pl \
     -v $RAPTORX/EXAMPLE
