@@ -16,8 +16,7 @@ SYNOPSIS	Runs raptorX 3D structure prediction on provided fasta files
 REQUIREMENTS	RaptorX - http://raptorx.uchicago.edu/
 		MODELLER - https://salilab.org/modeller/
 
-USAGE	
-		${name} \\
+USAGE		${name} \\
 		  -t 10 \\
 		  -k 2 \\
 		  -i ~/FASTA/ \\
