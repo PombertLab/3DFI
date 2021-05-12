@@ -336,9 +336,12 @@ An example of a false-positive, where the quality of the fold is high, but the a
 #### Process
 To prepare visualizations for inspection, we can use [Visualize_PDB.pl](https://github.com/PombertLab/3DFI/blob/master/Visualization/Visualize_PDB.pl) to automatically align predicted proteins with their GESAMT-determined structural homologs.
 ```
+## Creating shortcut to working directory
+export RAPTORX="~/Microsporidia/intestinalis_50506/Annotations/3D/RaptorX"
+
 Visualize_PDB.pl \
-    -m Microsporidia/intestinalis_50506/Annotations/3D/RaptorX/E_int_GESAMT_RESULTS.matches \
-    -p ~/Microsporidia/intestinalis_50506/Annotations/3D/RaptorX/Eintestinalis_proteins_PDB_20200121/PDB/ \
+    -m $RAPTORX/E_int_GESAMT_RESULTS.matches \
+    -p $RAPTORX/Eintestinalis_proteins_PDB_20200121/PDB/ \
     -r /media/FatCat/Databases/RCSB_PDB/PDB_UNZIPPED/ \
     -o EXAMPLE
 ```
@@ -346,8 +349,8 @@ Visualize_PDB.pl \
 If only the predicted 3D structures want to be visualized, Visualize_PDB.pl can be run with the ```-j``` flag, as follows:
 ```
 Visualize_PDB.pl \
-    -m Microsporidia/intestinalis_50506/Annotations/3D/RaptorX/E_int_GESAMT_RESULTS.matches \
-    -p ~/Microsporidia/intestinalis_50506/Annotations/3D/RaptorX/Eintestinalis_proteins_PDB_20200121/PDB/ \
+    -m $RAPTORX/E_int_GESAMT_RESULTS.matches \
+    -p $RAPTORX/Eintestinalis_proteins_PDB_20200121/PDB/ \
     -r /media/FatCat/Databases/RCSB_PDB/PDB_UNZIPPED/ \
     -o EXAMPLE \
     -j
