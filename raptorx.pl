@@ -1,10 +1,10 @@
 #!/usr/bin/perl
 ## Pombert Lab 2019
-my $version = '0.3d';
+my $version = '0.4';
 my $name = 'raptorx.pl';
-my $updated = '2021-05-09';
+my $updated = '2021-05-12';
 
-use strict; use warnings; use Getopt::Long qw(GetOptions);
+use strict; use warnings; use Getopt::Long qw(GetOptions); use Cwd;
 my @command = @ARGV; ## Keeping track of command line for log
 
 ## Usage definition
@@ -16,11 +16,7 @@ SYNOPSIS	Runs raptorX 3D structure prediction on provided fasta files
 REQUIREMENTS	RaptorX - http://raptorx.uchicago.edu/
 		MODELLER - https://salilab.org/modeller/
 
-NOTE		Due to RaptorX's architecture, 3D predictions must be launched from within RaptorX's installation directory.
-
 USAGE	
-		cd RAPTORX_INSTALLATION_DIRECTORY/
-		
 		${name} \\
 		  -t 10 \\
 		  -k 2 \\
@@ -53,9 +49,10 @@ GetOptions(
 
 ## Creating output folders
 unless (-d $out){mkdir ($out,0755) or die "Can't create output folder $out: $!\n";}
+unless (-d "$out/TGT"){mkdir ("$out/TGT",0755) or die "Can't create output folder $out/TGT: $!\n";}
+unless (-d "$out/RANK"){mkdir ("$out/RANK",0755) or die "Can't create output folder $out/RANK: $!\n";}
 unless (-d "$out/PDB"){mkdir ("$out/PDB",0755) or die "Can't create output folder $out/PDB: $!\n";}
 unless (-d "$out/CNFPRED"){mkdir ("$out/CNFPRED",0755) or die "Can't create output folder $out/CNFPRED: $!\n";}
-unless (-d "$out/RANK"){mkdir ("$out/RANK",0755) or die "Can't create output folder $out/RANK: $!\n";}
 
 ## Reading from folder
 opendir (DIR, $dir) or die "Can't open FASTA input directory $dir: $!\n";
@@ -74,31 +71,45 @@ print LOG "COMMAND LINE:\nraptorx.pl @command\n"."raptorx.pl version = $version\
 print LOG "Using MODELLER binary version $modeller\n";
 print LOG "3D Folding started on: $start\n";
 
+my $RAPTORX_PATH = '$RAPTORX_PATH';
+my $prev_dir = cwd();
+chomp($RAPTORX_PATH = `echo $RAPTORX_PATH`);
+chdir $RAPTORX_PATH or die "Can't access $RAPTORX_PATH: $!\n";
+
 ## Running RaptorX
 while (my $fasta = shift@fasta){
 	my $pstart = time;
 	my ($protein, $ext) = $fasta =~ /^(\S+?).(\w+)$/;
 
-	if(-e "$out/PDB/$protein.pdb"){
+	if(-e "$prev_dir/$out/PDB/$protein.pdb"){
 		print LOG "PDB has already been created for $fasta, moving to next file\n";
 		print "PDB has already been created for $fasta, moving to next file\n";
 		next;
 	}
 	
 	## Generating the feature file (.tgt)
+	print "Generating the .tgt file for $fasta\n";
 	system "buildFeature \\
-	  -i $dir/$fasta \\
-	  -o TGT/$protein.tgt \\
-	  -c $threads";
-	
+	  -i $prev_dir/$dir/$fasta \\
+	  -o $prev_dir/$out/TGT/$protein.tgt \\
+	  -c $threads"
+	;
+
+	unless (-e "tmp/$protein.acc"){
+		print "$fasta failed to predict, moving to next protein\n";
+		next;
+	}
+
 	##  Searching databases for top hits
+	print "Generating top hits list for $fasta\n";
 	system "CNFsearch \\
 	  -a $threads \\
 	  -q $protein \\
-	  -o $protein.rank";
+	  -g $prev_dir/$out/TGT \\
+	  -o $prev_dir/$out/RANK/$protein.rank";
 
 	## Creating list of top models from rank file
-	open IN, "<", "$protein.rank";
+	open IN, "<", "$prev_dir/$out/RANK/$protein.rank";
 	my @models;
 		while (my $line = <IN>){
 			chomp $line;
@@ -112,25 +123,32 @@ while (my $fasta = shift@fasta){
 		system "CNFalign_lite \\
 		  -t $models[$_] \\
 		  -q $protein \\
-		  -d ."
+		  -d $prev_dir/$out"
 		;
 	}
 	
-	## Creating 3D models
+	## Creating 3D modelsq
 	system "buildTopModels \\
-		-i $protein.rank \\
+		-i $prev_dir/$out/RANK/$protein.rank \\
 		-k $topk \\
 		-m $modeller"
 	;	
-	
+
 	my $run_time = time - $tstart; ## Cumulative time elapsed
 	my $pfold_time = time - $pstart; ## Time elapsed per protein
-	print LOG "Time to fold $fasta = $pfold_time seconds\n";
-	print LOG "Time to fold $fasta = $run_time seconds".' (cumulative)'."\n";
-	system "mv *.pdb $out/PDB/$protein.pdb; \\
-			mv *.cnfpred $out/CNFPRED/$protein.cnfpred; \\
-			mv *.rank $out/RANK/$protein.rank"
-	;
+	opendir(DIR,"./");
+	while (my $file = readdir(DIR)){
+		if ($file =~ /\.pdb$/){
+			print LOG "Time to fold $fasta = $pfold_time seconds\n";
+			print LOG "Time to fold $fasta = $run_time seconds".' (cumulative)'."\n";
+			system "mv $file $prev_dir/$out/PDB/$protein.pdb";
+		}
+		if ($file =~ /\.cnfpred/){
+			system "mv $file $prev_dir/$out/CNFPRED/$protein.cnfpred";
+		}
+	}
+	close DIR;
+	system "rm -r tmp";
 }
 my $mend = localtime();
 print LOG "3D Folding ended on $mend\n\n";
