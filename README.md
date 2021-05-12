@@ -390,7 +390,7 @@ In this example, selecting [1] will open the visualization of the predicted 3D s
 <img src="https://github.com/PombertLab/3DFI/blob/master/Misc/Just_PDB.png">
 
 
-Alternatively, selecting [2-6] will open the visualization of the alignment of the predicted 3D structure with it's structural homologs.
+Alternatively, selecting [2-6] will open the visualization of the alignment of the predicted 3D structure with its selected structural homolog.
 <img src="https://github.com/PombertLab/3DFI/blob/master/Misc/With_Alignment.png">
 
 #### Miscellaneous 
@@ -456,4 +456,6 @@ This work was supported by the National Institute of Allergy and Infectious Dise
 
 5) [Overview of the CCP4 suite and current developments](https://pubmed.ncbi.nlm.nih.gov/21460441/). **Winn MD et al.** Acta Crystallogr D Biol Crystallogr. 2011 Apr;67(Pt 4):235-42. PMID: 21460441 PMCID: PMC3069738 DOI: 10.1107/S0907444910045749
 
-6) [Improved protein structure prediction using predicted interresidue orientations](https://pubmed.ncbi.nlm.nih.gov/31896580/). **Yang J, Anishchenko I, Park H, Peng Z, Ovchinnikov S, Baker D.** Proc Natl Acad Sci USA. 2020 Jan 21;117(3):1496-1503.PMID: 31896580 PMCID: PMC6983395 DOI: 10.1073/pnas.1914677117
+6) [Improved protein structure prediction using predicted interresidue orientations](https://pubmed.ncbi.nlm.nih.gov/31896580/). **Yang J, Anishchenko I, Park H, Peng Z, Ovchinnikov S, Baker D.** Proc Natl Acad Sci USA. 2020 Jan 21;117(3):1496-1503. PMID: 31896580 PMCID: PMC6983395 DOI: 10.1073/pnas.1914677117
+
+7) [UCSF ChimeraX: Structure visualization for researchers, educators, and developers](https://www.ncbi.nlm.nih.gov/pubmed/32881101). **Pettersen EF, Goddard TD, Huang CC, Meng EC, Couch GS, Croll TI, Morris JH, Ferrin TE**. Protein Sci. 2021 Jan;30(1):70-82.  PMID: 32881101 PMCID: PMC7737788 DOI: 10.1002/pro.3943
