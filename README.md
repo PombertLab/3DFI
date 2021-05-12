@@ -322,7 +322,7 @@ GPK93_01g00390-m1-2v3jA	5	3OIN	A	0.6035	0.7288	0.3354	158	217	pdb3oin.ent.gz	ESS
 
 ### Structural Visualization
 #### Purpose
-Visually inspecting the predicted 3D structure of a protein is an important step in determing the validity of any identified structural homolog. Though a .pdb file may be obtained from RaptorX or trRosetta, the quality of the fold may be low. Alternatively, though GESAMT may return a structural homolog with a reasonable Q-score, the quality of the alignment may be low. A low fold/alignment-quality can result in both false-positives (finding a structural homolog when one doesn't exist) and false-negatives (not finding a structural homolog when one exists). Visually inspecting protein structures and structural homolog alignments is an easy way to prevent these outcomes.
+Visually inspecting the predicted 3D structure of a protein is an important step in determing the validity of any identified structural homolog. Though a .pdb file may be obtained from RaptorX or trRosetta, the quality of the fold may be low. Alternatively, though GESAMT may return a structural homolog with a reasonable Q-score, the quality of the alignment may be low. A low fold/alignment-quality can result in both false-positives (finding a structural homolog when one doesn't exist) and false-negatives (not finding a structural homolog when one exists). Visually inspecting protein structures and structural homolog alignments is an easy way to prevent these outcomes. This can be done with the excellent [ChimeraX](https://www.rbvi.ucsf.edu/chimerax/) 3D protein visualization program.
 
 An example of a good result, in which both the folding and the alignment are good:
 <p align="center"><img src="https://github.com/PombertLab/3DFI/blob/master/Misc/Good_Match.png" alt="Example of a good alignment" width="600"></p>
@@ -334,7 +334,7 @@ An example of a false-positive, where the quality of the fold is high, but the a
 <p align="center"><img src="https://github.com/PombertLab/3DFI/blob/master/Misc/Bad_Match.png" alt="Example of a bad alignment" width="400"></p>
 
 #### Process
-To prepare visualizations for inspection, we can use [Visualize_PDB.pl](https://github.com/PombertLab/3DFI/blob/master/Visualization/Visualize_PDB.pl) to automatically align predicted proteins with their GESAMT-determined structural homologs.
+To prepare visualizations for inspection, we can use [Visualize_PDB.pl](https://github.com/PombertLab/3DFI/blob/master/Visualization/Visualize_PDB.pl) to automatically align predicted proteins with their GESAMT-determined structural homologs. This tool leverages the excellent [ChimeraX](https://www.rbvi.ucsf.edu/chimerax/) 3D protein visualization program.
 ```
 ## Creating shortcut to working directory
 export RAPTORX="~/Microsporidia/intestinalis_50506/Annotations/3D/RaptorX"
@@ -343,7 +343,7 @@ Visualize_PDB.pl \
     -m $RAPTORX/E_int_GESAMT_RESULTS.matches \
     -p $RAPTORX/Eintestinalis_proteins_PDB_20200121/PDB/ \
     -r /media/FatCat/Databases/RCSB_PDB/PDB_UNZIPPED/ \
-    -o EXAMPLE
+    -o $RAPTORX/EXAMPLE
 ```
 
 If only the predicted 3D structures want to be visualized, Visualize_PDB.pl can be run with the ```-j``` flag, as follows:
@@ -352,14 +352,14 @@ Visualize_PDB.pl \
     -m $RAPTORX/E_int_GESAMT_RESULTS.matches \
     -p $RAPTORX/Eintestinalis_proteins_PDB_20200121/PDB/ \
     -r /media/FatCat/Databases/RCSB_PDB/PDB_UNZIPPED/ \
-    -o EXAMPLE \
+    -o $RAPTORX/EXAMPLE \
     -j
 ```
 
 To inspect the 3D structures, we run [Inspect_3D_Structures.pl](https://github.com/PombertLab/3DFI/blob/master/Visualization/Inspect_3D_Structures.pl):
 ```
 Inspect_3D_Structures.pl \
-    -v EXAMPLE
+    -v $RAPTORX/EXAMPLE
 ```
 
 The output should result in something similar to the following:
