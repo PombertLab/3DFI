@@ -330,7 +330,7 @@ An example of a good alignment, in which both the folding and the alignment are 
 An example of a false-negative, where the quality of the protein folding is low, resulting in a failure to find a structural homolog:
 <p align="center"><img src="https://github.com/PombertLab/3DFI/blob/master/Misc/Bad_Predicted_Fold.png" alt="Example of a bad folding prediction" width="700"></p>
 
-An example of a false-positive, where the quality of the fold is high, but the alignment-quality is low and a psuedo-structural homolog is found:
+An example of a false-positive, where the quality of the fold is high, but the alignment-quality is low and a pseudo-structural homolog is found:
 <p align="center"><img src="https://github.com/PombertLab/3DFI/blob/master/Misc/Bad_Match.png" alt="Example of a bad alignment" width="400"></p>
 
 #### Process
