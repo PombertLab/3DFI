@@ -14,6 +14,7 @@ The 3DFI pipeline predicts the 3D structure of proteins, and then searches for s
   * [Creating/updating a GESAMT database](#creating/updating-a-GESAMT-database)
   * [Structural homology searches with GESAMT](#structural-homology-searches-with-GESAMT)
   * [Parsing the output of GESAMT searches](#Parsing-the-output-of-GESAMT-searches)
+* [Structural Visualization](#Structural-Visualization)
 * [Miscellaneous](#miscellaneous)
 * [Funding and acknowledgments](#Funding-and-acknowledgments)
 * [References](#references)
