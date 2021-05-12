@@ -14,7 +14,7 @@ The 3DFI pipeline predicts the 3D structure of proteins, and then searches for s
   * [Creating/updating a GESAMT database](#creating/updating-a-GESAMT-database)
   * [Structural homology searches with GESAMT](#structural-homology-searches-with-GESAMT)
   * [Parsing the output of GESAMT searches](#Parsing-the-output-of-GESAMT-searches)
-  * [Structural Visualization](#Structural-Visualization)
+  * [Structural visualization](#Structural-visualization)
 * [Miscellaneous](#miscellaneous)
 * [Funding and acknowledgments](#Funding-and-acknowledgments)
 * [References](#references)
@@ -320,7 +320,7 @@ GPK93_01g00390-m1-2v3jA	4	3OII	A	0.6073	0.6866	0.3354	158	217	pdb3oii.ent.gz	ESS
 GPK93_01g00390-m1-2v3jA	5	3OIN	A	0.6035	0.7288	0.3354	158	217	pdb3oin.ent.gz	ESSENTIAL FOR MITOTIC GROWTH 1
 ```
 
-#### Structural Visualization
+#### Structural visualization
 ##### Purpose
 Visually inspecting the predicted 3D structure of a protein is an important step in determing the validity of any identified structural homolog. Though a .pdb file may be obtained from RaptorX or trRosetta, the quality of the fold may be low. Alternatively, though GESAMT may return a structural homolog with a reasonable Q-score, the quality of the alignment may be low. A low fold/alignment-quality can result in both false-positives (finding a structural homolog when one doesn't exist) and false-negatives (not finding a structural homolog when one exists). Visually inspecting protein structures and structural homolog alignments is an easy way to prevent these outcomes. This can be done with the excellent [ChimeraX](https://www.rbvi.ucsf.edu/chimerax/) 3D protein visualization program.
 
