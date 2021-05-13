@@ -338,7 +338,7 @@ export RAPTORX="~/Microsporidia/intestinalis_50506/Annotations/3D/RaptorX"
 Visualize_PDB.pl \
     -m $RAPTORX/E_int_GESAMT_RESULTS.matches \
     -p $RAPTORX/Eintestinalis_proteins_PDB_20200121/PDB/ \
-    -r /media/FatCat/Databases/RCSB_PDB/PDB_UNZIPPED/ \
+    -r /media/FatCat/Databases/RCSB_PDB/PDB \
     -o $RAPTORX/EXAMPLE
 ```
 
@@ -347,7 +347,7 @@ If we only want to visualize the predicted 3D structures but not the alignment(s
 Visualize_PDB.pl \
     -m $RAPTORX/E_int_GESAMT_RESULTS.matches \
     -p $RAPTORX/Eintestinalis_proteins_PDB_20200121/PDB/ \
-    -r /media/FatCat/Databases/RCSB_PDB/PDB_UNZIPPED/ \
+    -r /media/FatCat/Databases/RCSB_PDB/PDB \
     -o $RAPTORX/EXAMPLE \
     -j
 ```
