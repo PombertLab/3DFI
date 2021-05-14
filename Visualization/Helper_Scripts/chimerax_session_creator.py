@@ -5,7 +5,7 @@ import argparse
 import re
 import os
 
-name = 'ChimeraX_Session_Creator.py'
+name = 'chimerax_session_creator.py'
 version = '0.1'
 updated = '2021-05-11'
 

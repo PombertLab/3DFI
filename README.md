@@ -330,21 +330,21 @@ An example of a false-positive, where the quality of the fold is high, but the a
 <p align="center"><img src="https://github.com/PombertLab/3DFI/blob/master/Misc/Bad_Match.png" alt="Example of a bad alignment" width="400"></p>
 
 ##### Process
-To prepare visualizations for inspection, we can use [Visualize_PDB.pl](https://github.com/PombertLab/3DFI/blob/master/Visualization/Visualize_PDB.pl) to automatically align predicted proteins with their GESAMT-determined structural homologs. These alignments are performed with [ChimeraX](https://www.rbvi.ucsf.edu/chimerax/) via its API.
+To prepare visualizations for inspection, we can use [prepare_visualizations.pl](https://github.com/PombertLab/3DFI/blob/master/Visualization/prepare_visualizations.pl) to automatically align predicted proteins with their GESAMT-determined structural homologs. These alignments are performed with [ChimeraX](https://www.rbvi.ucsf.edu/chimerax/) via its API.
 ```
 ## Creating shortcut to working directory
 export RAPTORX="~/Microsporidia/intestinalis_50506/Annotations/3D/RaptorX"
 
-Visualize_PDB.pl \
+prepare_visualizations.pl \
     -g $RAPTORX/E_int_GESAMT_RESULTS.matches \
     -p $RAPTORX/Eintestinalis_proteins_PDB_20200121/PDB/ \
     -r /media/FatCat/Databases/RCSB_PDB/PDB \
     -o $RAPTORX/EXAMPLE
 ```
 
-To inspect the 3D structures, we can run [Inspect_3D_Structures.pl](https://github.com/PombertLab/3DFI/blob/master/Visualization/Inspect_3D_Structures.pl):
+To inspect the 3D structures, we can run [inspect_3D_structures.pl](https://github.com/PombertLab/3DFI/blob/master/Visualization/inspect_3D_structures.pl):
 ```
-Inspect_3D_Structures.pl \
+inspect_3D_structures.pl \
     -v $RAPTORX/EXAMPLE
 ```
 

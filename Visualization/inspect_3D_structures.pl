@@ -2,7 +2,7 @@
 
 use strict; use warnings; use Getopt::Long qw(GetOptions); use File::Basename;
 
-my $name = "Inspect_3D_Structures.pl";
+my $name = "inspect_3D_structures.pl";
 my $version = "0.1";
 my $updated = "2021-05-11";
 
@@ -17,7 +17,7 @@ USAGE	${name} \\
 		  -v 3D_Visualizations
 
 OPTIONS
--v (--3D_vis)	Path to 3D visualizations directory ## created by 3D_visualizations.pl
+-v (--3D_vis)	Path to 3D visualizations directory ## created by prepare_visualizations.pl
 EXIT
 die("\n\n$usage\n\n") unless (@ARGV);
 
@@ -46,10 +46,10 @@ while (my $locus = readdir(EXT)){
 	}
 }
 
-open LOG, ">>", "$indir/Visualizations.notes";
+open LOG, ">>", "$indir/visualizations.notes";
 system "clear";
 my ($filename,$dir) = fileparse($0);
-my $script = "$dir/Helper_Scripts/Restore_ChimeraX_Session.py";
+my $script = "$dir/Helper_Scripts/restore_chimerax_session.py";
 ## Start visualization
 my @loci = sort(keys(%visuals));
 my $pos = 0;

@@ -2,7 +2,7 @@
 
 use strict; use warnings; use Getopt::Long qw(GetOptions); use File::Basename;
 
-my $name = "Visualize_PDB.pl";
+my $name = "prepare_visualizations.pl";
 my $version = "0.2";
 my $updated = "2021-05-13";
 
@@ -114,7 +114,7 @@ close MATCH;
 ## For each session create a visualization of the predicted pdb, and if given, the alignment between the predicted
 ## pdb and the matching RCSB chain
 my ($filename,$dir) = fileparse($0);
-my $script = "$dir/Helper_Scripts/ChimeraX_Session_Creator.py";
+my $script = "$dir/Helper_Scripts/chimerax_session_creator.py";
 foreach my $locus (sort(keys(%sessions))){
 	my $pred_file = $pred{$locus};
 	## If there are any matches with RCSB, create those visualizations 
