@@ -41,8 +41,8 @@ unless (-d $outdir){
 ## Defining niceness / verbosity
 my $prg = "";
 my $vb = "";
-if ($nice){	$prg = "nice -n $nice"; }
-if ($verbose) {	$vb = "-v"; }
+if ($nice){ $prg = "nice -n $nice"; }
+if ($verbose) { $vb = "-v"; }
 
 ## Running task with adjusted niceness, if desired
 system "$prg \\
