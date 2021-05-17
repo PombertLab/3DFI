@@ -192,7 +192,7 @@ update_PDB.pl \
   -v
 ```
 
-Options for update_PDB.pl](https://github.com/PombertLab/3DFI/blob/master/update_PDB.pl) are:
+Options for [update_PDB.pl](https://github.com/PombertLab/3DFI/blob/master/update_PDB.pl) are:
 ```
 -o (--outdir)	PDB output directory [Default: PDB]
 -n (--nice)	Defines niceness (adjusts scheduling priority)
