@@ -73,7 +73,7 @@ print LOG "3D Folding started on: $start\n";
 my $RAPTORX_PATH = '$RAPTORX_PATH';
 my $prev_dir = cwd();
 chomp($RAPTORX_PATH = `echo $RAPTORX_PATH`);
-chdir $RAPTORX_PATH or die "Can't access $RAPTORX_PATH: $!\n";
+chdir $RAPTORX_PATH or die "Can't access RAPTORX_PATH $RAPTORX_PATH: $!\n";
 
 ## Running RaptorX
 while (my $fasta = shift@fasta){
@@ -85,7 +85,6 @@ while (my $fasta = shift@fasta){
 		print "PDB has already been created for $fasta, moving to next file\n";
 		next;
 	}
-	
 	## Generating the feature file (.tgt)
 	print "Generating the .tgt file for $fasta\n";
 	system "buildFeature \\
