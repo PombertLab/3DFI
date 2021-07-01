@@ -389,7 +389,7 @@ Alternatively, selecting [2-6] will open the visualization of the alignment of t
 
 #### Miscellaneous 
 ###### Splitting multifasta files
-Single fasta files for structure prediction with raptorx.pl can be created with [split_Fasta.pl](https://github.com/PombertLab/3DFI/blob/master/split_Fasta.pl):
+Single FASTA files for protein structure prediction can be created with [split_Fasta.pl](https://github.com/PombertLab/3DFI/blob/master/split_Fasta.pl):
 ```
 split_Fasta.pl \
    -f file.fasta \
