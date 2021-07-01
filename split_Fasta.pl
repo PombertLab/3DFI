@@ -1,6 +1,6 @@
 #!/usr/bin/perl
 ## Pombert Lab 2020
-my $version = '0.3a';
+my $version = '0.4';
 my $name = 'split_Fasta.pl';
 my $updated = '2021-07-01';
 
@@ -11,8 +11,8 @@ my $USAGE = <<"OPTIONS";
 NAME		${name}
 VERSION		${version}
 UPDATED		${updated}
-SYNOPSIS	Splits a multifasta file into separate files, one per sequence. Has the additional
-		functionality to subdivide fasta sequences into various segments using a sliding window. 
+SYNOPSIS	Splits a multifasta file into separate files, one per sequence. Can
+		also subdivide fasta sequences into various segments using sliding windows. 
 		
 USAGE EXAMPLE	${name} \\
 		  -f file.fasta \\
@@ -53,12 +53,6 @@ unless (-d $out){
 	mkdir ($out,0755) or die "Can't create directory $out: $!\n";
 }
 
-if ($window){
-	unless (-d "$out/Windowed_Fastas"){
-		mkdir ("$out/Windowed_Fastas",0755) or die "Can't create directory $out/Windowed_Fastas: $!\n";
-	}
-}
-
 ## Open multifasta file
 my $gzip = '';
 if ($fasta =~ /.gz$/){ $gzip = ':gzip'; }
@@ -79,16 +73,21 @@ if ($gzip eq ':gzip'){
 
 ## Printing sequences
 for my $locus (keys(%sequences)){
-	open OUT, ">", "$out/$locus.$ext" or die "Can't open $locus.$ext in directory $out: $!\n";
-	print OUT ">$locus\n";
+
 	my $sequence = $sequences{$locus};
-	my @fsa = unpack ("(A60)*", $sequence);
-	while (my $fsa = shift @fsa){ 
-		print OUT "$fsa\n";
+
+	## Regular FASTA file, no sliding windows
+	unless ($window){
+		open OUT, ">", "$out/$locus.$ext" or die "Can't open $locus.$ext in directory $out: $!\n";
+		print OUT ">$locus\n";
+		my @fsa = unpack ("(A60)*", $sequence);
+		while (my $fsa = shift @fsa){ 
+			print OUT "$fsa\n";
+		}
+		close OUT;
 	}
-	close OUT;
 	
-	## Creating windowed fasta files if specified
+	## Creating FASTA files with sliding windows instead, if specified
 	my $buffer = scalar(split("",length($sequence)));
 	if ($window){
 		my $start = sprintf("%0${buffer}d",0);
@@ -106,7 +105,7 @@ for my $locus (keys(%sequences)){
 			}
 			my $subsequence = substr($sequence,$start,$end);
 			my @subfsa = unpack ("(A60)*",$subsequence);
-			open OUT, ">", "$out/Windowed_Fastas/${locus}_$start-$end.$ext" or die "Can't open ${locus}_$start-$end.$ext in directory $out/Windowed_Fastas: $!\n";
+			open OUT, ">", "$out/${locus}_$start-$end.$ext" or die "Can't open ${locus}_$start-$end.$ext in directory $out/: $!\n";
 			while (my $subfsa = shift(@subfsa)){
 				print OUT "$subfsa\n";
 			}
@@ -114,6 +113,7 @@ for my $locus (keys(%sequences)){
 				last ITER;
 			}
 			$start += ($window_size - $window_overlap);
+			$start = sprintf("%0${buffer}d", $start);
 		}
 	}
 }
