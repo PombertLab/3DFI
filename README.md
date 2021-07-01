@@ -397,11 +397,14 @@ split_Fasta.pl \
    -e fasta
 ```
 
-Options for [split_Fasta.pl](https://github.com/PombertLab/3DFI/blob/master/split_Fasta.pl) are:
+If desired, single sequences can further be subdivided into smaller segments using sliding windows. This can be useful for very large proteins, which can be difficult to fold computationally. Options for [split_Fasta.pl](https://github.com/PombertLab/3DFI/blob/master/split_Fasta.pl) are:
 ```
 -f (--fasta)	FASTA input file (supports gzipped files)
--o (--output)	Output directory; defaults to file name prefix
+-o (--output)	Output directory [Default: Split_Fasta]
 -e (--ext)	Desired file extension [Default: fasta]
+-w (--window)	Split individual fasta sequences into fragments using sliding windows [Default: off]
+-s (--size)	Size of the the sliding window [Default: 250 (aa)]
+-l (--overlap)	Sliding window overlap [Default: 100 (aa)]
 ```
 
 ###### Splitting PDB files
