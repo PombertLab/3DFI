@@ -1,8 +1,8 @@
 #!/usr/bin/perl
 ## Pombert Lab 2020
-my $version = '0.3';
+my $version = '0.3a';
 my $name = 'split_Fasta.pl';
-my $updated = '2021-06-04';
+my $updated = '2021-07-01';
 
 use strict; use warnings; use PerlIO::gzip; use Getopt::Long qw(GetOptions);
 
@@ -12,7 +12,7 @@ NAME		${name}
 VERSION		${version}
 UPDATED		${updated}
 SYNOPSIS	Splits a multifasta file into separate files, one per sequence. Has the additional
-			functionality to subdivide fasta sequences into various segments using a sliding window. 
+		functionality to subdivide fasta sequences into various segments using a sliding window. 
 		
 USAGE EXAMPLE	${name} \\
 		  -f file.fasta \\
@@ -26,7 +26,7 @@ OPTIONS:
 -f (--fasta)	FASTA input file (supports gzipped files)
 -o (--output)	Output directory [Default: Split_Fasta]
 -e (--ext)	Desired file extension [Default: fasta]
--w (--window)	Split individual fasta sequences into fragments using sliding window [Default: off]
+-w (--window)	Split individual fasta sequences into fragments using sliding windows [Default: off]
 -s (--size)	Size of the the sliding window [Default: 250 (aa)]
 -l (--overlap)	Sliding window overlap [Default: 100 (aa)]
 OPTIONS
@@ -53,7 +53,7 @@ unless (-d $out){
 	mkdir ($out,0755) or die "Can't create directory $out: $!\n";
 }
 
-if($window){
+if ($window){
 	unless (-d "$out/Windowed_Fastas"){
 		mkdir ("$out/Windowed_Fastas",0755) or die "Can't create directory $out/Windowed_Fastas: $!\n";
 	}
@@ -90,7 +90,7 @@ for my $locus (keys(%sequences)){
 	
 	## Creating windowed fasta files if specified
 	my $buffer = scalar(split("",length($sequence)));
-	if($window){
+	if ($window){
 		my $start = sprintf("%0${buffer}d",0);
 		my $remaining_aa = length($sequence);
 		ITER: while (0 == 0){
@@ -101,7 +101,7 @@ for my $locus (keys(%sequences)){
 			unless ($remaining_aa > $window_size){
 				$end =  sprintf("%0${buffer}d",length($sequence)-1);
 			}
-			else{
+			else {
 				$end = sprintf("%0${buffer}d", $start + $window_size);
 			}
 			my $subsequence = substr($sequence,$start,$end);
