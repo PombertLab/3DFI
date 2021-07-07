@@ -3,8 +3,8 @@
 use strict; use warnings; use Getopt::Long qw(GetOptions); use File::Basename;
 
 my $name = "prepare_visualizations.pl";
-my $version = "0.2";
-my $updated = "2021-05-13";
+my $version = "0.2a";
+my $updated = "2021-07-07";
 
 my $usage = << "EXIT";
 NAME	${name}
@@ -25,7 +25,7 @@ OPTIONS
 -p (--pred)	Absolute path to predicted .pdb files
 -r (--rcsb)	Absolute path to RCSB .ent.gz files
 -k (--keep)	Keep unzipped RCSB .ent files
--o (--outdir)	Output directory for ChimeraX sessions [Default: ./CXS]
+-o (--outdir)	Output directory for ChimeraX sessions [Default: ./3D_Visualizations]
 EXIT
 die("\n\n$usage\n\n") unless(@ARGV);
 
@@ -52,7 +52,7 @@ unless(-d $outdir){
 
 ## Load predicted pdb filenames into database
 my %pred;
-opendir(PRED,$pdb) or die("\n[ERROR]\tCan't open $pdb: $!\n");
+opendir (PRED,$pdb) or die "\n[ERROR]\tCan't open $pdb: $!\n";
 while (my $file = readdir(PRED)){
 	if ($file =~ /^(\w+)/){
 		my $pdb_locus = $1;
@@ -71,27 +71,30 @@ closedir PRED;
 my %db;
 if ($rcsb){
 	## Recurse through the RCSB PDB database
-	opendir(EXT,$rcsb) or die("\n[ERROR]\tCan't open $rcsb: $!\n");
+	opendir (EXT,$rcsb) or die "\n[ERROR]\tCan't open $rcsb: $!\n";
 	while (my $dir = readdir(EXT)){
-		opendir(INT,"$rcsb/$dir") or die("Can't open $rcsb/$dir: $!\n");
-		while (my $file = readdir(INT)){
-			## Store the absolute file path under the filename of the .ent.gz file
-			if ($file =~ /\w+/){
-				$db{$file} = "$rcsb/$dir/$file";
+		## Ignoring files, if any
+		unless (-f $dir){
+			opendir (INT,"$rcsb/$dir") or die "Can't open $rcsb/$dir: $!\n";
+			while (my $file = readdir(INT)){
+				## Store the absolute file path under the filename of the .ent.gz file
+				if ($file =~ /\w+/){
+					$db{$file} = "$rcsb/$dir/$file";
+				}
 			}
+			closedir INT;
 		}
-		closedir INT;
 	}
 	closedir EXT;
 }
 
 ## For each match, get the filename of the best match for RCSB
-open MATCH, "<", "$match_file" or die("Can't open $match_file: $!\n");
+open MATCH, "<", "$match_file" or die "Can't open $match_file: $!\n";
 my $match;
 my $locus_tag;
 my %sessions;
 while (my $line = <MATCH>){
-	chomp($line);
+	chomp $line;
 	## Check the PDB headers for proteins that are in the selection provided
 	if ($line =~ /^###/){
 		my $filename = (fileparse($line))[0];
@@ -99,14 +102,14 @@ while (my $line = <MATCH>){
 		if (-d "$outdir/$locus_tag"){
 			$match = 1;
 		}
-		else{
+		else {
 			$match = undef;
 		}
 	}
 	## Store the matching RCSB .ent.gz filepath  under the locus tag
-	elsif($match){
+	elsif ($match){
 		my ($pdb_file) = $line =~ /(pdb.+\.ent\.gz)/;
-		push(@{$sessions{$locus_tag}},"$db{$pdb_file}");
+		push (@{$sessions{$locus_tag}}, "$db{$pdb_file}");
 	}
 }
 close MATCH;
@@ -126,14 +129,14 @@ foreach my $locus (sort(keys(%sessions))){
 				my $temp = "$outdir/$locus/$rcsb_name.pdb";
 				system "zcat $match > $temp";
 				## ChimeraX API calling
-				system("chimerax --nogui $script \\
+				system "chimerax --nogui $script \\
 					-p $pred_file \\
 					-r $temp \\
 					-m $rcsb_name \\
 					-o $outdir/$locus"
-				);
+				;
 				## Remove temporary file unless explicitly told not to
-				unless($keep){
+				unless ($keep){
 					system "rm $temp";
 				}
 			}
@@ -143,7 +146,7 @@ foreach my $locus (sort(keys(%sessions))){
 
 ## Subroutines
 sub Check_Mand_Args{
-	die "\n[ERROR]\tGESAMT descriptive match file not provided\n\n$usage\n\n" unless($match_file);
-	die "\n[WARNING]\tRCSB PDB directory not provided, no comparison visualizations will be made" unless($rcsb);
-	die "\n[ERROR]\tPredicted PDB directory not provided\n\n$usage\n\n" unless($pdb);
+	die "\n[ERROR]\tGESAMT descriptive match file not provided\n\n$usage\n\n" unless $match_file;
+	die "\n[WARNING]\tRCSB PDB directory not provided, no comparison visualizations will be made" unless $rcsb;
+	die "\n[ERROR]\tPredicted PDB directory not provided\n\n$usage\n\n" unless $pdb;
 }
