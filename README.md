@@ -64,7 +64,7 @@ Options for raptorx.pl are:
 -m (--modeller)	MODELLER binary name [Default: mod10.1] ## Use absolute or relative path if not set in \$PATH
 ```
 
-NOTE: The blastpgp version provided with RaptorX is old and can cause segmentation faults on AMD ryzen CPUs. Replacing it with a newer version (like the one provided with [I-TASSER](https://zhanglab.dcmb.med.umich.edu/I-TASSER/download/) 5.1) should fix this.
+NOTE: The blastpgp version provided with RaptorX is old and can cause segmentation faults on AMD ryzen CPUs. Replacing it with a newer version (like the one provided with [I-TASSER 5.1](https://zhanglab.dcmb.med.umich.edu/I-TASSER/download/)) should fix this.
 
 ##### trRosetta - deep-learning-based protein structure modeling
 To perform 3D structure predictions locally with [trRosetta](https://github.com/gjoni/trRosetta), [tensorflow](https://www.tensorflow.org/) version 1.15, [HH-suite3](https://github.com/soedinglab/hh-suite) and [PyRosetta](http://www.pyrosetta.org/) must be installed. A database for HHsuite3's hhblits, such as [Uniclust](https://uniclust.mmseqs.com/), should also be installed. For ease of use, [tensorflow](https://www.tensorflow.org/) 1.15 can be installed in a conda environment.
