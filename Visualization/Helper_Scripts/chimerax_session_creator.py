@@ -6,8 +6,8 @@ import re
 import os
 
 name = 'chimerax_session_creator.py'
-version = '0.1'
-updated = '2021-05-11'
+version = '0.1.1'
+updated = '2021-07-08'
 
 usage = f'''
 NAME		{name}
@@ -52,10 +52,10 @@ locus_tag = os.path.basename(pred)
 locus_tag = re.findall("\w+",locus_tag)
 
 ## Load pdb files
-model_pred = run(session,f"open {pred}")[0][0]
+model_pred = run(session,f"open {pred}")[0]
 model_pred_name = (model_pred.id_string)
 
-model_rcsb = run(session,f"open {rcsb}")[0][0]
+model_rcsb = run(session,f"open {rcsb}")[0]
 model_rcsb_name = (model_rcsb.id_string)
 
 
