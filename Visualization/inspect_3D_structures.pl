@@ -19,7 +19,7 @@ USAGE	${name} \\
 OPTIONS
 -v (--3D_vis)	Path to 3D visualizations directory ## created by prepare_visualizations.pl
 EXIT
-die("\n\n$usage\n\n") unless (@ARGV);
+die "\n\n$usage\n\n" unless @ARGV;
 
 my $indir;
 
@@ -31,10 +31,10 @@ die "\n\n[ERROR]\tPath to 3D visualization directory required\n\n" unless ($indi
 
 ## Load all visuals into database for access/reaccess purposes
 my %visuals;
-opendir(EXT,$indir) or die "\n\n[ERROR]\tCan't open $indir: $!\n\n";
+opendir (EXT,$indir) or die "\n\n[ERROR]\tCan't open $indir: $!\n\n";
 while (my $locus = readdir(EXT)){
 	if (-d "$indir/$locus" && $locus =~ /\w+/){
-		opendir(INT,"$indir/$locus") or die "\n\n[ERROR]\tCan't open $indir/$locus: $!\n\n";
+		opendir (INT,"$indir/$locus") or die "\n\n[ERROR]\tCan't open $indir/$locus: $!\n\n";
 		my @files;
 		while (my $file = readdir(INT)){
 			if ($file =~ /\w+/){
@@ -68,7 +68,7 @@ LOOP: while (0==0){
 	if ($options > 1){
 		print "\t\t[1-$options] open corresponding file\n";
 	}
-	else{
+	else {
 		print "\t\t[1] to open .pdb file\n";
 	}
 	print "\t\t[a] advance to next locus tag\n";
@@ -76,7 +76,7 @@ LOOP: while (0==0){
 	print "\t\t[n] to create a note for locus tag\n";
 	print "\t\t[x] to exit 3D inspection\n\n";
 	print "\t\tSelection: ";
-	chomp(my $selection = <STDIN>);
+	chomp (my $selection = <STDIN>);
 	if ($selection eq 'a'){
 		system "clear";
 		$pos++;
@@ -102,18 +102,18 @@ LOOP: while (0==0){
 		}
 		system "clear";
 	}
-	elsif ($selection =~ /^[0-9]+$/ && 0 < $selection <= $options){
+	elsif (($selection =~ /^[0-9]+$/) && (0 < $selection) && ( $selection <= $options)){
 		unless ($selection <= $options){
 			system "clear";
-			print ("\n\n\t[ERROR] Invalid Choice: $selection\n");
+			print "\n\n\t[ERROR] Invalid Choice: $selection\n";
 		}
 		my $choice = @{$visuals{$loci[$pos]}}[$selection-1];
 		system "chimerax $indir/$loci[$pos]/$choice $script &";
 		system "clear";
 	}
-	else{
+	else {
 		system "clear";
-		print ("\n\n\t[ERROR] Invalid Choice: $selection\n");
+		print "\n\n\t[ERROR] Invalid Choice: $selection\n";
 	}
 }
 
