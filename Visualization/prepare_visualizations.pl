@@ -3,8 +3,8 @@
 use strict; use warnings; use Getopt::Long qw(GetOptions); use File::Basename;
 
 my $name = "prepare_visualizations.pl";
-my $version = "0.2a";
-my $updated = "2021-07-07";
+my $version = "0.2b";
+my $updated = "2021-07-08";
 
 my $usage = << "EXIT";
 NAME	${name}
@@ -27,7 +27,7 @@ OPTIONS
 -k (--keep)	Keep unzipped RCSB .ent files
 -o (--outdir)	Output directory for ChimeraX sessions [Default: ./3D_Visualizations]
 EXIT
-die("\n\n$usage\n\n") unless(@ARGV);
+die "\n\n$usage\n\n" unless @ARGV;
 
 my $match_file;
 my $pdb;
@@ -46,8 +46,8 @@ GetOptions(
 ## Check that all mandatory args have been provided
 Check_Mand_Args();
 
-unless(-d $outdir){
-	mkdir($outdir,0755) or die "\n[ERROR]\tUnable to create $outdir: $!\n";
+unless (-d $outdir){
+	mkdir ($outdir,0755) or die "\n[ERROR]\tUnable to create $outdir: $!\n";
 }
 
 ## Load predicted pdb filenames into database
@@ -62,7 +62,7 @@ while (my $file = readdir(PRED)){
 			mkdir ("$outdir/$pdb_locus",0755) or die "Can't create $outdir/$pdb_locus: $!\n";
 		}
 		## Link the pdb file to the locus directory
-		system "ln -sf $pdb/$file $outdir/$pdb_locus/$pdb_locus.pdb";
+		system "cp $pdb/$file $outdir/$pdb_locus/$pdb_locus.pdb";
 	}
 }
 closedir PRED;
@@ -121,9 +121,9 @@ my $script = "$dir/Helper_Scripts/chimerax_session_creator.py";
 foreach my $locus (sort(keys(%sessions))){
 	my $pred_file = $pred{$locus};
 	## If there are any matches with RCSB, create those visualizations 
-	if(scalar(@{$sessions{$locus}}) > 1){
+	if (scalar(@{$sessions{$locus}}) > 1){
 		foreach my $match (@{$sessions{$locus}}){
-			if($match){
+			if ($match){
 				my ($rcsb_name) = $match =~ /pdb(\w+).ent.gz$/;
 				## Create temporary unzipped version of RCSB file for ChimeraX session creation
 				my $temp = "$outdir/$locus/$rcsb_name.pdb";
