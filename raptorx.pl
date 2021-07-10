@@ -1,8 +1,8 @@
 #!/usr/bin/perl
 ## Pombert Lab 2019
-my $version = '0.4';
+my $version = '0.5';
 my $name = 'raptorx.pl';
-my $updated = '2021-05-12';
+my $updated = '2021-07-10';
 
 use strict; use warnings; use Getopt::Long qw(GetOptions); use Cwd;
 my @command = @ARGV; ## Keeping track of command line for log
@@ -46,33 +46,44 @@ GetOptions(
 	'm|modeller=s' => \$modeller
 );
 
-## Creating output folders
-unless (-d $out){mkdir ($out,0755) or die "Can't create output folder $out: $!\n";}
-unless (-d "$out/TGT"){mkdir ("$out/TGT",0755) or die "Can't create output folder $out/TGT: $!\n";}
-unless (-d "$out/RANK"){mkdir ("$out/RANK",0755) or die "Can't create output folder $out/RANK: $!\n";}
-unless (-d "$out/PDB"){mkdir ("$out/PDB",0755) or die "Can't create output folder $out/PDB: $!\n";}
-unless (-d "$out/CNFPRED"){mkdir ("$out/CNFPRED",0755) or die "Can't create output folder $out/CNFPRED: $!\n";}
+## Checking for the presence of MODELLER
+my $check_modeller = `which $modeller`;
+chomp $check_modeller;
+unless ($check_modeller =~ /$modeller/){
+	print "\n\nCannot find MODELLER version: $modeller in the PATH. Please check if MODELLER is installed.\n\n";
+	exit;
+}
 
 ## Reading from folder
+print "DIR = $dir\n";
 opendir (DIR, $dir) or die "Can't open FASTA input directory $dir: $!\n";
 my @fasta;
 while (my $fasta = readdir(DIR)){
 	if ($fasta =~ /\w+/){ 
-		push(@fasta,$fasta);
+		push (@fasta,$fasta);
 	}
 }
-@fasta = sort@fasta;
+@fasta = sort @fasta;
 closedir DIR;
 
+## Creating output folders
+unless (-d $out){ mkdir ($out,0755) or die "Can't create output folder $out: $!\n"; }
+unless (-d "$out/TGT"){ mkdir ("$out/TGT",0755) or die "Can't create output folder $out/TGT: $!\n"; }
+unless (-d "$out/RANK"){ mkdir ("$out/RANK",0755) or die "Can't create output folder $out/RANK: $!\n"; }
+unless (-d "$out/PDB"){ mkdir ("$out/PDB",0755) or die "Can't create output folder $out/PDB: $!\n"; }
+unless (-d "$out/CNFPRED"){ mkdir ("$out/CNFPRED",0755) or die "Can't create output folder $out/CNFPRED: $!\n"; }
+
+## Creating LOG file
 my $start = localtime(); my $tstart = time;
 open LOG, ">", "$out/raptorx.log";
 print LOG "COMMAND LINE:\nraptorx.pl @command\n"."raptorx.pl version = $version\n";
 print LOG "Using MODELLER binary version $modeller\n";
 print LOG "3D Folding started on: $start\n";
 
+## Checking for RaptorX path variable
 my $RAPTORX_PATH = '$RAPTORX_PATH';
 my $prev_dir = cwd();
-chomp($RAPTORX_PATH = `echo $RAPTORX_PATH`);
+chomp ($RAPTORX_PATH = `echo $RAPTORX_PATH`);
 chdir $RAPTORX_PATH or die "Can't access RAPTORX_PATH $RAPTORX_PATH: $!\n";
 
 ## Running RaptorX
