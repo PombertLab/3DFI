@@ -44,13 +44,15 @@ Although predicting the structure of a protein and searching for structural homo
 ### Howto
 #### 3D structure prediction
 ##### RaptorX - template-based protein structure modeling
-To perform 3D structure predictions locally with [RaptorX](http://raptorx.uchicago.edu/), the standalone programs should be [downloaded](http://raptorx.uchicago.edu/download/) and installed according to the authors’ instructions. Using RaptorX also requires [MODELLER](https://salilab.org/modeller/). To help with their installation, the [raptorx_installation_notes.sh](https://github.com/PombertLab/3DFI/blob/master/raptorx_installation_notes.sh) is provided, to be edited according to 
+To perform 3D structure predictions locally with [RaptorX](http://raptorx.uchicago.edu/), the standalone programs should be [downloaded](http://raptorx.uchicago.edu/download/) and installed according to the authors’ instructions. Using RaptorX also requires [MODELLER](https://salilab.org/modeller/). To help with their installation, the [raptorx_installation_notes.sh](https://github.com/PombertLab/3DFI/blob/master/raptorx_installation_notes.sh) is provided, with installation directories to be edited according user preferences.
 
-Input files (in FASTA format) and the output location of the structures to be predicted can be specified with [raptorx.pl](https://github.com/PombertLab/3DFI/blob/master/raptorx.pl):
+To run raptorx from anywhere with [raptorx.pl](https://github.com/PombertLab/3DFI/blob/master/raptorx.pl), the environment variable RAPTORX_PATH should set:
 ```Bash
-
 export RAPTORX_PATH=/path/to/raptorx_installation
+```
 
+To predict 3D structures with [RaptorX](http://raptorx.uchicago.edu/) using [raptorx.pl](https://github.com/PombertLab/3DFI/blob/master/raptorx.pl):
+```
 raptorx.pl \
    -t 10 \
    -k 2 \
