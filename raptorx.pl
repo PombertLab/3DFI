@@ -55,7 +55,6 @@ unless ($check_modeller =~ /$modeller/){
 }
 
 ## Reading from folder
-print "DIR = $dir\n";
 opendir (DIR, $dir) or die "Can't open FASTA input directory $dir: $!\n";
 my @fasta;
 while (my $fasta = readdir(DIR)){
