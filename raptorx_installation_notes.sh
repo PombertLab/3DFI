@@ -35,7 +35,7 @@ RX=/opt/RaptorX/
 ## Note: ~ 80 Gb of disk space will be required
 DB=/opt/RaptorX_databases/
 
-## Path to dowloaded RaptorX installation files
+## Path to downloaded RaptorX installation files
 FILES=/mnt/hgfs/RaptorX_installation_files/
 
 ## Creating installation directories
