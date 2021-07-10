@@ -14,8 +14,9 @@ sudo env KEY_MODELLER=$LICENSE dpkg -i $MODELLER
 # MODELLER=modeller-10.1-1.x86_64.rpm
 # sudo env KEY_MODELLER=$LICENSE rpm -Uvh $MODELLER
 
-##### http://raptorx.uchicago.edu/download/
-##### RaptorX installation files required:
+##### Installing RaptorX 
+## http://raptorx.uchicago.edu/download/
+## RaptorX installation files required:
 # CNFsearch1.66_complete.zip
 # nr70.tar.gz
 # nr90.tar.gz
