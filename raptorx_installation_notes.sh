@@ -74,3 +74,31 @@ rm *.tar.gz
 ## Adding PATH variables to user bashrc
 echo "export PATH=$PATH:$RX" >> ~/.bashrc
 echo "export RAPTORX_PATH=$RX" >> ~/.bashrc
+
+## Checking for $PYTHONHOME and python2.7, python, or python3
+if [ -n "$PYTHONHOME" ];
+    then
+    echo "Found PYTHONHOME set to $PYTHONHOME, leaving it as is";
+    else
+        if [ -n "$(which python2.7)" ];
+            then
+                echo "found python2.7 = $(which python2.7)";
+                PYTHONHOME=$(which python2.7 | sed 's/\/python.*//');
+                echo "setting PYTHONHOME to $PYTHONHOME";
+                echo "export PYTHONHOME=$PYTHONHOME" >> ~/.bashrc
+        elif [ -n "$(which python)" ];
+            then
+                echo "found python = $(which python)";
+                PYTHONHOME=$(which python | sed 's/\/python.*//');
+                echo "setting PYTHONHOME to $PYTHONHOME";
+                echo "export PYTHONHOME=$PYTHONHOME" >> ~/.bashrc
+        elif [ -n "$(which python3)" ];
+            then
+                echo "found python3 = $(which python3)";
+                PYTHONHOME=$(which python3 | sed 's/\/python.*//');
+                echo "setting PYTHONHOME to $PYTHONHOME";
+                echo "export PYTHONHOME=$PYTHONHOME" >> ~/.bashrc
+        else
+            echo "Python not detected. Please check manually"
+        fi
+fi
