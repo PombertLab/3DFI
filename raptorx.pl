@@ -1,8 +1,8 @@
 #!/usr/bin/perl
 ## Pombert Lab 2019
-my $version = '0.5';
+my $version = '0.5a';
 my $name = 'raptorx.pl';
-my $updated = '2021-07-10';
+my $updated = '2021-07-12';
 
 use strict; use warnings; use Getopt::Long qw(GetOptions); use Cwd;
 my @command = @ARGV; ## Keeping track of command line for log
@@ -90,7 +90,7 @@ while (my $fasta = shift@fasta){
 	my $pstart = time;
 	my ($protein, $ext) = $fasta =~ /^(\S+?).(\w+)$/;
 
-	if(-e "$prev_dir/$out/PDB/$protein.pdb"){
+	if (-e "$prev_dir/$out/PDB/$protein.pdb"){
 		print LOG "PDB has already been created for $fasta, moving to next file\n";
 		print "PDB has already been created for $fasta, moving to next file\n";
 		next;
@@ -100,8 +100,7 @@ while (my $fasta = shift@fasta){
 	system "buildFeature \\
 	  -i $prev_dir/$dir/$fasta \\
 	  -o $prev_dir/$out/TGT/$protein.tgt \\
-	  -c $threads"
-	;
+	  -c $threads";
 
 	unless (-e "tmp/$protein.acc"){
 		print "$fasta failed to predict, moving to next protein\n";
@@ -131,16 +130,15 @@ while (my $fasta = shift@fasta){
 		system "CNFalign_lite \\
 		  -t $models[$_] \\
 		  -q $protein \\
-		  -d $prev_dir/$out"
-		;
+		  -g $prev_dir/$out/TGT \\
+		  -d $prev_dir/$out";
 	}
 	
 	## Creating 3D modelsq
 	system "buildTopModels \\
 		-i $prev_dir/$out/RANK/$protein.rank \\
 		-k $topk \\
-		-m $modeller"
-	;	
+		-m $modeller";
 
 	my $run_time = time - $tstart; ## Cumulative time elapsed
 	my $pfold_time = time - $pstart; ## Time elapsed per protein
