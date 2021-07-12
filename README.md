@@ -69,7 +69,7 @@ Options for raptorx.pl are:
 ```
 
 NOTES:
-- The blastpgp version provided with RaptorX is old and can cause segmentation faults on AMD ryzen CPUs. Replacing it with a newer version (like the one provided with [I-TASSER 5.1](https://zhanglab.dcmb.med.umich.edu/I-TASSER/download/)) should fix this.
+- If segmentation faults occur with AMD ryzen CPUs with the blastpgp version provided with the RaptorX CNFsearch1.66_complete package (under util/BLAST), replace it with the latest BLAST legacy version available from [NCBI](https://ftp.ncbi.nlm.nih.gov/blast/executables/legacy.NOTSUPPORTED/2.2.26/).
 - The following error message about 6f45D can be safely ignored; it refers to a problematic file in the RaptorX database set but does not impede folding. To silence this error message, see how to remove references to 6f45D in [raptorx_installation_notes.sh](https://github.com/PombertLab/3DFI/blob/master/raptorx_installation_notes.sh).
 ```
 .....CONTENT BAD AT TEMPLATE FILE /path/to/RaptorX_databases/TPL_BC100//6f45D.tpl -> [FEAT line 115 CA_contact 21]
