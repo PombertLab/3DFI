@@ -70,7 +70,7 @@ Options for raptorx.pl are:
 
 NOTES:
 - The blastpgp version provided with RaptorX is old and can cause segmentation faults on AMD ryzen CPUs. Replacing it with a newer version (like the one provided with [I-TASSER 5.1](https://zhanglab.dcmb.med.umich.edu/I-TASSER/download/)) should fix this.
-- The following error message can be safely ignored:
+- The following error message can be safely ignored and does not impede folding. It refers to a problematic file in the the raptorx database set.
 ```
 .....CONTENT BAD AT TEMPLATE FILE /path/to/RaptorX_databases/TPL_BC100//6f45D.tpl -> [FEAT line 115 CA_contact 21]
 template file 6f45D format bad or missing
