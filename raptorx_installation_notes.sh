@@ -69,7 +69,7 @@ mv pdb_BC40 pdb_BC100
 ## Creating the reference_tpl_list
 ls CAL_TPL/*.tpl | awk -F/ '{print $2}' | awk -F\. '{print $1}' > reference_tpl_list
 ## Deleting references to corrupted 6f45D.tpl file
-rm $DB/TPL_BC100/6f45D.tpl
+rm -f $DB/TPL_BC100/6f45D.tpl
 for v in {40,70,90,100}; do
   sed -i '/6f45D/d' $DB/bc${v}_list;
   sed -i '/6f45D/d' $DB/bc${v}_map;
