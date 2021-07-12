@@ -54,7 +54,7 @@ chmod -R 775 $RX
 ## setup.pl from the CNFsearch1.66_complete package replaces the /home/wangsheng/CNFsearch_Release/CNFsearch1.6
 ## hard links from its shell and Perl scripts by the current installation directory
 
-## Creating symlink to databases
+### Creating symlink to databases
 rm -R $RX/databases
 ln -s $DB $RX/databases
 
@@ -66,6 +66,9 @@ mkdir NR_new
 mv nr?0* NR_new/
 mv TPL_BC40 TPL_BC100
 mv pdb_BC40 pdb_BC100
+## Creating the reference_tpl_list
+ls CAL_TPL/*.tpl | awk -F/ '{print $2}' | awk -F\. '{print $1}' > reference_tpl_list
+## Deleting tar files
 rm *.tar.gz
 
 ## Adding PATH variables to user bashrc
