@@ -58,7 +58,7 @@ chmod -R 775 $RX
 rm -R $RX/databases
 ln -s $DB $RX/databases
 
-## Decompressing databases
+### Decompressing databases
 cp $FILES/*.tar.gz $DB
 cd $DB
 for file in *.tar.gz; do tar -zxvf $file; done
@@ -68,7 +68,7 @@ mv TPL_BC40 TPL_BC100
 mv pdb_BC40 pdb_BC100
 ## Creating the reference_tpl_list
 ls CAL_TPL/*.tpl | awk -F/ '{print $2}' | awk -F\. '{print $1}' > reference_tpl_list
-## Deleting corrupted .tpl file
+## Deleting references to corrupted 6f45D.tpl file
 rm $DB/TPL_BC100/6f45D.tpl
 for v in {40,70,90,100}; do
   sed -i '/6f45D/d' $DB/bc${v}_list;
@@ -77,11 +77,11 @@ done
 ## Deleting tar files
 rm *.tar.gz
 
-## Adding PATH variables to user bashrc
+### Adding PATH variables to user bashrc
 echo "export PATH=$PATH:$RX" >> ~/.bashrc
 echo "export RAPTORX_PATH=$RX" >> ~/.bashrc
 
-## Checking for $PYTHONHOME and python2.7, python, or python3
+### Checking for $PYTHONHOME and python2.7, python, or python3
 if [ -n "$PYTHONHOME" ];
     then
     echo "Found PYTHONHOME set to $PYTHONHOME, leaving it as is";
