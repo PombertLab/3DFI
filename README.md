@@ -75,6 +75,12 @@ NOTES:
 .....CONTENT BAD AT TEMPLATE FILE /path/to/RaptorX_databases/TPL_BC100//6f45D.tpl -> [FEAT line 115 CA_contact 21]
 template file 6f45D format bad or missing
 ```
+- RaptorX expects a PYTHONHOME environment variable but runs fines without it. The following error message can be safely ignored and silenced by setting up a $PYTHONHOME variable.
+```
+Could not find platform independent libraries <prefix>
+Could not find platform dependent libraries <exec_prefix>
+Consider setting $PYTHONHOME to <prefix>[:<exec_prefix>]
+```
 
 
 ##### trRosetta - deep-learning-based protein structure modeling
