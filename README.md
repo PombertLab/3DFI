@@ -70,20 +70,21 @@ Options for raptorx.pl are:
 
 NOTES:
 - If segmentation faults occur on AMD ryzen CPUs with the blastpgp version provided with the RaptorX CNFsearch1.66_complete.zip package (under util/BLAST), replace it with the latest BLAST legacy version (2.2.26) from [NCBI](https://ftp.ncbi.nlm.nih.gov/blast/executables/legacy.NOTSUPPORTED/2.2.26/).
-- The following error message about 6f45D can be safely ignored; it refers to a problematic file in the RaptorX datasets but does not impede folding. To silence this error message, see how to remove references to 6f45D in [raptorx_installation_notes.sh](https://github.com/PombertLab/3DFI/blob/master/raptorx_installation_notes.sh).
+
+- The following warning message about 6f45D can be safely ignored; it refers to a problematic file in the RaptorX datasets but does not impede folding. To silence this error message, see how to remove references to 6f45D in [raptorx_installation_notes.sh](https://github.com/PombertLab/3DFI/blob/master/raptorx_installation_notes.sh).
 ```
 .....CONTENT BAD AT TEMPLATE FILE /path/to/RaptorX_databases/TPL_BC100//6f45D.tpl -> [FEAT line 115 CA_contact 21]
 template file 6f45D format bad or missing
 ```
-- RaptorX expects a PYTHONHOME environment variable but runs fine without it. The following error message can be safely ignored, and silenced by setting up a $PYTHONHOME variable.
+- RaptorX expects a PYTHONHOME environment variable but runs fine without it. The following warning message can be safely ignored, and silenced by setting up a $PYTHONHOME variable.
 ```
 Could not find platform independent libraries <prefix>
 Could not find platform dependent libraries <exec_prefix>
 Consider setting $PYTHONHOME to <prefix>[:<exec_prefix>]
 ```
-- The 'import site' error below can also be safely ignored:
+- The import site warning message below can also be safely ignored:
 ```
-import site' failed; use -v for traceback
+'import site' failed; use -v for traceback
 ```
 
 
