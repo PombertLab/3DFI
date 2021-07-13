@@ -81,6 +81,7 @@ Could not find platform independent libraries <prefix>
 Could not find platform dependent libraries <exec_prefix>
 Consider setting $PYTHONHOME to <prefix>[:<exec_prefix>]
 ```
+- The *'import site' failed; use -v for traceback* error can also be safely ignored.
 
 
 ##### trRosetta - deep-learning-based protein structure modeling
