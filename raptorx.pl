@@ -132,12 +132,12 @@ while (my $fasta = shift@fasta){
 	## Populating list of top models from .rank file
 	open IN, "<", "$prev_dir/$out/RANK/$protein.rank";
 	my @models;
-		while (my $line = <IN>){
-			chomp $line;
-			if ($line =~ />(\w+)$/){
-				push (@models, $1);
-			}
+	while (my $line = <IN>){
+		chomp $line;
+		if ($line =~ />(\w+)$/){
+			push (@models, $1);
 		}
+	}
 
 	## Aligning fasta to top k models
 	$time = localtime;
