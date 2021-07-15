@@ -28,19 +28,21 @@ sudo env KEY_MODELLER=$LICENSE dpkg -i $MODELLER
 # CAL_TGT.tar.gz
 # CAL_TPL.tar.gz
 
-## Path where RaptorX will be installed
+## Path where RaptorX will be installed; replace with desired location
 RX=/opt/RaptorX/
 
-## Path where RaptorX databases will be installed
+## Path where RaptorX databases will be installed; replace with desired location
 ## Note: ~ 80 Gb of disk space will be required
 DB=/opt/RaptorX_databases/
 
-## Path to downloaded RaptorX installation files
-FILES=/mnt/hgfs/RaptorX_installation_files/
+## Path to downloaded RaptorX installation files; replace with proper location
+FILES=~/Downloads/
 
 ## Creating installation directories
-mkdir $RX
-mkdir $DB
+mkdir $RX $DB
+## sudo -s mkdir $RX $DB
+## if $RX $DB located in permission-restricted location:
+
 
 ##### RaptorX (CNFsearch1.66_complete.zip)
 cp $FILES/CNFsearch1.66_complete.zip $RX
@@ -60,6 +62,8 @@ ln -s $DB $RX/databases
 
 ### Decompressing databases
 cp $FILES/*.tar.gz $DB
+## mv $FILES/*.tar.gz $DB
+## use either cp or mv to keep (copy) or delete (move) the downloaded files in $FILES
 cd $DB
 for file in *.tar.gz; do tar -zxvf $file; done
 mkdir NR_new
@@ -75,7 +79,7 @@ for v in {40,70,90,100}; do
   sed -i '/6f45D/d' $DB/bc${v}_map;
 done
 ## Deleting tar files
-rm *.tar.gz
+rm -f *.tar.gz
 
 ### Adding PATH variables to user bashrc
 echo "export PATH=$PATH:$RX" >> ~/.bashrc
