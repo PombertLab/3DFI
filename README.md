@@ -34,7 +34,7 @@ To perform structure-based predictions we need 3D structures —either determine
 Although predicting the structure of a protein and searching for structural homologs can be done online, for example by using [SWISS-MODEL](https://swissmodel.expasy.org/) and [PDBeFold](https://www.ebi.ac.uk/msd-srv/ssm/), genomes often code for thousands of proteins and applying this approach on a genome scale would be time consuming and error prone. We implemented the 3DFI pipeline to enable the use of structure-based homology searches at a genome-wide level.
 
 #### Requirements
-Requirements to perform structural homology searches locally with 3DFI are as follows. 
+Requirements to perform 3D structure prediction, structural homology searches and data visualization locally with 3DFI are as follows:
 1. At least one of the following protein structure prediction tools:
 	- [RaptorX](http://raptorx.uchicago.edu/) (Template-based predictions)
 	- [trRosetta](https://github.com/gjoni/trRosetta) (Deep-learning-based predictions) 
