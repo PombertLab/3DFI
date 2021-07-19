@@ -221,7 +221,7 @@ Options for [sanitize_pdb.pl](https://github.com/PombertLab/3DFI/blob/master/trR
 ```
 
 ##### AlphaFold2 - deep-learning-based protein structure modeling
-How to set up [AlphaFold2](https://github.com/deepmind/alphafold) to run as a docker image is described on their GitHub page. The [alphafold.pl](https://github.com/PombertLab/3DFI/blob/master/AlphaFold2/alphafold.pl) is a Perl wrapper that enables running AlphaFold2 in batch mode. To simplify its use, the ALPHA_IN and ALPHA_OUT environment variables can be set.
+How to set up [AlphaFold2](https://github.com/deepmind/alphafold) to run as a docker image is described on its GitHub page. The [alphafold.pl](https://github.com/PombertLab/3DFI/blob/master/AlphaFold2/alphafold.pl) is a Perl wrapper that enables running AlphaFold2 in batch mode. To simplify its use, the ALPHA_IN and ALPHA_OUT environment variables can be set.
 
 ```bash
 export ALPHA_IN=/path_to/AlphaFold2_installation_folder
