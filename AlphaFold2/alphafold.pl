@@ -1,7 +1,7 @@
 #!/usr/bin/perl
 ## Pombert Lab, Illinois Tech, 2021
 my $name = 'alphafold.pl';
-my $version = '0.2a';
+my $version = '0.2b';
 my $updated = '2021-07-19';
 
 use strict; use warnings; use Getopt::Long qw(GetOptions); use File::Basename; use POSIX qw(strftime);
@@ -103,37 +103,45 @@ while (my $fasta = shift @fasta){
 	my $basename = fileparse($fasta);
 	my ($prefix) = $basename =~ /^(.*)\.\w+$/;
 
-	# Timestamp
-	my $time = localtime;
-	print "\n$time: working on $fasta\n";
-	my $start = time;
-
-	# Folding
-	system "python3 \\
-		$alpha_in/docker/run_docker.py \\
-		--fasta_paths=$fasta \\
-		--max_template_date=$max_date \\
-		$preset";
-
-	# Checking permissions:
-	# if docker image is ran with --privileged=True files will be owned by the root
-	# if so, use cp instead of mv
-	if (-w "$alpha_out/$prefix"){
-		system "mv \\
-			$alpha_in/$prefix \\
-			$outdir/";
+	## Checking if proteins structures are already present in output dir
+	if (-d "$outdir/$prefix"){
+		print "\nOutput found for $basename. Skipping folding...\n";
+		print LOG "Output found for $basename. Skipping folding...\n";
+		next;
 	}
-	else { # Copying results to outdir
-		system "cp -R \\
-			$alpha_out/$prefix \\
-			$outdir/";
-	}
+	else {
+		# Timestamp
+		my $time = localtime;
+		print "\n$time: working on $fasta\n";
+		my $start = time;
 
-	my $run_time = time - $start;
-	$run_time = $run_time/60;
-	$run_time = sprintf ("%.2f", $run_time);
-	print "\nTime to fold $basename: $run_time minutes\n";
-	print LOG "Time to fold $basename: $run_time minutes\n";
+		# Folding
+		system "python3 \\
+			$alpha_in/docker/run_docker.py \\
+			--fasta_paths=$fasta \\
+			--max_template_date=$max_date \\
+			$preset";
+
+		# Checking permissions:
+		# if docker image is ran with --privileged=True files will be owned by the root
+		# if so, use cp instead of mv
+		if (-w "$alpha_out/$prefix"){
+			system "mv \\
+				$alpha_in/$prefix \\
+				$outdir/";
+		}
+		else { # Copying results to outdir
+			system "cp -R \\
+				$alpha_out/$prefix \\
+				$outdir/";
+		}
+
+		my $run_time = time - $start;
+		$run_time = $run_time/60;
+		$run_time = sprintf ("%.2f", $run_time);
+		print "\nTime to fold $basename: $run_time minutes\n";
+		print LOG "Time to fold $basename: $run_time minutes\n";
+	}
 }
 
 close LOG;
