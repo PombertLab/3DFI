@@ -103,7 +103,7 @@ while (my $fasta = shift @fasta){
 	my $basename = fileparse($fasta);
 	my ($prefix) = $basename =~ /^(.*)\.\w+$/;
 
-	## Checking if proteins structures are already present in output dir
+	## Checking if protein structures are already present in output dir
 	if (-d "$outdir/$prefix"){
 		print "\nOutput found for $basename. Skipping folding...\n";
 		print LOG "Output found for $basename. Skipping folding...\n";
