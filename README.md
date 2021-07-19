@@ -55,14 +55,14 @@ Requirements to perform structural homology searches with 3DFI are as follows.
 ### Howto
 #### 3D structure prediction
 ##### RaptorX - template-based protein structure modeling
-To perform 3D structure predictions locally with [RaptorX](http://raptorx.uchicago.edu/), the standalone programs should be [downloaded](http://raptorx.uchicago.edu/download/) and installed according to the authors’ instructions. Using RaptorX also requires [MODELLER](https://salilab.org/modeller/). To help with their installation, the [raptorx_installation_notes.sh](https://github.com/PombertLab/3DFI/blob/master/raptorx_installation_notes.sh) is provided, with source and installation directories to be edited according to user preferences.
+To perform 3D structure predictions locally with [RaptorX](http://raptorx.uchicago.edu/), the standalone programs should be [downloaded](http://raptorx.uchicago.edu/download/) and installed according to the authors’ instructions. Using RaptorX also requires [MODELLER](https://salilab.org/modeller/). To help with their installation, the [raptorx_installation_notes.sh](https://github.com/PombertLab/3DFI/blob/master/RaptorX/raptorx_installation_notes.sh) is provided, with source and installation directories to be edited according to user preferences.
 
-To run [RaptorX](http://raptorx.uchicago.edu/) from anywhere with [raptorx.pl](https://github.com/PombertLab/3DFI/blob/master/raptorx.pl), the environment variable RAPTORX_PATH should be set first:
+To run [RaptorX](http://raptorx.uchicago.edu/) from anywhere with [raptorx.pl](https://github.com/PombertLab/3DFI/blob/master/RaptorX/raptorx.pl), the environment variable RAPTORX_PATH should be set first:
 ```Bash
 export RAPTORX_PATH=/path/to/raptorx_installation
 ```
 
-To predict 3D structures with [RaptorX](http://raptorx.uchicago.edu/) using [raptorx.pl](https://github.com/PombertLab/3DFI/blob/master/raptorx.pl):
+To predict 3D structures with [RaptorX](http://raptorx.uchicago.edu/) using [raptorx.pl](https://github.com/PombertLab/3DFI/blob/master/RaptorX/raptorx.pl):
 ```
 raptorx.pl \
    -t 10 \
@@ -82,7 +82,7 @@ Options for raptorx.pl are:
 NOTES:
 - If segmentation faults occur on AMD ryzen CPUs with the blastpgp version provided with the RaptorX CNFsearch1.66_complete.zip package (under util/BLAST), replace it with the latest BLAST legacy version (2.2.26) from [NCBI](https://ftp.ncbi.nlm.nih.gov/blast/executables/legacy.NOTSUPPORTED/2.2.26/).
 
-- The following warning message about 6f45D can be safely ignored; it refers to a problematic file in the RaptorX datasets but does not impede folding. To silence this error message, see how to remove references to 6f45D in [raptorx_installation_notes.sh](https://github.com/PombertLab/3DFI/blob/master/raptorx_installation_notes.sh).
+- The following warning message about 6f45D can be safely ignored; it refers to a problematic file in the RaptorX datasets but does not impede folding. To silence this error message, see how to remove references to 6f45D in [raptorx_installation_notes.sh](https://github.com/PombertLab/3DFI/blob/master/RaptorX/raptorx_installation_notes.sh).
 ```
 .....CONTENT BAD AT TEMPLATE FILE /path/to/RaptorX_databases/TPL_BC100//6f45D.tpl -> [FEAT line 115 CA_contact 21]
 template file 6f45D format bad or missing
