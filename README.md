@@ -221,7 +221,7 @@ Options for [sanitize_pdb.pl](https://github.com/PombertLab/3DFI/blob/master/trR
 ```
 
 ##### AlphaFold2 - deep-learning-based protein structure modeling
-How to set up [AlphaFold2](https://github.com/deepmind/alphafold) to run as a docker image is described on their GitHub page. ##### WORK IN PROGESS #####
+How to set up [AlphaFold2](https://github.com/deepmind/alphafold) to run as a docker image is described on their GitHub page. ##### WORK IN PROGRESS #####
 
 #### Downloading PDB files from RCSB
 PDB files from the [Protein Data Bank](https://www.rcsb.org/) can be downloaded directly from its website. Detailed instructions are provided [here](https://www.wwpdb.org/ftp/pdb-ftp-sites). Because of the large size of this dataset, downloading it using [rsync](https://rsync.samba.org/) is recommended. This can be done with [update_PDB.pl](https://github.com/PombertLab/3DFI/blob/master/update_PDB.pl) as follows:
