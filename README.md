@@ -221,7 +221,29 @@ Options for [sanitize_pdb.pl](https://github.com/PombertLab/3DFI/blob/master/trR
 ```
 
 ##### AlphaFold2 - deep-learning-based protein structure modeling
-How to set up [AlphaFold2](https://github.com/deepmind/alphafold) to run as a docker image is described on their GitHub page. ##### WORK IN PROGRESS #####
+How to set up [AlphaFold2](https://github.com/deepmind/alphafold) to run as a docker image is described on their GitHub page. The [alphafold.pl](https://github.com/PombertLab/3DFI/blob/master/AlphaFold2/alphafold.pl) is a Perl wrapper that enables running AlphaFold2 in batch mode. To simplify its use, the ALPHA_IN and ALPHA_OUT environment variables can be set.
+```bash
+export ALPHA_IN=/path_to/AlphaFold2_installation_folder
+export ALPHA_OUT=/path_to/AlphaFold2_output_folder
+```
+
+To run [alphafold.pl](https://github.com/PombertLab/3DFI/blob/master/AlphaFold2/alphafold.pl) on multiple fasta files, type:
+```
+alphafold.pl \
+   -f *.fasta \
+   -o FASTA_3D_ALPHAFOLD/
+```
+
+Options for [alphafold.pl](https://github.com/PombertLab/3DFI/blob/master/AlphaFold2/alphafold.pl) are:
+```
+-f (--fasta)		FASTA files to fold
+-o (--outdir)		Output directory
+-m (--max_date)		--max_template_date option (YYYY-MM-DD) from AlphaFold2 [Default: current date]
+-c (--casp14)		CASP14 preset flag
+-ai (--alpha_in)	AlphaFold2 installation directory
+-ao (--alpha_out)	AlphaFold2 output directory
+```
+
 
 #### Downloading PDB files from RCSB
 PDB files from the [Protein Data Bank](https://www.rcsb.org/) can be downloaded directly from its website. Detailed instructions are provided [here](https://www.wwpdb.org/ftp/pdb-ftp-sites). Because of the large size of this dataset, downloading it using [rsync](https://rsync.samba.org/) is recommended. This can be done with [update_PDB.pl](https://github.com/PombertLab/3DFI/blob/master/update_PDB.pl) as follows:
