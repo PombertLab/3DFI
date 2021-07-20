@@ -13,7 +13,7 @@ The 3DFI automates 3D structure prediction, structural homology searches and dat
   * [Structural homology searches](#Structural-homology-searches)
     * [Downloading PDB files from RCSB](#downloading-PDB-files-from-RCSB)
     * [Creating a list of PDB titles](#creating-a-list-of-PDB-titles)
-    * [Creating/updating a GESAMT database](#creating-/-updating-a-GESAMT-database)
+    * [Creating or updating a GESAMT database](#creating-or-updating-a-GESAMT-database)
     * [Structural homology searches with GESAMT](#structural-homology-searches-with-GESAMT)
     * [Parsing the output of GESAMT searches](#Parsing-the-output-of-GESAMT-searches)
   * [Structural visualization](#Structural-visualization)
@@ -299,7 +299,7 @@ The list created should look like this:
 5tzw	D	CGMP-DEPENDENT 3',5'-CYCLIC PHOSPHODIESTERASE
 ```
 
-##### Creating/updating a GESAMT database
+##### Creating or updating a GESAMT database
 Before performing structural homology searches with GESAMT, we should first create an archive to speed up the searches. We can also update the archive later as sequences are added (for example after the RCSB PDB files are updated with rsync). GESAMT archives can be created/updated with [run_GESAMT.pl](https://github.com/PombertLab/3DFI/blob/master/Homology_search/run_GESAMT.pl):
 ```Bash
 ## To create a GESAMT archive
