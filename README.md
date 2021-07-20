@@ -17,6 +17,8 @@ The 3DFI automates 3D structure prediction, structural homology searches and dat
     * [Structural homology searches with GESAMT](#structural-homology-searches-with-GESAMT)
     * [Parsing the output of GESAMT searches](#Parsing-the-output-of-GESAMT-searches)
   * [Structural visualization](#Structural-visualization)
+    * [Purpose](#Purpose)
+    * [Process](#Process)
 * [Miscellaneous](#miscellaneous)
 * [Funding and acknowledgments](#Funding-and-acknowledgments)
 * [References](#references)
