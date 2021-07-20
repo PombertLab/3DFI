@@ -90,7 +90,7 @@ unless (-d $outdir){ mkdir ($outdir, 0755) or die "Can't create $outdir: $!\n"; 
 open LOG, ">>", "$outdir/alphafold2.log" or die "Can't create $outdir/alphafold2.log: $!\n";
 
 my $timestamp = localtime;
-print LOG "COMMAND = $name @command\n";
+print LOG "\nCOMMAND = $name @command\n";
 print LOG "\nFolding started on $timestamp\n";
 print LOG "\nSetting AlphaFold2 --max_template_date option to: $max_date\n\n";
 print "\nSetting AlphaFold2 --max_template_date option to: $max_date\n";
