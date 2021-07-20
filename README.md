@@ -1,4 +1,4 @@
-<p align="left"><img src="https://github.com/PombertLab/3DFI/blob/master/Misc/Logo.png" alt="3DFI - Three-dimensional function inference" width="800"></p>
+<p align="left"><img src="https://github.com/PombertLab/3DFI/blob/master/Images/Logo.png" alt="3DFI - Three-dimensional function inference" width="800"></p>
 
 The 3DFI automates 3D structure prediction, structural homology searches and data visualization at the genome scale. Protein structures predicted in PDB format are searched against a local copy of the [RSCB PDB](https://www.rcsb.org/) database with GESAMT (General Efficient Structural Alignment of Macromolecular Targets) from the [CCP4](https://www.ccp4.ac.uk/) package. Known PDB structures can also be searched against a set of predicted structures to identify potential structural homologs in predicted datasets.
 
@@ -395,13 +395,13 @@ GPK93_01g00390-m1-2v3jA	5	3OIN	A	0.6035	0.7288	0.3354	158	217	pdb3oin.ent.gz	ESS
 Visually inspecting the predicted 3D structure of a protein is an important step in determing the validity of any identified structural homolog. Though a .pdb file may be obtained from RaptorX or trRosetta, the quality of the fold may be low. Alternatively, though GESAMT may return a structural homolog with a reasonable Q-score, the quality of the alignment may be low. A low fold/alignment-quality can result in both false-positives (finding a structural homolog when one doesn't exist) and false-negatives (not finding a structural homolog when one exists). Visually inspecting protein structures and structural homolog alignments is an easy way to prevent these outcomes. This can be done with the excellent [ChimeraX](https://www.rbvi.ucsf.edu/chimerax/) 3D protein visualization program.
 
 An example of a good result, in which both the folding and the alignment are good:
-<p align="center"><img src="https://github.com/PombertLab/3DFI/blob/master/Misc/Good_Match.png" alt="Example of a good alignment" width="600"></p>
+<p align="center"><img src="https://github.com/PombertLab/3DFI/blob/master/Images/Good_Match.png" alt="Example of a good alignment" width="600"></p>
 
 An example of a false-negative, where the quality of the protein folding is low, resulting in a failure to find a structural homolog:
-<p align="center"><img src="https://github.com/PombertLab/3DFI/blob/master/Misc/Bad_Predicted_Fold.png" alt="Example of a bad folding prediction" width="700"></p>
+<p align="center"><img src="https://github.com/PombertLab/3DFI/blob/master/Images/Bad_Predicted_Fold.png" alt="Example of a bad folding prediction" width="700"></p>
 
 An example of a false-positive, where the quality of the fold is high, but the alignment-quality is low and a pseudo-structural homolog is found:
-<p align="center"><img src="https://github.com/PombertLab/3DFI/blob/master/Misc/Bad_Match.png" alt="Example of a bad alignment" width="400"></p>
+<p align="center"><img src="https://github.com/PombertLab/3DFI/blob/master/Images/Bad_Match.png" alt="Example of a bad alignment" width="400"></p>
 
 ##### Process
 To prepare visualizations for inspection, we can use [prepare_visualizations.pl](https://github.com/PombertLab/3DFI/blob/master/Visualization/prepare_visualizations.pl) to automatically align predicted proteins with their GESAMT-determined structural homologs. These alignments are performed with [ChimeraX](https://www.rbvi.ucsf.edu/chimerax/) via its API.
@@ -447,11 +447,11 @@ Available 3D visualizations for GPK93_01g00070:
 ```
 
 In this example, selecting [1] will open the visualization of the predicted 3D structure.
-<img src="https://github.com/PombertLab/3DFI/blob/master/Misc/Just_PDB.png">
+<img src="https://github.com/PombertLab/3DFI/blob/master/Images/Just_PDB.png">
 
 
 Alternatively, selecting [2-6] will open the visualization of the alignment of the predicted 3D structure with its selected structural homolog.
-<img src="https://github.com/PombertLab/3DFI/blob/master/Misc/With_Alignment.png">
+<img src="https://github.com/PombertLab/3DFI/blob/master/Images/With_Alignment.png">
 
 #### Miscellaneous 
 ###### Splitting multifasta files
