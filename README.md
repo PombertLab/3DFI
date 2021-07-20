@@ -13,7 +13,7 @@ The 3DFI automates 3D structure prediction, structural homology searches and dat
   * [Structural homology searches](#Structural-homology-searches)
     * [Downloading PDB files from RCSB](#downloading-PDB-files-from-RCSB)
     * [Creating a list of PDB titles](#creating-a-list-of-PDB-titles)
-    * [Creating/updating a GESAMT database](#creating/updating-a-GESAMT-database)
+    * [Creating/updating a GESAMT database](#creating-/-updating-a-GESAMT-database)
     * [Structural homology searches with GESAMT](#structural-homology-searches-with-GESAMT)
     * [Parsing the output of GESAMT searches](#Parsing-the-output-of-GESAMT-searches)
   * [Structural visualization](#Structural-visualization)
