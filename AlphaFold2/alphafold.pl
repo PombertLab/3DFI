@@ -1,14 +1,15 @@
 #!/usr/bin/perl
 ## Pombert Lab, Illinois Tech, 2021
 my $name = 'alphafold.pl';
-my $version = '0.2b';
-my $updated = '2021-07-19';
+my $version = '0.2c';
+my $updated = '2021-07-20';
 
 use strict; use warnings; use Getopt::Long qw(GetOptions); use File::Basename; use POSIX qw(strftime);
 
 my $usage = <<"OPTIONS";
 NAME		${name}
 VERSION		${version}
+UPDATED		${updated}
 SYNOPSIS	Runs AlphaFold2 from Google Deepmind in batch mode
 REQUIREMENTS	AlphaFold2: https://github.com/deepmind/alphafold
 
