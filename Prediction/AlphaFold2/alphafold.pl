@@ -1,7 +1,7 @@
 #!/usr/bin/perl
 ## Pombert Lab, Illinois Tech, 2021
 my $name = 'alphafold.pl';
-my $version = '0.2c';
+my $version = '0.3';
 my $updated = '2021-07-20';
 
 use strict; use warnings; use Getopt::Long qw(GetOptions); use File::Basename; use POSIX qw(strftime);
@@ -87,9 +87,11 @@ elsif (defined $alpha_out){
 
 ### Checking output directory + creating log file
 unless (-d $outdir){ mkdir ($outdir, 0755) or die "Can't create $outdir: $!\n"; }
-open LOG, ">", "$outdir/alphafold2.log" or die "Can't create $outdir/alphafold2.log: $!\n";
+open LOG, ">>", "$outdir/alphafold2.log" or die "Can't create $outdir/alphafold2.log: $!\n";
 
+my $timestamp = localtime;
 print LOG "COMMAND = $name @command\n";
+print LOG "\nFolding started on $timestamp\n";
 print LOG "\nSetting AlphaFold2 --max_template_date option to: $max_date\n\n";
 print "\nSetting AlphaFold2 --max_template_date option to: $max_date\n";
 
@@ -107,7 +109,6 @@ while (my $fasta = shift @fasta){
 	## Checking if protein structures are already present in output dir
 	if (-d "$outdir/$prefix"){
 		print "\nOutput found for $basename. Skipping folding...\n";
-		print LOG "Output found for $basename. Skipping folding...\n";
 		next;
 	}
 	else {
