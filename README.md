@@ -274,7 +274,7 @@ Options for [rosettafold.pl](https://github.com/PombertLab/3DFI/blob/master/Pred
 -r (--rosetta)	RoseTTAFold installation directory
 ```
 
-Note that the e2e folding option is constrained by video RAM and requires a GPU with more than 8 Gb RAM to tackle large proteins. When out of memory, the 'RuntimeError: CUDA out of memory' will appear in the log/network.stderr file and the .pdb file will not be generated. The pyrosetta folding option is slower but not constrained by video RAM.
+Note that the e2e folding option is constrained by video RAM and requires a GPU with more than 8 Gb RAM to tackle large proteins. When out of memory, the 'RuntimeError: CUDA out of memory' will appear in the log/network.stderr file and the .pdb file will not be generated. The pyrosetta folding option is slower (CPU-bound) but not constrained by video RAM.
 
 
 #### Structural homology searches
