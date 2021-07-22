@@ -87,4 +87,5 @@ while (my $result = shift @results){
 	}
 	## If unrecognized command line: 
 	else { die "\nUnrecognized pdbtype: please enter ranked (k), relaxed (r), unrelaxed (u), or all (a)\n\n"; }
+
 }
