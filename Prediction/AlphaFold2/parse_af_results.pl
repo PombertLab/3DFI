@@ -81,15 +81,9 @@ while (my $result = shift @results){
 	}
 	## All models
 	elsif (($pdbtype eq 'a') or ($pdbtype eq 'all')){
-		for my $num (0..$top-1){
-			system "cp $afdir/$result/ranked_$num.pdb $outdir/$result-k$num.pdb";
-		}
-		for my $num (1..$top){
-			system "cp $afdir/$result/relaxed_model_$num.pdb $outdir/$result-r$num.pdb";
-		}
-		for my $num (1..$top){
-			system "cp $afdir/$result/relaxed_model_$num.pdb $outdir/$result-u$num.pdb";
-		}
+		for my $num (0..$top-1){ system "cp $afdir/$result/ranked_$num.pdb $outdir/$result-k$num.pdb"; }
+		for my $num (1..$top){ system "cp $afdir/$result/relaxed_model_$num.pdb $outdir/$result-r$num.pdb"; }
+		for my $num (1..$top){ system "cp $afdir/$result/relaxed_model_$num.pdb $outdir/$result-u$num.pdb"; }
 	}
 	## If unrecognized command line: 
 	else { die "\nUnrecognized pdbtype: please enter ranked (k), relaxed (r), unrelaxed (u), or all (a)\n\n"; }
