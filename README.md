@@ -10,6 +10,7 @@ The 3DFI automates 3D structure prediction, structural homology searches and dat
     * [RaptorX](#Raptorx---template-based-protein-structure-modeling)
     * [trRosetta](#trRosetta---deep-learning-based-protein-structure-modeling)
     * [AlphaFold2](#AlphaFold2---deep-learning-based-protein-structure-modeling)
+	* [RoseTTAFOLD](#RoseTTAFOLD---deep-learning-based-protein-structure-modeling)
   * [Structural homology searches](#Structural-homology-searches)
     * [Downloading PDB files from RCSB](#downloading-PDB-files-from-RCSB)
     * [Creating a list of PDB titles](#creating-a-list-of-PDB-titles)
@@ -41,11 +42,13 @@ Requirements to perform 3D structure prediction, structural homology searches an
 1. At least one of the following protein structure prediction tools:
 	- [RaptorX](http://raptorx.uchicago.edu/) (Template-based predictions)
 	- [trRosetta](https://github.com/gjoni/trRosetta) (Deep-learning-based predictions) 
-	- [AlphaFold2](https://github.com/deepmind/alphafold) (Deep-learning-based predictions) 
+	- [AlphaFold2](https://github.com/deepmind/alphafold) (Deep-learning-based predictions)
+	- [RoseTTAFold](https://github.com/RosettaCommons/RoseTTAFold) (Deep-learning-based predictions)
 2. Their dependencies, e.g.:
 	- [MODELLER](https://salilab.org/modeller/) (for RaptorX)
 	- [PyRosetta](http://www.pyrosetta.org/) (for trRosetta)
 	- [Docker](https://www.docker.com/) (for AlphaFold2)
+	- [Conda](https://docs.conda.io/en/latest/) (for RoseTTAFold)
 3. GESAMT from the [CCP4](https://www.ccp4.ac.uk/) package to perform structural homology searches 
 4. UCSF [ChimeraX](https://www.rbvi.ucsf.edu/chimerax/download.html) to align and visualize structural homologs
 5. Perl modules (most of which should be bundled with [Perl 5]((https://www.perl.org/)))
@@ -236,7 +239,7 @@ To run [alphafold.pl](https://github.com/PombertLab/3DFI/blob/master/Prediction/
 ```
 alphafold.pl \
    -f *.fasta \
-   -o FASTA_3D_ALPHAFOLD/
+   -o ALPHAFOLD_3D/
 ```
 
 Options for [alphafold.pl](https://github.com/PombertLab/3DFI/blob/master/Prediction/AlphaFold2/alphafold.pl) are:
@@ -249,6 +252,30 @@ Options for [alphafold.pl](https://github.com/PombertLab/3DFI/blob/master/Predic
 -ai (--alpha_in)	AlphaFold2 installation directory
 -ao (--alpha_out)	AlphaFold2 output directory
 ```
+
+##### RoseTTAFold - deep-learning-based protein structure modeling
+How to set up [RoseTTAFold](https://github.com/RosettaCommons/RoseTTAFold) to run using conda is described on its GitHub page. The [rosettafold.pl](https://github.com/PombertLab/3DFI/blob/master/Prediction/RoseTTAFold/rosettafold.pl) script is a Perl wrapper that enables running RoseTTAFold in batch mode. To simplify its use, the ROSETTAFOLD_HOME environment variable can be set in the shell.
+```bash
+export ROSETTAFOLD_HOME=/path_to/RoseTTAFold_installation_folder
+```
+
+To run [rosettafold.pl](https://github.com/PombertLab/3DFI/blob/master/Prediction/RoseTTAFold/rosettafold.pl) on multiple fasta files, type:
+```
+rosettafold.pl \
+   -f *.fasta \
+   -o RFOLD_3D/
+```
+
+Options for [rosettafold.pl](https://github.com/PombertLab/3DFI/blob/master/Prediction/RoseTTAFold/rosettafold.pl) are:
+```
+-f (--fasta)	FASTA files to fold
+-o (--outdir)	Output directory
+-t (--type)	Folding type: pyrosetta (py) or end-to-end (e2e)  [Default: e2e]
+-r (--rosetta)	RoseTTAFold installation directory
+```
+
+Note that the e2e folding option is constrained by video RAM and requires a GPU with more than 8 Gb RAM to tackle large proteins. When out of memory, the 'RuntimeError: CUDA out of memory' will appear in the log/network.stderr file and the .pdb file will not be generated. The pyrosetta folding option is slower but not constrained by video RAM.
+
 
 #### Structural homology searches
 ##### Downloading PDB files from RCSB
