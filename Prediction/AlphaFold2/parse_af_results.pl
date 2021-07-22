@@ -1,8 +1,8 @@
 #!/usr/bin/perl
 ## Pombert lab, 2021
 my $name = 'parse_af_results';
-my $version = '0.1';
-my $updated = '2021-07-20';
+my $version = '0.1a';
+my $updated = '2021-07-22';
 
 use strict; use warnings; use Getopt::Long qw(GetOptions);
 
@@ -39,6 +39,11 @@ GetOptions(
 	't|top=i' => \$top,
 	'v|verbosity' => \$verbosity
 );
+
+## Checking number of pdb templates requested
+if ($top > 5){
+	die "\nPlease enter a number between 1 and 5. AlphaFold2 generates a total of 5 models.\n\n";
+}
 
 ## Setting to lowercase to prevent possible typos
 $pdbtype = lc($pdbtype);
