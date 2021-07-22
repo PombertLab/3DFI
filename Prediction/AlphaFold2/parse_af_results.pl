@@ -1,5 +1,5 @@
 #!/usr/bin/perl
-## Pombert lab, 2021
+## Pombert lab, Illinois Tech, 2021
 my $name = 'parse_af_results';
 my $version = '0.1a';
 my $updated = '2021-07-22';
