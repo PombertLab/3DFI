@@ -15,7 +15,7 @@ REQUIREMENTS	AlphaFold2: https://github.com/deepmind/alphafold
 
 EXAMPLE     ${name} \\
 		  -f *.fasta \\
-		  -o ./FASTA_3D_ALPHAFOLD \\
+		  -o ALPHAFOLD_3D/ \\
 		  -m 2021-01-21 \\
 		  -c \\
 		  -ia /opt/alphafold \\
