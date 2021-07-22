@@ -11,25 +11,26 @@ NAME		${name}
 VERSION		${version}
 UPDATED		${updated}
 SYNOPSIS	Runs RoseTTAFold from in batch mode
-REQUIREMENTS	RoseTTAFold: https://github.com/RosettaCommons/RoseTTAFold
-			PyRosetta: https://www.pyrosetta.org/
-			Conda: https://docs.conda.io/en/latest/
 
-EXAMPLE     ${name} \\
+REQUIREMENTS	RoseTTAFold - https://github.com/RosettaCommons/RoseTTAFold
+		PyRosetta - https://www.pyrosetta.org/
+		Conda - https://docs.conda.io/en/latest/
+
+EXAMPLE		${name} \\
 		  -f *.fasta \\
 		  -o RFOLD_3D/ \\
 		  -t py
 
 OPTIONS:
--f (--fasta)		FASTA files to fold
--o (--outdir)		Output directory
--t (--type)		Folding type: pyrosetta (py) or end-to-end (e2e)  [Default: e2e]
--r (--rosetta)		RoseTTAFold installation directory
+-f (--fasta)	FASTA files to fold
+-o (--outdir)	Output directory
+-t (--type)	Folding type: pyrosetta (py) or end-to-end (e2e)  [Default: e2e]
+-r (--rosetta)	RoseTTAFold installation directory
 
 NOTES:
 - The e2e option requires a GPU with > 8 Gb RAM to tackle larger proteins; pyrosetta is slower but not video RAM constrained
 - The -r option is not required if the environment variable \$ROSETTAFOLD_HOME is set, e.g.:
-export ROSETTAFOLD_HOME=/opt/RoseTTAFold
+  export ROSETTAFOLD_HOME=/opt/RoseTTAFold
 OPTIONS
 die "\n$usage\n" unless @ARGV;
 my @command = @ARGV;
