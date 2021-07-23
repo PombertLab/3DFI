@@ -161,7 +161,7 @@ Running [trRosetta](https://github.com/gjoni/trRosetta) involves 3 main steps: 1
 
 ```bash
 ## Setting up trRosetta and 3DFI installation directories:
-export TRROSETTA_HOME=/media/Data_3/opt/trRosetta
+export TRROSETTA_HOME=/opt/trRosetta
 
 ## Creating a working directory for trRosetta:
 export TR=~/TRROSETTA_3D
@@ -285,8 +285,8 @@ How to set up [AlphaFold2](https://github.com/deepmind/alphafold) to run as a do
 
 ```bash
 ## Setting up AlphaFold2 installation directory and output folder as environment variables:
-export ALPHA_IN=/media/FatCat_2/opt/alphafold
-export ALPHA_OUT=/media/FatCat_2/opt/alphafold_results
+export ALPHA_IN=/opt/alphafold
+export ALPHA_OUT=/media/Data/alphafold_results
 
 ## Creating a working directory for AlphaFold2:
 export AF=~/ALPHAFOLD_3D
@@ -454,7 +454,7 @@ PDB files from the [Protein Data Bank](https://www.rcsb.org/) can be downloaded 
 
 ```bash
 ## Setting up RCSB PDB database location:
-export RCSB_PDB=/media/Data_3/databases/RCSB_PDB/
+export RCSB_PDB=/media/FatCat/databases/RCSB_PDB/
 
 ## Downloading the RCSB PDB database:
 $HS_3DFI/update_PDB.pl \
@@ -513,7 +513,7 @@ Before performing structural homology searches with GESAMT, we should first crea
 
 ```Bash
 ## Creating environment variables pointing to our GESAMT archive and RCSB PDB files:
-export GESAMT_ARCHIVE=/media/Data_3/databases/GESAMT_ARCHIVE/
+export GESAMT_ARCHIVE=/media/FatCat/databases/GESAMT_ARCHIVE/
 
 ## To create a GESAMT archive:
 $HS_3DFI/run_GESAMT.pl \
