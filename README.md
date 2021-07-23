@@ -1,6 +1,6 @@
 <p align="left"><img src="https://github.com/PombertLab/3DFI/blob/master/Images/Logo.png" alt="3DFI - Three-dimensional function inference" width="800"></p>
 
-The 3DFI automates 3D structure prediction, structural homology searches and data visualization at the genome scale. Protein structures predicted in PDB format are searched against a local copy of the [RSCB PDB](https://www.rcsb.org/) database with GESAMT (General Efficient Structural Alignment of Macromolecular Targets) from the [CCP4](https://www.ccp4.ac.uk/) package. Known PDB structures can also be searched against sets of predicted structures to identify potential structural homologs in predicted datasets.
+The 3DFI pipeline automates 3D structure prediction, structural homology searches and data visualization at the genome scale. Protein structures predicted in PDB format are searched against a local copy of the [RSCB PDB](https://www.rcsb.org/) database with GESAMT (General Efficient Structural Alignment of Macromolecular Targets) from the [CCP4](https://www.ccp4.ac.uk/) package. Known PDB structures can also be searched against sets of predicted structures to identify potential structural homologs in predicted datasets.
 
 ## Table of contents
 * [Introduction](#introduction)
