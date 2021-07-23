@@ -71,22 +71,22 @@ export RAPTORX_PATH=/opt/RaptorX
 
 ## Setting 3DFI installation directories.
 export 3DFI=~/GitHub/3DFI
-export RAPTORX_3DFI=~/GitHub/3DFI/Prediction/RaptorX
+export RX_3DFI=~/GitHub/3DFI/Prediction/RaptorX
 
 ## Creating a working directory for RaptorX.
-export RRWD=~/RAPTORX_3D
-mkdir -p $RRWD
+export RXD=~/RAPTORX_3D
+mkdir -p $RXD
 ```
 
 To predict 3D structures with [RaptorX](http://raptorx.uchicago.edu/) using [raptorx.pl](https://github.com/PombertLab/3DFI/blob/master/Prediction/RaptorX/raptorx.pl):
 ```bash
 
 ## Running RaptorX on provided examples
-$RAPTORX_3DFI/raptorx.pl \
+$RX_3DFI/raptorx.pl \
    -t 10 \
    -k 2 \
    -i ${3DFI}/Examples/ \
-   -o $RRWD
+   -o $RXD
 ```
 Options for raptorx.pl are:
 ```
@@ -145,18 +145,18 @@ export TROSETTA_HOME=/media/Data_3/opt/trRosetta
 
 ## Setting 3DFI installation directories.
 export 3DFI=~/GitHub/3DFI
-export TROSETTA_3DFI=~/GitHub/3DFI/Prediction/trRosetta
+export TR_3DFI=~/GitHub/3DFI/Prediction/trRosetta
 
 ## Creating a working directory for tRosetta
 export TRWD=~/TROSETTA_3D
-mkdir -p $TRWD
+mkdir -p $TRD
 ```
 
 2. Converting FASTA sequences to single string FASTA sequences with [fasta_oneliner.pl](https://github.com/PombertLab/3DFI/blob/master/Prediction/trRosetta/fasta_oneliner.pl):
 ```Bash
-$TROSETTA_3DFI/fasta_oneliner.pl \
+$TR_3DFI/fasta_oneliner.pl \
    -f ${3DFI}/Examples/*.fasta \
-   -o $TRWD/FASTA_OL
+   -o $TRD/FASTA_OL
 ```
 
 Options for [fasta_oneliner.pl](https://github.com/PombertLab/3DFI/blob/master/Prediction/trRosetta/fasta_oneliner.pl) are:
@@ -171,18 +171,18 @@ Options for [fasta_oneliner.pl](https://github.com/PombertLab/3DFI/blob/master/P
 export UNICLUST=/media/Data_3/Uniclust/UniRef30_2020_06
 
 ## Running hhblits on multiple evalues independently
-$TROSETTA_3DFI/run_hhblits.pl \
+$TR_3DFI/run_hhblits.pl \
    -t 10 \
-   -f $TRWD/FASTA_OL/ \
-   -o $TRWD/HHBLITS/ \
+   -f $TRD/FASTA_OL/ \
+   -o $TRD/HHBLITS/ \
    -d $UNICLUST \
    -e 1e-40 1e-10 1e-03 1e+01
 
 ## Running hhblits on evalues sequentially, from stricter to more permissive
-$TROSETTA_3DFI/run_hhblits.pl \
+$TR_3DFI/run_hhblits.pl \
    -t 10 \
-   -f $TRWD/FASTA_OL/ \
-   -o $TRWD/HHBLITS/ \
+   -f $TRD/FASTA_OL/ \
+   -o $TRD/HHBLITS/ \
    -d $UNICLUST \
    -s \
    -se 1e-70 1e-50 1e-30 1e-10 1e-06 1e-04 1e+01
@@ -208,9 +208,9 @@ Options for [run_hhblits.pl](https://github.com/PombertLab/3DFI/blob/master/Pred
 ```Bash
 
 ## Creating npz files
-$TROSETTA_3DFI/create_npz.pl \
-   -a $TRWD/HHBLITS/*.a3m \
-   -o $TRWD/NPZ/ \
+$TR_3DFI/create_npz.pl \
+   -a $TRD/HHBLITS/*.a3m \
+   -o $TRD/NPZ/ \
    -p $TROSETTA_HOME/network/predict.py \
    -m $TROSETTA_HOME/model2019_07
 ```
@@ -225,11 +225,11 @@ Options for [create_npz.pl](https://github.com/PombertLab/3DFI/blob/master/Predi
 
 5. Generate .pdb files containing 3D models from the .npz fil3s with [create_pdb.pl](https://github.com/PombertLab/3DFI/blob/master/Prediction/trRosetta/create_pdb.pl):
 ```Bash
-$TROSETTA_3DFI/create_pdb.pl \
+$TR_3DFI/create_pdb.pl \
    -c 10 \
-   -n $TRWD/NPZ/*.npz \
-   -o $TRWD/PDB/ \
-   -f $TRWD/FASTA_OL/ \
+   -n $TRD/NPZ/*.npz \
+   -o $TRD/PDB/ \
+   -f $TRD/FASTA_OL/ \
    -t $TROSETTA_HOME/pdb/trRosetta.py
 ```
 
@@ -246,9 +246,9 @@ Options for [create_pdb.pl](https://github.com/PombertLab/3DFI/blob/master/Predi
 
 6. The .pdb files thus generated contain lines that are not standard and that can prevent applications such as [PDBeFOLD](https://www.ebi.ac.uk/msd-srv/ssm/) to run on the corresponding files. We can clean up the PDB files with [sanitize_pdb.pl](https://github.com/PombertLab/3DFI/blob/master/Prediction/trRosetta/sanitize_pdb.pl):
 ```Bash
-$TROSETTA_3DFI/sanitize_pdb.pl \
-   -p $TRWD/PDB/*.pdb \
-   -o $TRWD/PDB_clean
+$TR_3DFI/sanitize_pdb.pl \
+   -p $TRD/PDB/*.pdb \
+   -o $TRD/PDB_clean
 ```
 
 Options for [sanitize_pdb.pl](https://github.com/PombertLab/3DFI/blob/master/Prediction/trRosetta/sanitize_pdb.pl) are:
@@ -267,18 +267,18 @@ export ALPHA_OUT=/media/FatCat_2/opt/alphafold_results
 
 ## Setting 3DFI installation directories.
 export 3DFI=~/GitHub/3DFI
-export ALPHA_3DFI=~/GitHub/3DFI/Prediction/AlphaFold2
+export AF_3DFI=~/GitHub/3DFI/Prediction/AlphaFold2
 
 ## Creating a working directory for AlphaFold2
-export AFWD=~/ALPHAFOLD_3D
-mkdir -p $AFWD
+export AFD=~/ALPHAFOLD_3D
+mkdir -p $AFD
 ```
 
 To run [alphafold.pl](https://github.com/PombertLab/3DFI/blob/master/Prediction/AlphaFold2/alphafold.pl) on multiple fasta files, type:
 ```bash
-$ALPHA_3DFI/alphafold.pl \
+$AF_3DFI/alphafold.pl \
    -f ${3DFI}/Examples/*.fasta \
-   -o $AFWD/Results
+   -o $AFD/Results
 ```
 
 Options for [alphafold.pl](https://github.com/PombertLab/3DFI/blob/master/Prediction/AlphaFold2/alphafold.pl) are:
@@ -295,7 +295,7 @@ Options for [alphafold.pl](https://github.com/PombertLab/3DFI/blob/master/Predic
 Folding results per protein will be located in corresponding subdirectories. Results with AlphaFold will contain PDB files for unrelaxed models (i.e. predicted as is before ralaxation), relaxed models, and ranked models from best (0) to worst (4). Each subdirectory should look like this:
 
 ```bash
-ls -l ALPHAFOLD_3D/ECU03_1140/
+ls -l $AFD/Results/ECU03_1140/
 total 4
 total 47404
 -rw-r--r-- 1 jpombert jpombert 1085545 Jul 23 08:27 features.pkl
@@ -327,9 +327,9 @@ drwxr-xr-x 1 jpombert jpombert     106 Jul 23 08:27 msas
 The script [parse_af_results.pl](https://github.com/PombertLab/3DFI/blob/master/Prediction/AlphaFold2/parse_af_results.pl) can be used to recurse through the subdirectories and copy the PDB model(s) with more descriptive names including that of the proteins to a selected location. To use [parse_af_results.pl](https://github.com/PombertLab/3DFI/blob/master/Prediction/AlphaFold2/parse_af_results.pl),  type:
 
 ```bash
-$ALPHA_3DFI/parse_af_results.pl \
-  -a $AFWD/Results \
-  -o $AFWD/Results_parsed \
+$AF_3DFI/parse_af_results.pl \
+  -a $AFD/Results \
+  -o $AFD/Results_parsed \
   -p k \
   -t 5
 ```
@@ -345,27 +345,30 @@ Options for [parse_af_results.pl](https://github.com/PombertLab/3DFI/blob/master
 
 ##### RoseTTAFold - deep-learning-based protein structure modeling
 How to set up [RoseTTAFold](https://github.com/RosettaCommons/RoseTTAFold) to run using conda is described on its GitHub page. The [rosettafold.pl](https://github.com/PombertLab/3DFI/blob/master/Prediction/RoseTTAFold/rosettafold.pl) script is a Perl wrapper that enables running the [RoseTTAFold](https://github.com/RosettaCommons/RoseTTAFold) run_e2e_ver.sh/run_pyrosetta_ver.sh scripts in batch mode. To simplify its use, the ROSETTAFOLD_HOME environment variable can be set in the shell.
+
 ```bash
 ##  Setting up RoseTTAFold installation directory as an environment variable
 export ROSETTAFOLD_HOME=/opt/RoseTTAFold
 
 ## Setting 3DFI installation directories.
 export 3DFI=~/GitHub/3DFI
-export RFOLD_3DFI=~/GitHub/3DFI/Prediction/RoseTTAFold
+export RF_3DFI=~/GitHub/3DFI/Prediction/RoseTTAFold
 
 ## Creating a working directory for RoseTTAFold
-export RFWD=~/ROSETTAFOLD_3D
-mkdir -p $RFWD
+export RFD=~/ROSETTAFOLD_3D
+mkdir -p $RFD
 ```
 
 To run [rosettafold.pl](https://github.com/PombertLab/3DFI/blob/master/Prediction/RoseTTAFold/rosettafold.pl) on multiple fasta files, type:
+
 ```bash
-$RFOLD_3DFI/rosettafold.pl \
+$RF_3DFI/rosettafold.pl \
    -f ${3DFI}/Examples/*.fasta \
-   -o $RFWD/e2e/
+   -o $RFD/e2e/
 ```
 
 Options for [rosettafold.pl](https://github.com/PombertLab/3DFI/blob/master/Prediction/RoseTTAFold/rosettafold.pl) are:
+
 ```
 -f (--fasta)	FASTA files to fold
 -o (--outdir)	Output directory
@@ -376,8 +379,9 @@ Options for [rosettafold.pl](https://github.com/PombertLab/3DFI/blob/master/Pred
 Note that the e2e folding option is constrained by video RAM and requires a CUDA-enabled GPU with more than 8 Gb of RAM to tackle large proteins (a video card with at least 24 Gb of RAM is recommended). If out of memory, the 'RuntimeError: CUDA out of memory' will appear in the log/network.stderr file and the .pdb file will not be generated. The pyrosetta folding option is slower (CPU-bound) but not constrained by video RAM.
 
 Folding results per protein will be located in corresponding subdirectories. Results with the e2e option should look like below, with the model generated named t000_.e2e.pdb:
+
 ```bash
-ls -l  $RFWD/e2e/sequence_1/
+ls -l  $RFD/e2e/sequence_1/
 total 4248
 drwxrwxr-x 1 jpombert jpombert     508 Jul 22 14:45 hhblits
 drwxrwxr-x 1 jpombert jpombert     232 Jul 22 14:45 log
@@ -389,12 +393,12 @@ drwxrwxr-x 1 jpombert jpombert     232 Jul 22 14:45 log
 -rw-rw-r-- 1 jpombert jpombert    3941 Jul 22 14:45 t000_.msa0.a3m
 -rw-rw-r-- 1 jpombert jpombert    4195 Jul 22 14:45 t000_.msa0.ss2.a3m
 -rw-rw-r-- 1 jpombert jpombert     254 Jul 22 14:45 t000_.ss2
-
 ``` 
 
 Results with the pyrosetta option should look like below, with the models generated (5 in total) located in the model/ subfolder:
+
 ```bash
-ls -l $RFWD/py/sequence_1/
+ls -l $RFD/py/sequence_1/
 total 4284
 drwxrwxr-x 1 jpombert jpombert     508 Jul 22 15:28 hhblits
 drwxrwxr-x 1 jpombert jpombert     388 Jul 22 15:45 log
@@ -407,14 +411,14 @@ drwxrwxr-x 1 jpombert jpombert    1020 Jul 22 15:45 pdb-3track
 -rw-rw-r-- 1 jpombert jpombert    3941 Jul 22 15:28 t000_.msa0.a3m
 -rw-rw-r-- 1 jpombert jpombert    4195 Jul 22 15:28 t000_.msa0.ss2.a3m
 -rw-rw-r-- 1 jpombert jpombert     254 Jul 22 15:28 t000_.ss2
-
 ```
 
 The script [parse_rf_results.pl](https://github.com/PombertLab/3DFI/blob/master/Prediction/RoseTTAFold/parse_rf_results.pl) can be used to recurse through the subdirectories and copy the PDB model(s) with more descriptive names including that of the proteins to a selected location. To use [parse_rf_results.pl](https://github.com/PombertLab/3DFI/blob/master/Prediction/RoseTTAFold/parse_rf_results.pl),  type:
+
 ```bash
-$RFOLD_3DFI/parse_rf_results.pl \
-  -r $RFWD/e2e \
-  -o $RFWD/e2e_parsed \
+$RF_3DFI/parse_rf_results.pl \
+  -r $RFD/e2e \
+  -o $RFD/e2e_parsed \
   -p e2e
 ```
 
@@ -455,17 +459,22 @@ Options for [update_PDB.pl](https://github.com/PombertLab/3DFI/blob/master/Homol
 
 ##### Creating a list of PDB titles
 To create a tab-delimited list of PDB entries and their titles and chains from the downloaded PDB gzipped files (pdb*.ent.gz), we can use [PDB_headers.pl](https://github.com/PombertLab/3DFI/blob/master/Homology_search/PDB_headers.pl):
+
 ```Bash
 $HS_3DFI/PDB_headers.pl \
    -p $RCSB_PDB \
    -o PDB_titles.tsv
 ```
+
 Options for [PDB_headers.pl](https://github.com/PombertLab/3DFI/blob/master/Homology_search/PDB_headers.pl) are:
+
 ```
 -p (--pdb)	Directory containing PDB files downloaded from RCSB PDB/PDBe (gzipped)
 -o (--output)	Output file in tsv format
 ```
+
 The list created should look like this:
+
 ```
 5tzz	TITLE	CRYSTAL STRUCTURE OF HUMAN PHOSPHODIESTERASE 2A IN COMPLEX WITH 1-[(3-BROMO-4-FLUOROPHENYL)CARBONYL]-3,3-DIFLUORO-5-{5-METHYL-[1,2, 4]TRIAZOLO[1,5-A]PYRIMIDIN-7-YL}PIPERIDINE 
 5tzz	A	CGMP-DEPENDENT 3',5'-CYCLIC PHOSPHODIESTERASE
