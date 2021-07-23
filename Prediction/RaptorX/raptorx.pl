@@ -195,7 +195,7 @@ my $mend = localtime();
 print LOG "3D Folding ended on $mend\n\n";
 
 ## Printing a short description of folders and their contents
-print LOG "OUTPUT directory = $out\n";
+print LOG "OUTPUT directory = $abs_path_outdir\n";
 print LOG "PDB/: Contains the protein structure(s) (.pdb) predicted for each FASTA files\n";
 print LOG "TGT/: Contains the feature files (.tgt) generated for each FASTA files\n";
 print LOG "RANK/: Contains the lists (.rank) of the best templates/models found for each FASTA files\n";
