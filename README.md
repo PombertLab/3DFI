@@ -253,7 +253,8 @@ Options for [alphafold.pl](https://github.com/PombertLab/3DFI/blob/master/Predic
 -ao (--alpha_out)	AlphaFold2 output directory
 ```
 
-Folding results per protein will be located in corresponding subdirectories. Results with AlphaFold should look like below and contain PDB files for unrelaxed models (i.e. predicted as is before ralaxation), relaxed models, and ranked models from best (0) to worst (4):
+Folding results per protein will be located in corresponding subdirectories. Results with AlphaFold will contain PDB files for unrelaxed models (i.e. predicted as is before ralaxation), relaxed models, and ranked models from best (0) to worst (4). Each subdirectory should look like this:
+
 ```bash
 ls -l ALPHAFOLD_3D/ECU03_1140/
 total 4
@@ -285,6 +286,7 @@ drwxr-xr-x 1 jpombert jpombert     106 Jul 23 08:27 msas
 ```
 
 The script [parse_af_results.pl](https://github.com/PombertLab/3DFI/blob/master/Prediction/AlphaFold2/parse_af_results.pl) can be used to recurse through the subdirectories and copy the PDB model(s) to a selected location. To use [parse_af_results.pl](https://github.com/PombertLab/3DFI/blob/master/Prediction/AlphaFold2/parse_af_results.pl),  type:
+
 ```bash
 parse_af_results.pl \
   -a ALPHAFOLD_3D \
