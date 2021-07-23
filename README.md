@@ -293,7 +293,7 @@ drwxrwxr-x 1 jpombert jpombert     232 Jul 22 14:45 log
 
 ``` 
 
-Results with the pyrosetta option should look like below, with the models generated located in the model/ subfolder:
+Results with the pyrosetta option should look like below, with the models generated (5 in total) located in the model/ subfolder:
 ```bash
 ls -l RFOLD_3D_py/ECU03_1140/
 total 4284
