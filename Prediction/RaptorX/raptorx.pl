@@ -68,6 +68,8 @@ while (my $fasta = readdir(DIR)){
 closedir DIR;
 
 ## Creating output folders
+my $abs_path_outdir = abs_path($out);
+print "Output directory: $abs_path_outdir\n";
 unless (-d $out){ mkdir ($out,0755) or die "Can't create output folder $out: $!\n"; }
 unless (-d "$out/TGT"){ mkdir ("$out/TGT",0755) or die "Can't create output folder $out/TGT: $!\n"; }
 unless (-d "$out/RANK"){ mkdir ("$out/RANK",0755) or die "Can't create output folder $out/RANK: $!\n"; }
@@ -84,7 +86,6 @@ print LOG "3D Folding started on: $start\n";
 
 ## Checking for RaptorX path variable (RAPTORX_PATH)
 my $RAPTORX_PATH = '$RAPTORX_PATH';
-my $prev_dir = cwd();
 chomp ($RAPTORX_PATH = `echo $RAPTORX_PATH`);
 chdir $RAPTORX_PATH or die "Can't access RAPTORX_PATH $RAPTORX_PATH: $!\n";
 
@@ -96,14 +97,14 @@ while (my $fasta_path = shift@fasta){
 
 	## Skipping folding if pdb file(s) are present
 	if ($topk == 1){
-		if (-e "$prev_dir/$out/PDB/$protein.pdb"){
+		if (-e "$abs_path_outdir/PDB/$protein.pdb"){
 			print LOG "PDB has already been created for $fasta, moving to next file\n";
 			print "PDB has already been created for $fasta, moving to next file\n";
 			next;
 		}
 	}
 	else {
-		if (-e "$prev_dir/$out/PDB/$protein-m$topk.pdb"){
+		if (-e "$abs_path_outdir/PDB/$protein-m$topk.pdb"){
 			print LOG "PDB files have already been created for $fasta, moving to next file\n";
 			print "PDB files have already been created for $fasta, moving to next file\n";
 			next;
@@ -115,7 +116,7 @@ while (my $fasta_path = shift@fasta){
 	print "\n$time: Generating the feature file (.tgt) for $fasta with buildFeature\n\n";
 	system "buildFeature \\
 	  -i $fasta_path \\
-	  -o $prev_dir/$out/TGT/$protein.tgt \\
+	  -o $abs_path_outdir/TGT/$protein.tgt \\
 	  -c $threads";
 
 	unless (-e "tmp/$protein.acc"){
@@ -129,11 +130,11 @@ while (my $fasta_path = shift@fasta){
 	system "CNFsearch \\
 	  -a $threads \\
 	  -q $protein \\
-	  -g $prev_dir/$out/TGT \\
-	  -o $prev_dir/$out/RANK/$protein.rank";
+	  -g $abs_path_outdir/TGT \\
+	  -o $abs_path_outdir/RANK/$protein.rank";
 
 	## Populating list of top models from .rank file
-	open IN, "<", "$prev_dir/$out/RANK/$protein.rank";
+	open IN, "<", "$abs_path_outdir/RANK/$protein.rank";
 	my @models;
 	while (my $line = <IN>){
 		chomp $line;
@@ -149,15 +150,15 @@ while (my $fasta_path = shift@fasta){
 		system "CNFalign_lite \\
 		  -t $models[$_] \\
 		  -q $protein \\
-		  -g $prev_dir/$out/TGT \\
-		  -d $prev_dir/$out";
+		  -g $abs_path_outdir/TGT \\
+		  -d $abs_path_outdir";
 	}
 	
 	## Creating 3D models for the top k ranks
 	$time = localtime;
 	print "\n$time: Building PDB file(s) for $fasta from top model(s) with buildTopModels\n\n";
 	system "buildTopModels \\
-		-i $prev_dir/$out/RANK/$protein.rank \\
+		-i $abs_path_outdir/RANK/$protein.rank \\
 		-k $topk \\
 		-m $modeller";
 
@@ -171,22 +172,22 @@ while (my $fasta_path = shift@fasta){
 	opendir (RXDIR,"$RAPTORX_PATH");
 	while (my $file = readdir(RXDIR)){
 		if ($file =~ /\.pdb$/){
-			if ($topk == 1){ system "mv $file $prev_dir/$out/PDB/$protein.pdb"; }
+			if ($topk == 1){ system "mv $file $abs_path_outdir/PDB/$protein.pdb"; }
 			else { ## if $topk > 1; keep model number to prevent overwriting file names
 				my ($m_number) = $file =~ /\-(m\d+)\-(\w+)\.pdb$/;
-				system "mv $file $prev_dir/$out/PDB/$protein-$m_number.pdb";
+				system "mv $file $abs_path_outdir/PDB/$protein-$m_number.pdb";
 			}
 		}
 	}
 	close RXDIR;
 	system "rm -r tmp";
 
-	opendir (OUTDIR,"$prev_dir/$out");
+	opendir (OUTDIR,"$abs_path_outdir");
 	while (my $file = readdir(OUTDIR)){
 		## Reordering template name after the protein name for data structure sanity
 		my ($template) = $file =~ /^(\w+)/; 
-		if ($file =~ /cnfpred$/){ system "mv $prev_dir/$out/$file $prev_dir/$out/CNFPRED/$protein-$template.cnfpred"; }
-		elsif ($file =~ /fasta$/){ system "mv $prev_dir/$out/$file $prev_dir/$out/FASTA_ALN/$protein-$template.fasta"; }
+		if ($file =~ /cnfpred$/){ system "mv $abs_path_outdir/$file $abs_path_outdir/CNFPRED/$protein-$template.cnfpred"; }
+		elsif ($file =~ /fasta$/){ system "mv $abs_path_outdir/$file $abs_path_outdir/FASTA_ALN/$protein-$template.fasta"; }
 	}
 	close OUTDIR;
 }
