@@ -254,7 +254,7 @@ Options for [alphafold.pl](https://github.com/PombertLab/3DFI/blob/master/Predic
 ```
 
 ##### RoseTTAFold - deep-learning-based protein structure modeling
-How to set up [RoseTTAFold](https://github.com/RosettaCommons/RoseTTAFold) to run using conda is described on its GitHub page. The [rosettafold.pl](https://github.com/PombertLab/3DFI/blob/master/Prediction/RoseTTAFold/rosettafold.pl) script is a Perl wrapper that enables running [RoseTTAFold](https://github.com/RosettaCommons/RoseTTAFold) run_e2e_ver.sh/run_pyrosetta_ver.sh in batch mode. To simplify its use, the ROSETTAFOLD_HOME environment variable can be set in the shell.
+How to set up [RoseTTAFold](https://github.com/RosettaCommons/RoseTTAFold) to run using conda is described on its GitHub page. The [rosettafold.pl](https://github.com/PombertLab/3DFI/blob/master/Prediction/RoseTTAFold/rosettafold.pl) script is a Perl wrapper that enables running the [RoseTTAFold](https://github.com/RosettaCommons/RoseTTAFold) run_e2e_ver.sh/run_pyrosetta_ver.sh scripts in batch mode. To simplify its use, the ROSETTAFOLD_HOME environment variable can be set in the shell.
 ```bash
 export ROSETTAFOLD_HOME=/path_to/RoseTTAFold_installation_folder
 ```
