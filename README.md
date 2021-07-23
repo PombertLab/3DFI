@@ -18,7 +18,7 @@ The 3DFI automates 3D structure prediction, structural homology searches and dat
     * [Structural homology searches with GESAMT](#structural-homology-searches-with-GESAMT)
     * [Parsing the output of GESAMT searches](#Parsing-the-output-of-GESAMT-searches)
   * [Structural visualization](#Structural-visualization)
-    * [Purpose](#Purpose)
+    * [Why visualization?](#Why-visualization?)
     * [Process](#Process)
 * [Miscellaneous](#miscellaneous)
 * [Funding and acknowledgments](#Funding-and-acknowledgments)
@@ -472,7 +472,7 @@ GPK93_01g00390-m1-2v3jA	5	3OIN	A	0.6035	0.7288	0.3354	158	217	pdb3oin.ent.gz	ESS
 ```
 
 #### Structural visualization
-##### Purpose
+##### Why visualization?
 Visually inspecting the predicted 3D structure of a protein is an important step in determing the validity of any identified structural homolog. Though a .pdb file may be obtained from a protein structure prediction tool, the quality of the fold may be low. Alternatively, though GESAMT may return a structural homolog with a reasonable Q-score, the quality of the alignment may be low. A low fold/alignment-quality can result in both false-positives (finding a structural homolog when one doesn't exist) and false-negatives (not finding a structural homolog when one exists). Visually inspecting protein structures and structural homolog alignments is an easy way to prevent these outcomes. This can be done with the excellent [ChimeraX](https://www.rbvi.ucsf.edu/chimerax/) 3D protein visualization program.
 
 An example of a good result, in which both the folding and the alignment are good:
