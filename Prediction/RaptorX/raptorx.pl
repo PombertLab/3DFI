@@ -1,11 +1,10 @@
 #!/usr/bin/perl
 ## Pombert Lab 2019
-my $version = '0.6a';
+my $version = '0.6b';
 my $name = 'raptorx.pl';
 my $updated = '2021-07-23';
 
-use strict; use warnings; use Getopt::Long qw(GetOptions); use File::Basename;
-use Cwd; use Cwd 'abs_path';
+use strict; use warnings; use Getopt::Long qw(GetOptions); use File::Basename; use Cwd qw(abs_path);
 my @command = @ARGV; ## Keeping track of command line for log
 
 ## Usage definition
@@ -69,7 +68,8 @@ closedir DIR;
 
 ## Creating output folders
 my $abs_path_outdir = abs_path($out);
-print "Output directory: $abs_path_outdir\n";
+my $time = localtime;
+print "\n$time: Setting output directory to: $abs_path_outdir\n";
 unless (-d $out){ mkdir ($out,0755) or die "Can't create output folder $out: $!\n"; }
 unless (-d "$out/TGT"){ mkdir ("$out/TGT",0755) or die "Can't create output folder $out/TGT: $!\n"; }
 unless (-d "$out/RANK"){ mkdir ("$out/RANK",0755) or die "Can't create output folder $out/RANK: $!\n"; }
@@ -112,7 +112,7 @@ while (my $fasta_path = shift@fasta){
 	}
 
 	## Generating the feature file (.tgt)
-	my $time = localtime;
+	$time = localtime;
 	print "\n$time: Generating the feature file (.tgt) for $fasta with buildFeature\n\n";
 	system "buildFeature \\
 	  -i $fasta_path \\
