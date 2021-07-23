@@ -70,13 +70,13 @@ git clone https://github.com/PombertLab/3DFI.git
 
 ## To set 3DFI directories as environment variables:
 cd 3DFI/
-export 3DFI=$(pwd)
-export RX_3DFI=${3DFI}/Prediction/RaptorX
-export TR_3DFI=${3DFI}/Prediction/trRosetta
-export AF_3DFI=${3DFI}/Prediction/AlphaFold2
-export RF_3DFI=${3DFI}/Prediction/RoseTTAFold
-export HS_3DFI=${3DFI}/Homology_search
-export VZ_3DFI=${3DFI}/Visualization
+export TDFI=$(pwd)
+export RX_3DFI=$TDFI/Prediction/RaptorX
+export TR_3DFI=$TDFI/Prediction/trRosetta
+export AF_3DFI=$TDFI/Prediction/AlphaFold2
+export RF_3DFI=$TDFI/Prediction/RoseTTAFold
+export HS_3DFI=$TDFI/Homology_search
+export VZ_3DFI=$TDFI/Visualization
 ```
 
 ### Howto
@@ -102,7 +102,7 @@ To predict 3D structures with [RaptorX](http://raptorx.uchicago.edu/) using [rap
 $RX_3DFI/raptorx.pl \
    -t 10 \
    -k 2 \
-   -i ${3DFI}/Examples/FASTA \
+   -i $TDFI/Examples/FASTA \
    -o $RX
 ```
 
@@ -172,7 +172,7 @@ mkdir -p $TR
 
 ```Bash
 $TR_3DFI/fasta_oneliner.pl \
-   -f ${3DFI}/Examples/FASTA/*.fasta \
+   -f $TDFI/Examples/FASTA/*.fasta \
    -o $TR/FASTA_OL
 ```
 
@@ -297,7 +297,7 @@ To run [alphafold.pl](https://github.com/PombertLab/3DFI/blob/master/Prediction/
 
 ```bash
 $AF_3DFI/alphafold.pl \
-   -f ${3DFI}/Examples/FASTA/*.fasta \
+   -f $TDFI/Examples/FASTA/*.fasta \
    -o $AF/Results
 ```
 
@@ -380,7 +380,7 @@ To run [rosettafold.pl](https://github.com/PombertLab/3DFI/blob/master/Predictio
 
 ```bash
 $RF_3DFI/rosettafold.pl \
-   -f ${3DFI}/Examples/FASTA/*.fasta \
+   -f $TDFI/Examples/FASTA/*.fasta \
    -o $RF/e2e/
 ```
 
