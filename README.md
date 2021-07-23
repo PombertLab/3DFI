@@ -74,8 +74,8 @@ To predict 3D structures with [RaptorX](http://raptorx.uchicago.edu/) using [rap
 raptorx.pl \
    -t 10 \
    -k 2 \
-   -i ~/FASTA/ \
-   -o ~/3D_predictions/
+   -i Examples/ \
+   -o RAPTORX_3D/
 ```
 Options for raptorx.pl are:
 ```
@@ -130,7 +130,7 @@ Running [trRosetta](https://github.com/gjoni/trRosetta) involves 3 main steps: 1
 1. Converting FASTA sequences to single string FASTA sequences with [fasta_oneliner.pl](https://github.com/PombertLab/3DFI/blob/master/Prediction/trRosetta/fasta_oneliner.pl):
 ```Bash
 fasta_oneliner.pl \
-   -f *.fasta \
+   -f Examples/*.fasta \
    -o FASTA_OL
 ```
 
@@ -142,12 +142,15 @@ Options for [fasta_oneliner.pl](https://github.com/PombertLab/3DFI/blob/master/P
 
 2. Running hhblits searches with [run_hhblits.pl](https://github.com/PombertLab/3DFI/blob/master/Prediction/trRosetta/run_hhblits.pl):
 ```Bash
+## Setting Uniclust database location
+export UNICLUST=/media/Data_3/Uniclust/UniRef30_2020_06
+
 ## Running hhblits on multiple evalues independently
 run_hhblits.pl \
    -t 10 \
    -f FASTA_OL/ \
    -o HHBLITS/ \
-   -d /media/Data_3/Uniclust/UniRef30_2020_06 \
+   -d $UNICLUST \
    -e 1e-40 1e-10 1e-03 1e+01
 
 ## Running hhblits on evalues sequentially, from stricter to more permissive
@@ -155,7 +158,7 @@ run_hhblits.pl \
    -t 10 \
    -f FASTA_OL/ \
    -o HHBLITS/ \
-   -d /media/Data_3/Uniclust/UniRef30_2020_06 \
+   -d $UNICLUST \
    -s \
    -se 1e-70 1e-50 1e-30 1e-10 1e-06 1e-04 1e+01
 ```
@@ -178,11 +181,15 @@ Options for [run_hhblits.pl](https://github.com/PombertLab/3DFI/blob/master/Pred
 
 3. Create .npz files containing inter-residue geometries with [create_npz.pl](https://github.com/PombertLab/3DFI/blob/master/Prediction/trRosetta/create_npz.pl):
 ```Bash
+## Setting up tRosetta home location
+export TROSETTA=/media/Data_3/opt/trRosetta
+
+## Creating npz files
 create_npz.pl \
    -a HHBLITS/*.a3m \
    -o NPZ/ \
-   -p /media/Data_3/opt/trRosetta/network/predict.py \
-   -m /media/Data_3/opt/trRosetta/model2019_07
+   -p $TROSETTA/network/predict.py \
+   -m $TROSETTA/model2019_07
 ```
 
 Options for [create_npz.pl](https://github.com/PombertLab/3DFI/blob/master/Prediction/trRosetta/create_npz.pl) are:
@@ -200,7 +207,7 @@ create_pdb.pl \
    -n NPZ/*.npz \
    -o PDB/ \
    -f FASTA_OL/ \
-   -t /media/Data_3/opt/trRosetta/pdb/trRosetta.py
+   -t $TROSETTA/pdb/trRosetta.py
 ```
 
 Options for [create_pdb.pl](https://github.com/PombertLab/3DFI/blob/master/Prediction/trRosetta/create_pdb.pl) are:
@@ -231,14 +238,15 @@ Options for [sanitize_pdb.pl](https://github.com/PombertLab/3DFI/blob/master/Pre
 How to set up [AlphaFold2](https://github.com/deepmind/alphafold) to run as a docker image is described on its GitHub page. The [alphafold.pl](https://github.com/PombertLab/3DFI/blob/master/Prediction/AlphaFold2/alphafold.pl) script is a Perl wrapper that enables running AlphaFold2 in batch mode. To simplify its use, the ALPHA_IN and ALPHA_OUT environment variables can be set in the shell.
 
 ```bash
-export ALPHA_IN=/path_to/AlphaFold2_installation_folder
-export ALPHA_OUT=/path_to/AlphaFold2_output_folder
+## Setting up AlphaFold2 installation directory and output folder as environment variables
+export ALPHA_IN=/media/FatCat_2/opt/alphafold
+export ALPHA_OUT=/media/FatCat_2/opt/alphafold_results
 ```
 
 To run [alphafold.pl](https://github.com/PombertLab/3DFI/blob/master/Prediction/AlphaFold2/alphafold.pl) on multiple fasta files, type:
 ```
 alphafold.pl \
-   -f *.fasta \
+   -f Examples/*.fasta \
    -o ALPHAFOLD_3D/
 ```
 
@@ -307,14 +315,15 @@ Options for [parse_af_results.pl](https://github.com/PombertLab/3DFI/blob/master
 ##### RoseTTAFold - deep-learning-based protein structure modeling
 How to set up [RoseTTAFold](https://github.com/RosettaCommons/RoseTTAFold) to run using conda is described on its GitHub page. The [rosettafold.pl](https://github.com/PombertLab/3DFI/blob/master/Prediction/RoseTTAFold/rosettafold.pl) script is a Perl wrapper that enables running the [RoseTTAFold](https://github.com/RosettaCommons/RoseTTAFold) run_e2e_ver.sh/run_pyrosetta_ver.sh scripts in batch mode. To simplify its use, the ROSETTAFOLD_HOME environment variable can be set in the shell.
 ```bash
-export ROSETTAFOLD_HOME=/path_to/RoseTTAFold_installation_folder
+##  Setting up RoseTTAFold installation directory as an environment variable
+export ROSETTAFOLD_HOME=/opt/RoseTTAFold
 ```
 
 To run [rosettafold.pl](https://github.com/PombertLab/3DFI/blob/master/Prediction/RoseTTAFold/rosettafold.pl) on multiple fasta files, type:
 ```
 rosettafold.pl \
-   -f *.fasta \
-   -o RFOLD_3D/
+   -f Examples/*.fasta \
+   -o RFOLD_3D_e2e/
 ```
 
 Options for [rosettafold.pl](https://github.com/PombertLab/3DFI/blob/master/Prediction/RoseTTAFold/rosettafold.pl) are:
@@ -329,7 +338,7 @@ Note that the e2e folding option is constrained by video RAM and requires a CUDA
 
 Folding results per protein will be located in corresponding subdirectories. Results with the e2e option should look like below, with the model generated named t000_.e2e.pdb:
 ```bash
-ls -l  RFOLD_3D_e2e/ECU03_1140/
+ls -l  RFOLD_3D_e2e/sequence_1/
 total 4248
 drwxrwxr-x 1 jpombert jpombert     508 Jul 22 14:45 hhblits
 drwxrwxr-x 1 jpombert jpombert     232 Jul 22 14:45 log
@@ -346,7 +355,7 @@ drwxrwxr-x 1 jpombert jpombert     232 Jul 22 14:45 log
 
 Results with the pyrosetta option should look like below, with the models generated (5 in total) located in the model/ subfolder:
 ```bash
-ls -l RFOLD_3D_py/ECU03_1140/
+ls -l RFOLD_3D_py/sequence_1/
 total 4284
 drwxrwxr-x 1 jpombert jpombert     508 Jul 22 15:28 hhblits
 drwxrwxr-x 1 jpombert jpombert     388 Jul 22 15:45 log
@@ -433,19 +442,23 @@ The list created should look like this:
 ##### Creating or updating a GESAMT database
 Before performing structural homology searches with GESAMT, we should first create an archive to speed up the searches. We can also update the archive later as sequences are added (for example after the RCSB PDB files are updated with rsync). GESAMT archives can be created/updated with [run_GESAMT.pl](https://github.com/PombertLab/3DFI/blob/master/Homology_search/run_GESAMT.pl):
 ```Bash
+## Creating environment variables pointing to our GESAMT archive and RCSB PDB files
+export GESAMT_ARCHIVE=/media/Data_3/databases/GESAMT_ARCHIVE/
+export RCSB_PDB=/media/Data_3/databases/RCSB_PDB/
+
 ## To create a GESAMT archive
 run_GESAMT.pl \
    -cpu 10 \
    -make \
-   -arch /path/to/GESAMT_ARCHIVE \
-   -pdb /path/to/PDB/
+   -arch $GESAMT_ARCHIVE \
+   -pdb $RCSB_PDB
 
 ## To update a GESAMT archive
 run_GESAMT.pl \
    -cpu 10 \
    -update \
-   -arch /path/to/GESAMT_ARCHIVE \
-   -pdb /path/to/PDB/
+   -arch $GESAMT_ARCHIVE \
+   -pdb $RCSB_PDB
 ```
 Options for [run_GESAMT.pl](https://github.com/PombertLab/3DFI/blob/master/Homology_search/run_GESAMT.pl) are:
 ```
@@ -462,9 +475,9 @@ Structural homology searches with GESAMT can also be performed with [run_GESAMT.
 run_GESAMT.pl \
    -cpu 10 \
    -query \
-   -arch /path/to/GESAMT_ARCHIVE \
-   -input /path/to/*.pdb \
-   -o /path/to/RESULTS_FOLDER \
+   -arch $GESAMT_ARCHIVE \
+   -input *.pdb \
+   -o GESAMT_RESULTS \
    -mode normal
 ```
 Options for [run_GESAMT.pl](https://github.com/PombertLab/3DFI/blob/master/Homology_search/run_GESAMT.pl) are:
@@ -491,10 +504,10 @@ Results of GESAMT homology searches will be found in the \*.gesamt files generat
 To add definitions/products to the PDB matches found with GESAMT, we can use the list generated by [PDB_headers.pl](https://github.com/PombertLab/3DFI/blob/master/Homology_search/PDB_headers.pl) together with [descriptive_GESAMT_matches.pl](https://github.com/PombertLab/3DFI/blob/master/Homology_search/descriptive_GESAMT_matches.pl):
 ```Bash
 descriptive_GESAMT_matches.pl \
-   -r /path/to/PDB_titles.tsv \
-   -m *.gesamt \
+   -r PDB_titles.tsv \
+   -m GESAMT_RESULTS/*.gesamt \
    -q 0.3 \
-   -o /path/to/GESAMT.matches
+   -o GESAMT.matches
 ```
 Options for [descriptive_GESAMT_matches.pl](https://github.com/PombertLab/3DFI/blob/master/Homology_search/descriptive_GESAMT_matches.pl) are:
 ```
@@ -537,7 +550,7 @@ An example of a false-positive, where the quality of the fold is high, but the a
 
 ##### Inspecting alignments with ChimeraX
 To prepare visualizations for inspection, we can use [prepare_visualizations.pl](https://github.com/PombertLab/3DFI/blob/master/Visualization/prepare_visualizations.pl) to automatically align predicted proteins with their GESAMT-determined structural homologs. These alignments are performed with [ChimeraX](https://www.rbvi.ucsf.edu/chimerax/) via its API.
-```
+```bash
 ## Creating shortcut to working directory
 export RAPTORX="~/Microsporidia/intestinalis_50506/Annotations/3D/RaptorX"
 
@@ -549,7 +562,7 @@ prepare_visualizations.pl \
 ```
 
 To inspect the 3D structures, we can run [inspect_3D_structures.pl](https://github.com/PombertLab/3DFI/blob/master/Visualization/inspect_3D_structures.pl):
-```
+```bash
 inspect_3D_structures.pl \
     -v $RAPTORX/EXAMPLE
 ```
