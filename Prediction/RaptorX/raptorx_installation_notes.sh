@@ -86,6 +86,8 @@ echo "export PATH=$PATH:$RX" >> ~/.bashrc
 echo "export RAPTORX_PATH=$RX" >> ~/.bashrc
 
 ### Checking for $PYTHONHOME and python2.7, python, or python3
+### Note that this environment variable can cause issues with other
+### Python-dependent applications and is not required for RaptorX to run 
 if [ -n "$PYTHONHOME" ];
     then
     echo "Found PYTHONHOME set to $PYTHONHOME, leaving it as is";
