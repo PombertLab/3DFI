@@ -124,7 +124,7 @@ NOTES:
 .....CONTENT BAD AT TEMPLATE FILE /path/to/RaptorX_databases/TPL_BC100//6f45D.tpl -> [FEAT line 115 CA_contact 21]
 template file 6f45D format bad or missing
 ```
-- RaptorX expects a PYTHONHOME environment variable but runs fine without it. The following warning message can be safely ignored, and silenced by setting up a $PYTHONHOME variable.
+- RaptorX expects a PYTHONHOME environment variable but runs fine without it. The following warning message can be safely ignored, and silenced by setting up a PYTHONHOME environment variable. Note that setting PYTHONHOME can create issues with other applications.
 ```
 Could not find platform independent libraries <prefix>
 Could not find platform dependent libraries <exec_prefix>
