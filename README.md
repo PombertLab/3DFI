@@ -19,7 +19,7 @@ The 3DFI automates 3D structure prediction, structural homology searches and dat
     * [Parsing the output of GESAMT searches](#Parsing-the-output-of-GESAMT-searches)
   * [Structural visualization](#Structural-visualization)
     * [About visualization](#About-visualization)
-    * [Process](#Process)
+    * [Inspecting alignments with ChimeraX](#Inspecting-alignments-with-ChimeraX)
 * [Miscellaneous](#miscellaneous)
 * [Funding and acknowledgments](#Funding-and-acknowledgments)
 * [References](#references)
@@ -535,7 +535,7 @@ An example of a false-negative, where the quality of the protein folding is low,
 An example of a false-positive, where the quality of the fold is high, but the alignment-quality is low and a pseudo-structural homolog is found:
 <p align="center"><img src="https://github.com/PombertLab/3DFI/blob/master/Images/Bad_Match.png" alt="Example of a bad alignment" width="400"></p>
 
-##### Process
+##### Inspecting alignments with ChimeraX
 To prepare visualizations for inspection, we can use [prepare_visualizations.pl](https://github.com/PombertLab/3DFI/blob/master/Visualization/prepare_visualizations.pl) to automatically align predicted proteins with their GESAMT-determined structural homologs. These alignments are performed with [ChimeraX](https://www.rbvi.ucsf.edu/chimerax/) via its API.
 ```
 ## Creating shortcut to working directory
