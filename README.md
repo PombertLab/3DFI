@@ -344,7 +344,7 @@ The script [parse_af_results.pl](https://github.com/PombertLab/3DFI/blob/master/
 ```bash
 $AF_3DFI/parse_af_results.pl \
   -a $AF/Results \
-  -o $AF/Results_parsed \
+  -o $AF/Parsed_PDBs \
   -p k \
   -t 5
 ```
