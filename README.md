@@ -68,7 +68,7 @@ The 3DFI pipeline can be downloaded directly from GitHub with git clone. For eas
 ## To download 3DFI from GitHub:
 git clone https://github.com/PombertLab/3DFI.git
 
-## To set 3DFI installation directories as environment variables:
+## To set 3DFI directories as environment variables:
 cd 3DFI/
 export 3DFI=$(pwd)
 export RX_3DFI=${3DFI}/Prediction/RaptorX
