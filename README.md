@@ -66,29 +66,31 @@ To perform template-based 3D structure predictions locally with [RaptorX](http:/
 
 To run [RaptorX](http://raptorx.uchicago.edu/) from anywhere with [raptorx.pl](https://github.com/PombertLab/3DFI/blob/master/Prediction/RaptorX/raptorx.pl), the environment variable RAPTORX_PATH should be set first:
 ```Bash
-## Setting up RaptorX installation directory.
+## Setting up RaptorX installation directory:
 export RAPTORX_PATH=/opt/RaptorX
 
-## Setting 3DFI installation directories.
+## Setting 3DFI installation directories:
 export 3DFI=~/GitHub/3DFI
 export RX_3DFI=~/GitHub/3DFI/Prediction/RaptorX
 
-## Creating a working directory for RaptorX.
+## Creating a working directory for RaptorX:
 export RXD=~/RAPTORX_3D
 mkdir -p $RXD
 ```
 
 To predict 3D structures with [RaptorX](http://raptorx.uchicago.edu/) using [raptorx.pl](https://github.com/PombertLab/3DFI/blob/master/Prediction/RaptorX/raptorx.pl):
-```bash
 
-## Running RaptorX on provided examples
+```bash
+## Running RaptorX on provided examples:
 $RX_3DFI/raptorx.pl \
    -t 10 \
    -k 2 \
    -i ${3DFI}/Examples/ \
    -o $RXD
 ```
+
 Options for raptorx.pl are:
+
 ```
 -t (--threads)	Number of threads to use [Default: 10]
 -i (--input)	Folder containing fasta files
@@ -138,21 +140,21 @@ pip install tensorflow-cpu==1.15
 ###### Running trRosetta
 Running [trRosetta](https://github.com/gjoni/trRosetta) involves 3 main steps: 1) searches with [HHsuite3](https://github.com/soedinglab/hh-suite)'s hhblits to generate alignments (.a3m); 2) prediction of protein inter-residue geometries (.npz) with [trRosetta](https://github.com/gjoni/trRosetta)'s predict.py; and 3) prediction of 3D structures (.pdb) with trRosetta.py and [PyRosetta](http://www.pyrosetta.org/). Performing these predictions on several proteins can be automated with 3DFI scripts. Note that hhblits databases should be located on a solid state disk (ideally NVME) to reduce i/o bottlenecks during homology searches. 
 
-1. 
 ```bash
-## Setting up tRosetta and 3DFI installation directories.
+## Setting up tRosetta and 3DFI installation directories:
 export TROSETTA_HOME=/media/Data_3/opt/trRosetta
 
-## Setting 3DFI installation directories.
+## Setting 3DFI installation directories:
 export 3DFI=~/GitHub/3DFI
 export TR_3DFI=~/GitHub/3DFI/Prediction/trRosetta
 
-## Creating a working directory for tRosetta
+## Creating a working directory for tRosetta:
 export TRWD=~/TROSETTA_3D
 mkdir -p $TRD
 ```
 
-2. Converting FASTA sequences to single string FASTA sequences with [fasta_oneliner.pl](https://github.com/PombertLab/3DFI/blob/master/Prediction/trRosetta/fasta_oneliner.pl):
+1. Converting FASTA sequences to single string FASTA sequences with [fasta_oneliner.pl](https://github.com/PombertLab/3DFI/blob/master/Prediction/trRosetta/fasta_oneliner.pl):
+
 ```Bash
 $TR_3DFI/fasta_oneliner.pl \
    -f ${3DFI}/Examples/*.fasta \
@@ -160,17 +162,19 @@ $TR_3DFI/fasta_oneliner.pl \
 ```
 
 Options for [fasta_oneliner.pl](https://github.com/PombertLab/3DFI/blob/master/Prediction/trRosetta/fasta_oneliner.pl) are:
+
 ```
 -f (--fasta)    FASTA files to convert
 -o (--output)   Output folder
 ```
 
-3. Running hhblits searches with [run_hhblits.pl](https://github.com/PombertLab/3DFI/blob/master/Prediction/trRosetta/run_hhblits.pl):
+2. Running hhblits searches with [run_hhblits.pl](https://github.com/PombertLab/3DFI/blob/master/Prediction/trRosetta/run_hhblits.pl):
+
 ```Bash
-## Setting Uniclust database location
+## Setting Uniclust database location:
 export UNICLUST=/media/Data_3/Uniclust/UniRef30_2020_06
 
-## Running hhblits on multiple evalues independently
+## Running hhblits on multiple evalues independently:
 $TR_3DFI/run_hhblits.pl \
    -t 10 \
    -f $TRD/FASTA_OL/ \
@@ -178,7 +182,7 @@ $TR_3DFI/run_hhblits.pl \
    -d $UNICLUST \
    -e 1e-40 1e-10 1e-03 1e+01
 
-## Running hhblits on evalues sequentially, from stricter to more permissive
+## Running hhblits on evalues sequentially, from stricter to more permissive:
 $TR_3DFI/run_hhblits.pl \
    -t 10 \
    -f $TRD/FASTA_OL/ \
@@ -187,7 +191,9 @@ $TR_3DFI/run_hhblits.pl \
    -s \
    -se 1e-70 1e-50 1e-30 1e-10 1e-06 1e-04 1e+01
 ```
+
 Options for [run_hhblits.pl](https://github.com/PombertLab/3DFI/blob/master/Prediction/trRosetta/run_hhblits.pl) are:
+
 ```
 -t (--threads)	    Number of threads to use [Default: 10]
 -f (--fasta)	    Folder containing fasta files
@@ -204,10 +210,10 @@ Options for [run_hhblits.pl](https://github.com/PombertLab/3DFI/blob/master/Pred
 -ns (--num_sq)      # of hhblits iteration per sequential evalue (-s) [Default: 1] 
 ```
 
-4. Create .npz files containing inter-residue geometries with [create_npz.pl](https://github.com/PombertLab/3DFI/blob/master/Prediction/trRosetta/create_npz.pl):
+3. Create .npz files containing inter-residue geometries with [create_npz.pl](https://github.com/PombertLab/3DFI/blob/master/Prediction/trRosetta/create_npz.pl):
 ```Bash
 
-## Creating npz files
+## Creating npz files:
 $TR_3DFI/create_npz.pl \
    -a $TRD/HHBLITS/*.a3m \
    -o $TRD/NPZ/ \
@@ -216,6 +222,7 @@ $TR_3DFI/create_npz.pl \
 ```
 
 Options for [create_npz.pl](https://github.com/PombertLab/3DFI/blob/master/Prediction/trRosetta/create_npz.pl) are:
+
 ```
 -a (--a3m)      .a3m files generated by hhblits
 -o (--output)   Output folder
@@ -223,7 +230,8 @@ Options for [create_npz.pl](https://github.com/PombertLab/3DFI/blob/master/Predi
 -m (--model)    Path to trRosetta model directory
 ```
 
-5. Generate .pdb files containing 3D models from the .npz fil3s with [create_pdb.pl](https://github.com/PombertLab/3DFI/blob/master/Prediction/trRosetta/create_pdb.pl):
+4. Generate .pdb files containing 3D models from the .npz fil3s with [create_pdb.pl](https://github.com/PombertLab/3DFI/blob/master/Prediction/trRosetta/create_pdb.pl):
+
 ```Bash
 $TR_3DFI/create_pdb.pl \
    -c 10 \
@@ -234,6 +242,7 @@ $TR_3DFI/create_pdb.pl \
 ```
 
 Options for [create_pdb.pl](https://github.com/PombertLab/3DFI/blob/master/Prediction/trRosetta/create_pdb.pl) are:
+
 ```
 -c (--cpu)	Number of cpu threads to use [Default: 10] ## i.e. runs n processes in parallel
 -m (--memory)	Memory available (in Gb) to threads [Default: 16]
@@ -244,7 +253,8 @@ Options for [create_pdb.pl](https://github.com/PombertLab/3DFI/blob/master/Predi
 -p (--python)	Preferred Python interpreter [Default: python]
 ```
 
-6. The .pdb files thus generated contain lines that are not standard and that can prevent applications such as [PDBeFOLD](https://www.ebi.ac.uk/msd-srv/ssm/) to run on the corresponding files. We can clean up the PDB files with [sanitize_pdb.pl](https://github.com/PombertLab/3DFI/blob/master/Prediction/trRosetta/sanitize_pdb.pl):
+5. The .pdb files thus generated contain lines that are not standard and that can prevent applications such as [PDBeFOLD](https://www.ebi.ac.uk/msd-srv/ssm/) to run on the corresponding files. We can clean up the PDB files with [sanitize_pdb.pl](https://github.com/PombertLab/3DFI/blob/master/Prediction/trRosetta/sanitize_pdb.pl):
+
 ```Bash
 $TR_3DFI/sanitize_pdb.pl \
    -p $TRD/PDB/*.pdb \
@@ -252,6 +262,7 @@ $TR_3DFI/sanitize_pdb.pl \
 ```
 
 Options for [sanitize_pdb.pl](https://github.com/PombertLab/3DFI/blob/master/Prediction/trRosetta/sanitize_pdb.pl) are:
+
 ```
 -p (--pdb)      .pdb files generated by trRosetta
 -o (--output)   Output folder
@@ -261,20 +272,21 @@ Options for [sanitize_pdb.pl](https://github.com/PombertLab/3DFI/blob/master/Pre
 How to set up [AlphaFold2](https://github.com/deepmind/alphafold) to run as a docker image is described on its GitHub page. The [alphafold.pl](https://github.com/PombertLab/3DFI/blob/master/Prediction/AlphaFold2/alphafold.pl) script is a Perl wrapper that enables running AlphaFold2 in batch mode. To simplify its use, the ALPHA_IN and ALPHA_OUT environment variables can be set in the shell.
 
 ```bash
-## Setting up AlphaFold2 installation directory and output folder as environment variables
+## Setting up AlphaFold2 installation directory and output folder as environment variables:
 export ALPHA_IN=/media/FatCat_2/opt/alphafold
 export ALPHA_OUT=/media/FatCat_2/opt/alphafold_results
 
-## Setting 3DFI installation directories.
+## Setting 3DFI installation directories:
 export 3DFI=~/GitHub/3DFI
 export AF_3DFI=~/GitHub/3DFI/Prediction/AlphaFold2
 
-## Creating a working directory for AlphaFold2
+## Creating a working directory for AlphaFold2:
 export AFD=~/ALPHAFOLD_3D
 mkdir -p $AFD
 ```
 
 To run [alphafold.pl](https://github.com/PombertLab/3DFI/blob/master/Prediction/AlphaFold2/alphafold.pl) on multiple fasta files, type:
+
 ```bash
 $AF_3DFI/alphafold.pl \
    -f ${3DFI}/Examples/*.fasta \
@@ -282,6 +294,7 @@ $AF_3DFI/alphafold.pl \
 ```
 
 Options for [alphafold.pl](https://github.com/PombertLab/3DFI/blob/master/Prediction/AlphaFold2/alphafold.pl) are:
+
 ```
 -f (--fasta)		FASTA files to fold
 -o (--outdir)		Output directory
@@ -347,14 +360,14 @@ Options for [parse_af_results.pl](https://github.com/PombertLab/3DFI/blob/master
 How to set up [RoseTTAFold](https://github.com/RosettaCommons/RoseTTAFold) to run using conda is described on its GitHub page. The [rosettafold.pl](https://github.com/PombertLab/3DFI/blob/master/Prediction/RoseTTAFold/rosettafold.pl) script is a Perl wrapper that enables running the [RoseTTAFold](https://github.com/RosettaCommons/RoseTTAFold) run_e2e_ver.sh/run_pyrosetta_ver.sh scripts in batch mode. To simplify its use, the ROSETTAFOLD_HOME environment variable can be set in the shell.
 
 ```bash
-##  Setting up RoseTTAFold installation directory as an environment variable
+##  Setting up RoseTTAFold installation directory as an environment variable:
 export ROSETTAFOLD_HOME=/opt/RoseTTAFold
 
-## Setting 3DFI installation directories.
+## Setting 3DFI installation directories:
 export 3DFI=~/GitHub/3DFI
 export RF_3DFI=~/GitHub/3DFI/Prediction/RoseTTAFold
 
-## Creating a working directory for RoseTTAFold
+## Creating a working directory for RoseTTAFold:
 export RFD=~/ROSETTAFOLD_3D
 mkdir -p $RFD
 ```
@@ -436,14 +449,14 @@ Options for [parse_rf_results.pl](https://github.com/PombertLab/3DFI/blob/master
 PDB files from the [Protein Data Bank](https://www.rcsb.org/) can be downloaded directly from its website. Detailed instructions are provided [here](https://www.wwpdb.org/ftp/pdb-ftp-sites). Because of the large size of this dataset, downloading it using [rsync](https://rsync.samba.org/) is recommended. This can be done with [update_PDB.pl](https://github.com/PombertLab/3DFI/blob/master/Homology_search/update_PDB.pl) as follows:
 
 ```bash
-## Setting up RCSB PDB database location
+## Setting up RCSB PDB database location:
 export RCSB_PDB=/media/Data_3/databases/RCSB_PDB/
 
-## Setting 3DFI installation directories.
+## Setting 3DFI installation directories:
 export 3DFI=~/GitHub/3DFI
 export HS_3DFI=~/GitHub/3DFI/Homology_search
 
-## Downloading the RCSB PDB database
+## Downloading the RCSB PDB database:
 $HS_3DFI/update_PDB.pl \
   -o $RCSB_PDB \
   -n 15 \
@@ -499,17 +512,17 @@ The list created should look like this:
 Before performing structural homology searches with GESAMT, we should first create an archive to speed up the searches. We can also update the archive later as sequences are added (for example after the RCSB PDB files are updated with rsync). GESAMT archives can be created/updated with [run_GESAMT.pl](https://github.com/PombertLab/3DFI/blob/master/Homology_search/run_GESAMT.pl):
 
 ```Bash
-## Creating environment variables pointing to our GESAMT archive and RCSB PDB files
+## Creating environment variables pointing to our GESAMT archive and RCSB PDB files:
 export GESAMT_ARCHIVE=/media/Data_3/databases/GESAMT_ARCHIVE/
 
-## To create a GESAMT archive
+## To create a GESAMT archive:
 $HS_3DFI/run_GESAMT.pl \
    -cpu 10 \
    -make \
    -arch $GESAMT_ARCHIVE \
    -pdb $RCSB_PDB
 
-## To update a GESAMT archive
+## To update a GESAMT archive:
 $HS_3DFI/run_GESAMT.pl \
    -cpu 10 \
    -update \
@@ -529,11 +542,11 @@ Options for [run_GESAMT.pl](https://github.com/PombertLab/3DFI/blob/master/Homol
 Structural homology searches with GESAMT can also be performed with [run_GESAMT.pl](https://github.com/PombertLab/3DFI/blob/master/Homology_search/run_GESAMT.pl):
 
 ```Bash
-## Creating a working directory for GESAMT
+## Creating a working directory for GESAMT:
 export GSMT=~/GESAMT_RESULTS
 mkdir -p $GSMT
 
-## Performing structural homology searches with GESAMT
+## Performing structural homology searches with GESAMT:
 $HS_3DFI/run_GESAMT.pl \
    -cpu 10 \
    -query \
