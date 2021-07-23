@@ -250,8 +250,7 @@ $TR_3DFI/create_pdb.pl \
    -c 10 \
    -n $TR/NPZ/*.npz \
    -o $TR/PDB/ \
-   -f $TR/FASTA_OL/ \
-   -t $TROSETTA_HOME
+   -f $TR/FASTA_OL/
 ```
 
 Options for [create_pdb.pl](https://github.com/PombertLab/3DFI/blob/master/Prediction/trRosetta/create_pdb.pl) are:
