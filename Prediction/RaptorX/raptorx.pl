@@ -163,10 +163,12 @@ while (my $fasta_path = shift@fasta){
 		-m $modeller";
 
 	## Writing timestamp to log file
-	my $run_time = time - $tstart; ## Cumulative time elapsed
-	my $pfold_time = time - $pstart; ## Time elapsed per protein
-	print LOG "Time to fold $fasta = $pfold_time seconds\n";
-	print LOG "Time to fold $fasta = $run_time seconds".' (cumulative)'."\n";
+	my $pfold_time = (time - $pstart)/60; ## Time elapsed per protein
+	my $run_time = (time - $tstart)/60; ## Cumulative time elapsed
+	$pfold_time = sprintf ("%.2f", $pfold_time);
+	$run_time = sprintf ("%.2f", $run_time);
+	print LOG "Time to fold $fasta = $pfold_time minutes\n";
+	print LOG "Time to fold $fasta = $run_time minutes".' (cumulative)'."\n";
 
 	## Moving datafiles to output directory
 	opendir (RXDIR,"$RAPTORX_PATH");
