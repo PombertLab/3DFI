@@ -57,7 +57,7 @@ Requirements to perform 3D structure prediction, structural homology searches an
 	- [Getopt::Long](https://perldoc.perl.org/Getopt/Long.html)
 	- [PerlIO::gzip](https://metacpan.org/pod/PerlIO::gzip)
 
-Alternatively, any set of PDB files can also be fed as input for structural homology searches/visualization with GESAMT/CHIMERAX. For example, PDB files predicted using web-based platforms such as [SWISS-MODEL](https://swissmodel.expasy.org/) or structures predicted locally with [I-TASSER](https://zhanglab.ccmb.med.umich.edu/I-TASSER/download/).
+Alternatively, any set of PDB files can also be fed as input for structural homology searches/visualization with GESAMT/CHIMERAX. For example, PDB files predicted using web-based platforms such as [SWISS-MODEL](https://swissmodel.expasy.org/) or predicted locally with [I-TASSER](https://zhanglab.ccmb.med.umich.edu/I-TASSER/download/).
 
 ### Howto
 #### 3D structure prediction
