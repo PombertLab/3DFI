@@ -102,7 +102,7 @@ To predict 3D structures with [RaptorX](http://raptorx.uchicago.edu/) using [rap
 $RX_3DFI/raptorx.pl \
    -t 10 \
    -k 2 \
-   -i ${3DFI}/Examples/ \
+   -i ${3DFI}/Examples/FASTA \
    -o $RX
 ```
 
@@ -172,7 +172,7 @@ mkdir -p $TR
 
 ```Bash
 $TR_3DFI/fasta_oneliner.pl \
-   -f ${3DFI}/Examples/*.fasta \
+   -f ${3DFI}/Examples/FASTA/*.fasta \
    -o $TR/FASTA_OL
 ```
 
@@ -297,7 +297,7 @@ To run [alphafold.pl](https://github.com/PombertLab/3DFI/blob/master/Prediction/
 
 ```bash
 $AF_3DFI/alphafold.pl \
-   -f ${3DFI}/Examples/*.fasta \
+   -f ${3DFI}/Examples/FASTA/*.fasta \
    -o $AF/Results
 ```
 
@@ -380,7 +380,7 @@ To run [rosettafold.pl](https://github.com/PombertLab/3DFI/blob/master/Predictio
 
 ```bash
 $RF_3DFI/rosettafold.pl \
-   -f ${3DFI}/Examples/*.fasta \
+   -f ${3DFI}/Examples/FASTA/*.fasta \
    -o $RF/e2e/
 ```
 
