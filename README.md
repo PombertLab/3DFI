@@ -274,8 +274,59 @@ Options for [rosettafold.pl](https://github.com/PombertLab/3DFI/blob/master/Pred
 -r (--rosetta)	RoseTTAFold installation directory
 ```
 
-Note that the e2e folding option is constrained by video RAM and requires a GPU with more than 8 Gb RAM to tackle large proteins. When out of memory, the 'RuntimeError: CUDA out of memory' will appear in the log/network.stderr file and the .pdb file will not be generated. The pyrosetta folding option is slower (CPU-bound) but not constrained by video RAM.
+Note that the e2e folding option is constrained by video RAM and requires a GPU with more than 8 Gb RAM to tackle large proteins (a video card with at least 24 Gb of RAM is recommended). When out of memory, the 'RuntimeError: CUDA out of memory' will appear in the log/network.stderr file and the .pdb file will not be generated. The pyrosetta folding option is slower (CPU-bound) but not constrained by video RAM.
 
+Folding results per protein will be located in corresponding subdirectories. Results with the e2e option should look like below:
+```bash
+ls -l  RFOLD_3D_e2e/ECU03_1140/
+total 4248
+drwxrwxr-x 1 jpombert jpombert     508 Jul 22 14:45 hhblits
+drwxrwxr-x 1 jpombert jpombert     232 Jul 22 14:45 log
+-rw-rw-r-- 1 jpombert jpombert  914410 Jul 22 14:45 t000_.atab
+-rw-rw-r-- 1 jpombert jpombert   23517 Jul 22 14:46 t000_.e2e_init.pdb
+-rw-rw-r-- 1 jpombert jpombert 2873473 Jul 22 14:46 t000_.e2e.npz
+-rw-rw-r-- 1 jpombert jpombert   31356 Jul 22 14:46 t000_.e2e.pdb
+-rw-rw-r-- 1 jpombert jpombert  481742 Jul 22 14:45 t000_.hhr
+-rw-rw-r-- 1 jpombert jpombert    3941 Jul 22 14:45 t000_.msa0.a3m
+-rw-rw-r-- 1 jpombert jpombert    4195 Jul 22 14:45 t000_.msa0.ss2.a3m
+-rw-rw-r-- 1 jpombert jpombert     254 Jul 22 14:45 t000_.ss2
+
+``` 
+
+Results with the pyrosetta option should look like below, with the models located in the model/ subfolder:
+```bash
+ls -l RFOLD_3D_py/ECU03_1140/
+total 4284
+drwxrwxr-x 1 jpombert jpombert     508 Jul 22 15:28 hhblits
+drwxrwxr-x 1 jpombert jpombert     388 Jul 22 15:45 log
+drwxrwxr-x 1 jpombert jpombert     310 Jul 22 15:45 model
+-rw-rw-r-- 1 jpombert jpombert    4125 Jul 22 15:29 parallel.fold.list
+drwxrwxr-x 1 jpombert jpombert    1020 Jul 22 15:45 pdb-3track
+-rw-rw-r-- 1 jpombert jpombert 2959088 Jul 22 15:29 t000_.3track.npz
+-rw-rw-r-- 1 jpombert jpombert  914410 Jul 22 15:29 t000_.atab
+-rw-rw-r-- 1 jpombert jpombert  481760 Jul 22 15:29 t000_.hhr
+-rw-rw-r-- 1 jpombert jpombert    3941 Jul 22 15:28 t000_.msa0.a3m
+-rw-rw-r-- 1 jpombert jpombert    4195 Jul 22 15:28 t000_.msa0.ss2.a3m
+-rw-rw-r-- 1 jpombert jpombert     254 Jul 22 15:28 t000_.ss2
+
+```
+
+The script [parse_rf_results.pl](https://github.com/PombertLab/3DFI/blob/master/Prediction/RoseTTAFold/parse_rf_results.pl) can be used to recurse through the subdirectories and copy the PDB model(s) to a selected location. To use [parse_rf_results.pl](https://github.com/PombertLab/3DFI/blob/master/Prediction/RoseTTAFold/parse_rf_results.pl),  type:
+```
+parse_rf_results.pl \
+  -r RFOLD_3D_e2e \
+  -o RFOLD_3D_e2e_PARSED \
+  -p e2e
+```
+
+Options for [parse_rf_results.pl](https://github.com/PombertLab/3DFI/blob/master/Prediction/RoseTTAFold/parse_rf_results.pl) are:
+```
+-r (--rfdir)	RoseTTAFold output directory
+-o (--outdir)	Parsed output directory
+-p (--pdbtype)	PDB type: pyrosetta (py) or end-to-end (e2e) [Default: e2e]
+-t (--top)	Top X number of pdb files to keep for pyrosetta PDBs, from best to worst (max 5) [Default: 1]
+-v (--verbose)	Adds verbosity
+```
 
 #### Structural homology searches
 ##### Downloading PDB files from RCSB
@@ -554,3 +605,5 @@ This work was supported in part by the National Institute of Allergy and Infecti
 7) [UCSF ChimeraX: Structure visualization for researchers, educators, and developers](https://www.ncbi.nlm.nih.gov/pubmed/32881101). **Pettersen EF, Goddard TD, Huang CC, Meng EC, Couch GS, Croll TI, Morris JH, Ferrin TE**. Protein Sci. 2021 Jan;30(1):70-82.  PMID: 32881101 PMCID: PMC7737788 DOI: 10.1002/pro.3943
 
 8) [Highly accurate protein structure prediction with AlphaFold](https://pubmed.ncbi.nlm.nih.gov/34265844/). **Jumper J,** ***et al.*** Nature. 2021 Jul 15. Online ahead of print. PMID: 34265844 DOI: 10.1038/s41586-021-03819-2.
+
+9) [Accurate prediction of protein structures and interactions using a three-track neural network](https://pubmed.ncbi.nlm.nih.gov/34282049/). **Baek M,** ***et al.*** Science. 2021 Jul 15; eabj8754. Online ahead of print. PMID: 34282049 DOI: 10.1126/science.abj8754
