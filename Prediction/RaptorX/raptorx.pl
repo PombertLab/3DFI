@@ -1,10 +1,11 @@
 #!/usr/bin/perl
 ## Pombert Lab 2019
-my $version = '0.6';
+my $version = '0.6a';
 my $name = 'raptorx.pl';
-my $updated = '2021-07-13';
+my $updated = '2021-07-23';
 
-use strict; use warnings; use Getopt::Long qw(GetOptions); use Cwd;
+use strict; use warnings; use Getopt::Long qw(GetOptions); use File::Basename;
+use Cwd; use Cwd 'abs_path';
 my @command = @ARGV; ## Keeping track of command line for log
 
 ## Usage definition
@@ -59,7 +60,8 @@ opendir (DIR, $dir) or die "Can't open FASTA input directory $dir: $!\n";
 my @fasta;
 while (my $fasta = readdir(DIR)){
 	if ($fasta =~ /\w+/){ 
-		push (@fasta,$fasta);
+		my $abs_path_dir = abs_path($dir);
+		push (@fasta, "$abs_path_dir/$fasta");
 	}
 }
 @fasta = sort @fasta;
@@ -87,7 +89,8 @@ chomp ($RAPTORX_PATH = `echo $RAPTORX_PATH`);
 chdir $RAPTORX_PATH or die "Can't access RAPTORX_PATH $RAPTORX_PATH: $!\n";
 
 ## Running RaptorX
-while (my $fasta = shift@fasta){
+while (my $fasta_path = shift@fasta){
+	my $fasta = fileparse($fasta_path);
 	my $pstart = time;
 	my ($protein, $ext) = $fasta =~ /^(\S+?).(\w+)$/;
 
@@ -111,7 +114,7 @@ while (my $fasta = shift@fasta){
 	my $time = localtime;
 	print "\n$time: Generating the feature file (.tgt) for $fasta with buildFeature\n\n";
 	system "buildFeature \\
-	  -i $prev_dir/$dir/$fasta \\
+	  -i $fasta_path \\
 	  -o $prev_dir/$out/TGT/$protein.tgt \\
 	  -c $threads";
 
