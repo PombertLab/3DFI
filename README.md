@@ -74,8 +74,8 @@ export 3DFI=~/GitHub/3DFI
 export RX_3DFI=~/GitHub/3DFI/Prediction/RaptorX
 
 ## Creating a working directory for RaptorX:
-export RXD=~/RAPTORX_3D
-mkdir -p $RXD
+export RX=~/RAPTORX_3D
+mkdir -p $RX
 ```
 
 To predict 3D structures with [RaptorX](http://raptorx.uchicago.edu/) using [raptorx.pl](https://github.com/PombertLab/3DFI/blob/master/Prediction/RaptorX/raptorx.pl):
@@ -86,7 +86,7 @@ $RX_3DFI/raptorx.pl \
    -t 10 \
    -k 2 \
    -i ${3DFI}/Examples/ \
-   -o $RXD
+   -o $RX
 ```
 
 Options for raptorx.pl are:
@@ -149,8 +149,8 @@ export 3DFI=~/GitHub/3DFI
 export TR_3DFI=~/GitHub/3DFI/Prediction/trRosetta
 
 ## Creating a working directory for tRosetta:
-export TRWD=~/TROSETTA_3D
-mkdir -p $TRD
+export TR=~/TROSETTA_3D
+mkdir -p $TR
 ```
 
 1. Converting FASTA sequences to single string FASTA sequences with [fasta_oneliner.pl](https://github.com/PombertLab/3DFI/blob/master/Prediction/trRosetta/fasta_oneliner.pl):
@@ -158,7 +158,7 @@ mkdir -p $TRD
 ```Bash
 $TR_3DFI/fasta_oneliner.pl \
    -f ${3DFI}/Examples/*.fasta \
-   -o $TRD/FASTA_OL
+   -o $TR/FASTA_OL
 ```
 
 Options for [fasta_oneliner.pl](https://github.com/PombertLab/3DFI/blob/master/Prediction/trRosetta/fasta_oneliner.pl) are:
@@ -177,16 +177,16 @@ export UNICLUST=/media/Data_3/Uniclust/UniRef30_2020_06
 ## Running hhblits on multiple evalues independently:
 $TR_3DFI/run_hhblits.pl \
    -t 10 \
-   -f $TRD/FASTA_OL/ \
-   -o $TRD/HHBLITS/ \
+   -f $TR/FASTA_OL/ \
+   -o $TR/HHBLITS/ \
    -d $UNICLUST \
    -e 1e-40 1e-10 1e-03 1e+01
 
 ## Running hhblits on evalues sequentially, from stricter to more permissive:
 $TR_3DFI/run_hhblits.pl \
    -t 10 \
-   -f $TRD/FASTA_OL/ \
-   -o $TRD/HHBLITS/ \
+   -f $TR/FASTA_OL/ \
+   -o $TR/HHBLITS/ \
    -d $UNICLUST \
    -s \
    -se 1e-70 1e-50 1e-30 1e-10 1e-06 1e-04 1e+01
@@ -215,8 +215,8 @@ Options for [run_hhblits.pl](https://github.com/PombertLab/3DFI/blob/master/Pred
 
 ## Creating npz files:
 $TR_3DFI/create_npz.pl \
-   -a $TRD/HHBLITS/*.a3m \
-   -o $TRD/NPZ/ \
+   -a $TR/HHBLITS/*.a3m \
+   -o $TR/NPZ/ \
    -p $TROSETTA_HOME/network/predict.py \
    -m $TROSETTA_HOME/model2019_07
 ```
@@ -235,9 +235,9 @@ Options for [create_npz.pl](https://github.com/PombertLab/3DFI/blob/master/Predi
 ```Bash
 $TR_3DFI/create_pdb.pl \
    -c 10 \
-   -n $TRD/NPZ/*.npz \
-   -o $TRD/PDB/ \
-   -f $TRD/FASTA_OL/ \
+   -n $TR/NPZ/*.npz \
+   -o $TR/PDB/ \
+   -f $TR/FASTA_OL/ \
    -t $TROSETTA_HOME/pdb/trRosetta.py
 ```
 
@@ -257,8 +257,8 @@ Options for [create_pdb.pl](https://github.com/PombertLab/3DFI/blob/master/Predi
 
 ```Bash
 $TR_3DFI/sanitize_pdb.pl \
-   -p $TRD/PDB/*.pdb \
-   -o $TRD/PDB_clean
+   -p $TR/PDB/*.pdb \
+   -o $TR/PDB_clean
 ```
 
 Options for [sanitize_pdb.pl](https://github.com/PombertLab/3DFI/blob/master/Prediction/trRosetta/sanitize_pdb.pl) are:
@@ -281,8 +281,8 @@ export 3DFI=~/GitHub/3DFI
 export AF_3DFI=~/GitHub/3DFI/Prediction/AlphaFold2
 
 ## Creating a working directory for AlphaFold2:
-export AFD=~/ALPHAFOLD_3D
-mkdir -p $AFD
+export AF=~/ALPHAFOLD_3D
+mkdir -p $AF
 ```
 
 To run [alphafold.pl](https://github.com/PombertLab/3DFI/blob/master/Prediction/AlphaFold2/alphafold.pl) on multiple fasta files, type:
@@ -290,7 +290,7 @@ To run [alphafold.pl](https://github.com/PombertLab/3DFI/blob/master/Prediction/
 ```bash
 $AF_3DFI/alphafold.pl \
    -f ${3DFI}/Examples/*.fasta \
-   -o $AFD/Results
+   -o $AF/Results
 ```
 
 Options for [alphafold.pl](https://github.com/PombertLab/3DFI/blob/master/Prediction/AlphaFold2/alphafold.pl) are:
@@ -308,7 +308,7 @@ Options for [alphafold.pl](https://github.com/PombertLab/3DFI/blob/master/Predic
 Folding results per protein will be located in corresponding subdirectories. Results with AlphaFold will contain PDB files for unrelaxed models (i.e. predicted as is before ralaxation), relaxed models, and ranked models from best (0) to worst (4). Each subdirectory should look like this:
 
 ```bash
-ls -l $AFD/Results/ECU03_1140/
+ls -l $AF/Results/ECU03_1140/
 total 4
 total 47404
 -rw-r--r-- 1 jpombert jpombert 1085545 Jul 23 08:27 features.pkl
@@ -341,8 +341,8 @@ The script [parse_af_results.pl](https://github.com/PombertLab/3DFI/blob/master/
 
 ```bash
 $AF_3DFI/parse_af_results.pl \
-  -a $AFD/Results \
-  -o $AFD/Results_parsed \
+  -a $AF/Results \
+  -o $AF/Results_parsed \
   -p k \
   -t 5
 ```
@@ -368,8 +368,8 @@ export 3DFI=~/GitHub/3DFI
 export RF_3DFI=~/GitHub/3DFI/Prediction/RoseTTAFold
 
 ## Creating a working directory for RoseTTAFold:
-export RFD=~/ROSETTAFOLD_3D
-mkdir -p $RFD
+export RF=~/ROSETTAFOLD_3D
+mkdir -p $RF
 ```
 
 To run [rosettafold.pl](https://github.com/PombertLab/3DFI/blob/master/Prediction/RoseTTAFold/rosettafold.pl) on multiple fasta files, type:
@@ -377,7 +377,7 @@ To run [rosettafold.pl](https://github.com/PombertLab/3DFI/blob/master/Predictio
 ```bash
 $RF_3DFI/rosettafold.pl \
    -f ${3DFI}/Examples/*.fasta \
-   -o $RFD/e2e/
+   -o $RF/e2e/
 ```
 
 Options for [rosettafold.pl](https://github.com/PombertLab/3DFI/blob/master/Prediction/RoseTTAFold/rosettafold.pl) are:
@@ -394,7 +394,7 @@ Note that the e2e folding option is constrained by video RAM and requires a CUDA
 Folding results per protein will be located in corresponding subdirectories. Results with the e2e option should look like below, with the model generated named t000_.e2e.pdb:
 
 ```bash
-ls -l  $RFD/e2e/sequence_1/
+ls -l  $RF/e2e/sequence_1/
 total 4248
 drwxrwxr-x 1 jpombert jpombert     508 Jul 22 14:45 hhblits
 drwxrwxr-x 1 jpombert jpombert     232 Jul 22 14:45 log
@@ -411,7 +411,7 @@ drwxrwxr-x 1 jpombert jpombert     232 Jul 22 14:45 log
 Results with the pyrosetta option should look like below, with the models generated (5 in total) located in the model/ subfolder:
 
 ```bash
-ls -l $RFD/py/sequence_1/
+ls -l $RF/py/sequence_1/
 total 4284
 drwxrwxr-x 1 jpombert jpombert     508 Jul 22 15:28 hhblits
 drwxrwxr-x 1 jpombert jpombert     388 Jul 22 15:45 log
@@ -430,8 +430,8 @@ The script [parse_rf_results.pl](https://github.com/PombertLab/3DFI/blob/master/
 
 ```bash
 $RF_3DFI/parse_rf_results.pl \
-  -r $RFD/e2e \
-  -o $RFD/e2e_parsed \
+  -r $RF/e2e \
+  -o $RF/e2e_parsed \
   -p e2e
 ```
 
