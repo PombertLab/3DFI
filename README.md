@@ -187,14 +187,14 @@ Options for [fasta_oneliner.pl](https://github.com/PombertLab/3DFI/blob/master/P
 
 ```Bash
 ## Setting Uniclust database location:
-export UNICLUST=/media/Data_3/Uniclust/UniRef30_2020_06
+export UNICLUST=/media/FatCat/databases/UniRef30_2020_06
 
 ## Running hhblits on multiple evalues independently:
 $TR_3DFI/run_hhblits.pl \
    -t 10 \
    -f $TR/FASTA_OL/ \
    -o $TR/HHBLITS/ \
-   -d $UNICLUST \
+   -d $UNICLUST/UniRef30_2020_06 \
    -e 1e-40 1e-10 1e-03 1e+01
 
 ## Running hhblits on evalues sequentially, from stricter to more permissive:
@@ -202,7 +202,7 @@ $TR_3DFI/run_hhblits.pl \
    -t 10 \
    -f $TR/FASTA_OL/ \
    -o $TR/HHBLITS/ \
-   -d $UNICLUST \
+   -d $UNICLUST/UniRef30_2020_06 \
    -s \
    -se 1e-70 1e-50 1e-30 1e-10 1e-06 1e-04 1e+01
 ```
