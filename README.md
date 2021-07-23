@@ -276,7 +276,7 @@ Options for [rosettafold.pl](https://github.com/PombertLab/3DFI/blob/master/Pred
 
 Note that the e2e folding option is constrained by video RAM and requires a GPU with more than 8 Gb RAM to tackle large proteins (a video card with at least 24 Gb of RAM is recommended). When out of memory, the 'RuntimeError: CUDA out of memory' will appear in the log/network.stderr file and the .pdb file will not be generated. The pyrosetta folding option is slower (CPU-bound) but not constrained by video RAM.
 
-Folding results per protein will be located in corresponding subdirectories. Results with the e2e option should look like below:
+Folding results per protein will be located in corresponding subdirectories. Results with the e2e option should look like below, with the model generated named t000_.e2e.pdb:
 ```bash
 ls -l  RFOLD_3D_e2e/ECU03_1140/
 total 4248
@@ -293,7 +293,7 @@ drwxrwxr-x 1 jpombert jpombert     232 Jul 22 14:45 log
 
 ``` 
 
-Results with the pyrosetta option should look like below, with the models located in the model/ subfolder:
+Results with the pyrosetta option should look like below, with the models generated located in the model/ subfolder:
 ```bash
 ls -l RFOLD_3D_py/ECU03_1140/
 total 4284
