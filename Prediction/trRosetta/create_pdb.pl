@@ -1,8 +1,8 @@
 #!/usr/bin/perl
 ## Pombert Lab 2020
-my $version = '0.2c';
+my $version = '0.3';
 my $name = 'create_pdb.pl';
-my $updated = '2021-05-08';
+my $updated = '2021-07-23';
 
 use strict; use warnings; use Getopt::Long qw(GetOptions); use File::Basename; use threads; use threads::shared;
 
@@ -19,7 +19,11 @@ COMMAND		${name} \\
 		  -n NPZ/ \\
 		  -o PDB/ \\
 		  -f FASTA_OL/ \\
-		  -t /media/Data_3/opt/trRosetta/pdb/trRosetta.py
+		  -t /opt/trRosetta
+
+NOTES:
+- The -t option is not required if the environment variable \$TRROSETTA_HOME is set, e.g.:
+  export TRROSETTA_HOME=/opt/trRosetta
 
 OPTIONS:
 -c (--cpu)	Number of cpu threads to use [Default: 10] ## i.e. runs n processes in parallel
@@ -27,7 +31,7 @@ OPTIONS:
 -n (--npz)	Folder containing .npz files
 -o (--output)	Output folder [Default: ./]
 -f (--fasta)	Folder containing the oneliner fasta files
--t (--trosetta)	Path to trRosetta.py from trRosetta
+-t (--trrosetta)	trRosetta installation directory (TRROSETTA_HOME)
 -p (--python)	Preferred Python interpreter [Default: python]
 OPTIONS
 die "\n$USAGE\n" unless @ARGV;
@@ -37,7 +41,7 @@ my @commands = @ARGV;
 ## Defining options
 my $npz_dir;
 my $out = './';
-my $trosetta;
+my $trrosetta_home;
 my $fasta;
 my $threads = 10;
 my $python = 'python';
@@ -45,12 +49,26 @@ my $memory = 16;
 GetOptions(
 	'n|npz=s' => \$npz_dir,
 	'o|output=s' => \$out,
-	't|trosetta=s' => \$trosetta,
+	't|trrosetta=s' => \$trrosetta_home,
 	'f|fasta=s' => \$fasta,
 	'c|cpu=i' => \$threads,
 	'p|python=s' => \$python,
 	'm|memory=i' => \$memory
 );
+
+### Checking for tRosetta installation; environment variables in Perl are loaded in %ENV
+# Checking installation folder
+if (!defined $trrosetta_home){
+	if (exists $ENV{'TRROSETTA_HOME'}){ $trrosetta_home = $ENV{'TRROSETTA_HOME'}; }
+	else {
+		print "WARNING: The trRosetta installation directory is not set as an environment variable (\$TRROSETTA_HOME) and the -r option was not entered.\n";
+		print "Please check if trRosetta was installed properly\n\n";
+		exit;
+	}
+}
+elsif (defined $trrosetta_home){
+	unless (-d $trrosetta_home){ die "WARNING: Can't find trRosetta installation folder: $trrosetta_home. Please check command line\n\n"; }
+}
 
 ## Load npz files into an array
 my @npz;
@@ -185,7 +203,7 @@ sub mt_exe{
 			## If memory is available, fold the npz
 			if (0 < $file_memory){
 				## Update process printout
-				if($0){
+				if ($0){
 					lock(%running_processes);
 					lock($folding_threads);
 					$running_processes{$id} = "Thread $id: Folding $name started on ".localtime()."\n";
@@ -194,7 +212,7 @@ sub mt_exe{
 				## Get starttime, run process, and get stop time
 				my $starttime = `date`;
 				system "$python 2>trRosetta.ERROR.log \\
-					$trosetta \\
+					$trrosetta_home/pdb/trRosetta.py \\
 					$npz \\
 					$fasta/$prefix.fasta \\
 					$out/$prefix.$evalue.pdb"
@@ -202,12 +220,12 @@ sub mt_exe{
 				my $endtime = `date`;
 
 				## If the file did not fold, push it back into the queue to try again
-				unless(-e "$out/$prefix.$evalue.pdb"){
+				unless (-e "$out/$prefix.$evalue.pdb"){
 					lock(%running_processes);
 					$running_processes{$id} = "Thread $id: Failed to fold $name. Placing back in the queue on ".localtime()."\n";
 					push(@files,$npz);
 				}
-				else{
+				else {
 					lock(%running_processes);
 					$running_processes{$id} = "Thread $id: Folding on $name has completed.\n";
 					print LOG "\n$buffer\nFile $name:\nStarted $starttime\nCompleted $endtime\n$buffer\n\n";
@@ -226,7 +244,7 @@ sub mt_exe{
 					$running_processes{$id} = "Thread $id: $name is too large for Multi-threading. Sendt to Single-threaded queue on ".localtime()."\n";
 					push(@large_files,$npz);
 				}
-				else{
+				else {
 					lock(%running_processes);
 					$running_processes{$id} = "Thread $id: Not enough memory clearance to fold $name. Placed back in the queue on ".localtime()."\n";
 					push(@files,$npz);
@@ -238,7 +256,7 @@ sub mt_exe{
 				$file_memory += -s $npz;
 			}
 		}
-		else{
+		else {
 			## If file is large, need to run it one by one
 			## Add large file to $large_files
 			lock($total_files);
@@ -263,7 +281,7 @@ sub mt_exe{
 sub mt_po{
 	WHILE: while (0==0){
 
-		if($completed == $threads){
+		if ($completed == $threads){
 			last WHILE;
 		}
 
@@ -301,14 +319,14 @@ sub st_exe{
 
 		my $buffer = "-" x 100;
 		
-		if($0) {
+		if ($0) {
 			lock($start);
 			$start = localtime();
 		}
 
 		my $starttime = `date`;
 		system "$python 2>trRosetta.ERROR.log \\
-			$trosetta \\
+			$trrosetta_home/pdb/trRosetta.py \\
 			$npz \\
 			$fasta/$prefix.fasta \\
 			$out/$prefix.$evalue.pdb"
@@ -316,11 +334,11 @@ sub st_exe{
 
 		my $endtime = `date`;
 
-		unless(-e "$out/$prefix.$evalue.pdb"){
+		unless (-e "$out/$prefix.$evalue.pdb"){
 			print LOG "$out/$prefix.$evalue.pdb";
 			print LOG "\n$buffer\nMain thread has failed to fold file $name\n$buffer\n\n";
 		}
-		else{
+		else {
 			print LOG "\n$buffer\nFile $name:\nStarted $starttime\nCompleted $endtime\n$buffer\n\n";
 		}
 	}
@@ -333,7 +351,7 @@ sub st_exe{
 sub st_po{
 	WHILE: while (0 == 0){
 
-		if($completed == 1){
+		if ($completed == 1){
 			last WHILE;
 		}
 
