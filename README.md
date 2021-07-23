@@ -253,6 +253,55 @@ Options for [alphafold.pl](https://github.com/PombertLab/3DFI/blob/master/Predic
 -ao (--alpha_out)	AlphaFold2 output directory
 ```
 
+Folding results per protein will be located in corresponding subdirectories. Results with AlphaFold should look like below and contain PDB files for unrelaxed models (i.e. predicted as is before ralaxation), relaxed models, and ranked models from best (0) to worst (4):
+```bash
+ls -l ALPHAFOLD_3D/ECU03_1140/
+total 4
+total 47404
+-rw-r--r-- 1 jpombert jpombert 1085545 Jul 23 08:27 features.pkl
+drwxr-xr-x 1 jpombert jpombert     106 Jul 23 08:27 msas
+-rw-r--r-- 1 jpombert jpombert  149210 Jul 23 08:27 ranked_0.pdb
+-rw-r--r-- 1 jpombert jpombert  149210 Jul 23 08:27 ranked_1.pdb
+-rw-r--r-- 1 jpombert jpombert  149210 Jul 23 08:27 ranked_2.pdb
+-rw-r--r-- 1 jpombert jpombert  149210 Jul 23 08:27 ranked_3.pdb
+-rw-r--r-- 1 jpombert jpombert  149210 Jul 23 08:27 ranked_4.pdb
+-rw-r--r-- 1 jpombert jpombert     327 Jul 23 08:27 ranking_debug.json
+-rw-r--r-- 1 jpombert jpombert  149210 Jul 23 08:27 relaxed_model_1.pdb
+-rw-r--r-- 1 jpombert jpombert  149210 Jul 23 08:27 relaxed_model_2.pdb
+-rw-r--r-- 1 jpombert jpombert  149210 Jul 23 08:27 relaxed_model_3.pdb
+-rw-r--r-- 1 jpombert jpombert  149210 Jul 23 08:27 relaxed_model_4.pdb
+-rw-r--r-- 1 jpombert jpombert  149210 Jul 23 08:27 relaxed_model_5.pdb
+-rw-r--r-- 1 jpombert jpombert 9084306 Jul 23 08:27 result_model_1.pkl
+-rw-r--r-- 1 jpombert jpombert 9084306 Jul 23 08:27 result_model_2.pkl
+-rw-r--r-- 1 jpombert jpombert 9127362 Jul 23 08:27 result_model_3.pkl
+-rw-r--r-- 1 jpombert jpombert 9127362 Jul 23 08:27 result_model_4.pkl
+-rw-r--r-- 1 jpombert jpombert 9127362 Jul 23 08:27 result_model_5.pkl
+-rw-r--r-- 1 jpombert jpombert     766 Jul 23 08:27 timings.json
+-rw-r--r-- 1 jpombert jpombert   73112 Jul 23 08:27 unrelaxed_model_1.pdb
+-rw-r--r-- 1 jpombert jpombert   73112 Jul 23 08:27 unrelaxed_model_2.pdb
+-rw-r--r-- 1 jpombert jpombert   73112 Jul 23 08:27 unrelaxed_model_3.pdb
+-rw-r--r-- 1 jpombert jpombert   73112 Jul 23 08:27 unrelaxed_model_4.pdb
+-rw-r--r-- 1 jpombert jpombert   73112 Jul 23 08:27 unrelaxed_model_5.pdb
+```
+
+The script [parse_af_results.pl](https://github.com/PombertLab/3DFI/blob/master/Prediction/AlphaFold2/parse_af_results.pl) can be used to recurse through the subdirectories and copy the PDB model(s) to a selected location. To use [parse_af_results.pl](https://github.com/PombertLab/3DFI/blob/master/Prediction/AlphaFold2/parse_af_results.pl),  type:
+```bash
+parse_af_results.pl \
+  -a ALPHAFOLD_3D \
+  -o ALPHAFOLD_3D_PARSED \
+  -p k \
+  -t 5
+```
+
+Options for [parse_af_results.pl](https://github.com/PombertLab/3DFI/blob/master/Prediction/AlphaFold2/parse_af_results.pl) are:
+```
+-a (--afdir)	AlphaFold output directory
+-o (--outdir)	Parsed output directory
+-p (--pdbtype)	ranked (k), relaxed (r), unrelaxed (u), all (a) [Default: k]
+-t (--top)	Top X number of pdb files to keep, from best to worst (max 5) [Default: 1]
+-v (--verbose)	Adds verbosity
+```
+
 ##### RoseTTAFold - deep-learning-based protein structure modeling
 How to set up [RoseTTAFold](https://github.com/RosettaCommons/RoseTTAFold) to run using conda is described on its GitHub page. The [rosettafold.pl](https://github.com/PombertLab/3DFI/blob/master/Prediction/RoseTTAFold/rosettafold.pl) script is a Perl wrapper that enables running the [RoseTTAFold](https://github.com/RosettaCommons/RoseTTAFold) run_e2e_ver.sh/run_pyrosetta_ver.sh scripts in batch mode. To simplify its use, the ROSETTAFOLD_HOME environment variable can be set in the shell.
 ```bash
