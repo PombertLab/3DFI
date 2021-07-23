@@ -66,8 +66,10 @@ To perform template-based 3D structure predictions locally with [RaptorX](http:/
 
 To run [RaptorX](http://raptorx.uchicago.edu/) from anywhere with [raptorx.pl](https://github.com/PombertLab/3DFI/blob/master/Prediction/RaptorX/raptorx.pl), the environment variable RAPTORX_PATH should be set first:
 ```Bash
-## Setting up RaptorX and 3DFI installation directories.
+## Setting up RaptorX installation directory.
 export RAPTORX_PATH=/opt/RaptorX
+
+## Setting 3DFI installation directories.
 export 3DFI=~/GitHub/3DFI
 export RAPTORX_3DFI=~/GitHub/3DFI/Prediction/RaptorX
 
