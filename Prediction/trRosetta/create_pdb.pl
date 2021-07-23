@@ -21,18 +21,17 @@ COMMAND		${name} \\
 		  -f FASTA_OL/ \\
 		  -t /opt/trRosetta
 
-NOTES:
-- The -t option is not required if the environment variable \$TRROSETTA_HOME is set, e.g.:
-  export TRROSETTA_HOME=/opt/trRosetta
+NOTE:	The -t option is not required if the environment variable TRROSETTA_HOME is set, e.g.:
+	export TRROSETTA_HOME=/opt/trRosetta
 
 OPTIONS:
--c (--cpu)	Number of cpu threads to use [Default: 10] ## i.e. runs n processes in parallel
--m (--memory)	Memory available (in Gb) to threads [Default: 16] 
--n (--npz)	Folder containing .npz files
--o (--output)	Output folder [Default: ./]
--f (--fasta)	Folder containing the oneliner fasta files
+-c (--cpu)		Number of cpu threads to use [Default: 10] ## i.e. runs n processes in parallel
+-m (--memory)		Memory available (in Gb) to threads [Default: 16] 
+-n (--npz)		Folder containing .npz files
+-o (--output)		Output folder [Default: ./]
+-f (--fasta)		Folder containing the oneliner fasta files
 -t (--trrosetta)	trRosetta installation directory (TRROSETTA_HOME)
--p (--python)	Preferred Python interpreter [Default: python]
+-p (--python)		Preferred Python interpreter [Default: python]
 OPTIONS
 die "\n$USAGE\n" unless @ARGV;
 
