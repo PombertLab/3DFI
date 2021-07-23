@@ -5,6 +5,7 @@ The 3DFI pipeline automates 3D structure prediction, structural homology searche
 ## Table of contents
 * [Introduction](#introduction)
 * [Requirements](#requirements)
+* [Installation](#installation)
 * [Howto](#howto)
   * [3D structure prediction](#3D-structure-prediction)
     * [RaptorX](#Raptorx---template-based-protein-structure-modeling)
@@ -37,7 +38,7 @@ To perform structure-based predictions we need 3D structures —either determine
 ###### Why this pipeline?
 Although predicting the structure of a protein and searching for structural homologs can be done online, for example by using [SWISS-MODEL](https://swissmodel.expasy.org/) and [PDBeFold](https://www.ebi.ac.uk/msd-srv/ssm/), genomes often code for thousands of proteins and applying this approach on a genome scale would be time consuming and error prone. We implemented the 3DFI pipeline to enable the use of structure-based homology searches at a genome-wide level.
 
-#### Requirements
+### Requirements
 Requirements to perform 3D structure prediction, structural homology searches and data visualization locally with 3DFI are as follows:
 1. At least one of the following protein structure prediction tools:
 	- [RaptorX](http://raptorx.uchicago.edu/) (Template-based predictions)
@@ -59,19 +60,34 @@ Requirements to perform 3D structure prediction, structural homology searches an
 
 Alternatively, any set of PDB files can also be fed as input for structural homology searches/visualization with GESAMT/CHIMERAX. For example, PDB files predicted using web-based platforms such as [SWISS-MODEL](https://swissmodel.expasy.org/) or predicted locally with [I-TASSER](https://zhanglab.ccmb.med.umich.edu/I-TASSER/download/).
 
+### Installation
+The 3DFI pipeline can be downloaded directly from GitHub with git clone. For ease of use, the 3DFI directories can be also be set as environment variables as follows: 
+
+```Bash
+## To download 3DFI from GitHub:
+git clone https://github.com/PombertLab/3DFI.git
+
+## TO Ssetting 3DFI installation directories as environment variables:
+cd 3DFI/
+export 3DFI=$(pwd)
+export RX_3DFI=${3DFI}/Prediction/RaptorX
+export TR_3DFI=${3DFI}/Prediction/trRosetta
+export AF_3DFI=${3DFI}/Prediction/AlphaFold2
+export RF_3DFI=${3DFI}/Prediction/RoseTTAFold
+export HS_3DFI=${3DFI}/Homology_search
+export VZ_3DFI=${3DFI}/Visualization
+```
+
 ### Howto
 #### 3D structure prediction
 ##### RaptorX - template-based protein structure modeling
 To perform template-based 3D structure predictions locally with [RaptorX](http://raptorx.uchicago.edu/), the standalone programs should be [downloaded](http://raptorx.uchicago.edu/download/) and installed according to the authors’ instructions. Using RaptorX also requires [MODELLER](https://salilab.org/modeller/). To help with their installation, the [raptorx_installation_notes.sh](https://github.com/PombertLab/3DFI/blob/master/Prediction/RaptorX/raptorx_installation_notes.sh) is provided, with source and installation directories to be edited according to user preferences.
 
 To run [RaptorX](http://raptorx.uchicago.edu/) from anywhere with [raptorx.pl](https://github.com/PombertLab/3DFI/blob/master/Prediction/RaptorX/raptorx.pl), the environment variable RAPTORX_PATH should be set first:
-```Bash
-## Setting up RaptorX installation directory:
-export RAPTORX_PATH=/opt/RaptorX
 
-## Setting 3DFI installation directories:
-export 3DFI=~/GitHub/3DFI
-export RX_3DFI=~/GitHub/3DFI/Prediction/RaptorX
+```Bash
+## Setting up the RaptorX installation directory as an environment variable:
+export RAPTORX_PATH=/opt/RaptorX
 
 ## Creating a working directory for RaptorX:
 export RX=~/RAPTORX_3D
@@ -145,10 +161,6 @@ Running [trRosetta](https://github.com/gjoni/trRosetta) involves 3 main steps: 1
 ```bash
 ## Setting up tRosetta and 3DFI installation directories:
 export TROSETTA_HOME=/media/Data_3/opt/trRosetta
-
-## Setting 3DFI installation directories:
-export 3DFI=~/GitHub/3DFI
-export TR_3DFI=~/GitHub/3DFI/Prediction/trRosetta
 
 ## Creating a working directory for tRosetta:
 export TR=~/TROSETTA_3D
@@ -278,10 +290,6 @@ How to set up [AlphaFold2](https://github.com/deepmind/alphafold) to run as a do
 export ALPHA_IN=/media/FatCat_2/opt/alphafold
 export ALPHA_OUT=/media/FatCat_2/opt/alphafold_results
 
-## Setting 3DFI installation directories:
-export 3DFI=~/GitHub/3DFI
-export AF_3DFI=~/GitHub/3DFI/Prediction/AlphaFold2
-
 ## Creating a working directory for AlphaFold2:
 export AF=~/ALPHAFOLD_3D
 mkdir -p $AF
@@ -364,10 +372,6 @@ How to set up [RoseTTAFold](https://github.com/RosettaCommons/RoseTTAFold) to ru
 ```bash
 ##  Setting up RoseTTAFold installation directory as an environment variable:
 export ROSETTAFOLD_HOME=/opt/RoseTTAFold
-
-## Setting 3DFI installation directories:
-export 3DFI=~/GitHub/3DFI
-export RF_3DFI=~/GitHub/3DFI/Prediction/RoseTTAFold
 
 ## Creating a working directory for RoseTTAFold:
 export RF=~/ROSETTAFOLD_3D
@@ -453,10 +457,6 @@ PDB files from the [Protein Data Bank](https://www.rcsb.org/) can be downloaded 
 ```bash
 ## Setting up RCSB PDB database location:
 export RCSB_PDB=/media/Data_3/databases/RCSB_PDB/
-
-## Setting 3DFI installation directories:
-export 3DFI=~/GitHub/3DFI
-export HS_3DFI=~/GitHub/3DFI/Homology_search
 
 ## Downloading the RCSB PDB database:
 $HS_3DFI/update_PDB.pl \
@@ -630,11 +630,17 @@ An example of a false-positive, where the quality of the fold is high, but the a
 
 ##### Inspecting alignments with ChimeraX
 To prepare visualizations for inspection, we can use [prepare_visualizations.pl](https://github.com/PombertLab/3DFI/blob/master/Visualization/prepare_visualizations.pl) to automatically align predicted proteins with their GESAMT-determined structural homologs. These alignments are performed with [ChimeraX](https://www.rbvi.ucsf.edu/chimerax/) via its API.
+
 ```bash
 ## Creating shortcut to working directory
 export RAPTORX="~/Microsporidia/intestinalis_50506/Annotations/3D/RaptorX"
 
-prepare_visualizations.pl \
+## Setting 3DFI installation directories:
+export 3DFI=~/GitHub/3DFI
+export VZ_3DFI=${3DFI}/Visualization
+
+## Preparing data for visualization:
+$VZ_3DFI/prepare_visualizations.pl \
     -g $RAPTORX/E_int_GESAMT_RESULTS.matches \
     -p $RAPTORX/Eintestinalis_proteins_PDB_20200121/PDB/ \
     -r /media/FatCat/Databases/RCSB_PDB/PDB \
@@ -643,7 +649,7 @@ prepare_visualizations.pl \
 
 To inspect the 3D structures, we can run [inspect_3D_structures.pl](https://github.com/PombertLab/3DFI/blob/master/Visualization/inspect_3D_structures.pl):
 ```bash
-inspect_3D_structures.pl \
+$VZ_3DFI/inspect_3D_structures.pl \
     -v $RAPTORX/EXAMPLE
 ```
 
