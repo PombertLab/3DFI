@@ -186,7 +186,7 @@ Options for [fasta_oneliner.pl](https://github.com/PombertLab/3DFI/blob/master/P
 2. To run hhblits searches with [run_hhblits.pl](https://github.com/PombertLab/3DFI/blob/master/Prediction/trRosetta/run_hhblits.pl), type:
 
 ```Bash
-## Setting Uniclust database location:
+## Setting Uniclust database (https://uniclust.mmseqs.com/) location:
 export UNICLUST=/media/FatCat/databases/UniRef30_2020_06
 
 ## Running hhblits on multiple evalues independently:
