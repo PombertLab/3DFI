@@ -1,5 +1,3 @@
->ECU07_1290-t26_1-p1 | transcript=ECU07_1290-t26_1 | gene=ECU07_1290 | organism=Encephalitozoon_cuniculi_GB-M1 | gene_product=hypothetical protein | transcript_product=hypothetical protein | location=AL590447:152563-153237(+) | protein_length=224 | sequence_SO=chromosome | SO=protein_coding | is_pseudo=false
-MRISLKDEKFFKSILGVFADRGGVTLDTRQEAISISSHGQSSFYLTMTNDVVIINGESLT
-FTVKAQHLLEGMSVLSGCDLIAQDELRLVDGRSTISIPFIPTVRSEYEELDAPSTKIIVG
-PELLDGFMALKGLVTYEVEKDKLFVRRAGGEVLEEVEFPMVDFIVAGDLQFRCNNKWTDV
-LGKIRGYVDSMMLAFGPDILCIQFLFKRYPGSYLELRVSRSLEE
+>ECU03_1140-t26_1-p1 | transcript=ECU03_1140-t26_1 | gene=ECU03_1140 | organism=Encephalitozoon_cuniculi_GB-M1 | gene_product=hypothetical protein | transcript_product=hypothetical protein | location=AL590443:136975-137328(+) | protein_length=117 | sequence_SO=chromosome | SO=protein_coding | is_pseudo=false
+MTSRVGPPLRILSDSLKKLRRVSGAIFYGRREVSHVEIAGTCIDRGRVFARILDFCGEVL
+VEIGDQKIALGSSYLLVCKVQARSGGIGLHCKSAKRLGIFEEMFFWAEAVNLEGGLQ
