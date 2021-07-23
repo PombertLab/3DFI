@@ -123,8 +123,8 @@ Consider setting $PYTHONHOME to <prefix>[:<exec_prefix>]
 To perform 3D structure predictions locally with [trRosetta](https://github.com/gjoni/trRosetta), [tensorflow](https://www.tensorflow.org/) version 1.15, [HH-suite3](https://github.com/soedinglab/hh-suite) and [PyRosetta](http://www.pyrosetta.org/) must be installed. A database for HHsuite3's hhblits, such as [Uniclust](https://uniclust.mmseqs.com/), should also be installed. For ease of use, [tensorflow](https://www.tensorflow.org/) 1.15 can be installed in a conda environment. Note that hhblits databases should be located on a solid state disk (ideally NVME) to reduce i/o bottlenecks during homology searches.
 
 ###### Tensorflow 1.15 in conda
-
 To install tensorflow with GPU in conda:
+
 ```Bash
 conda create -n tfgpu python=3.7
 conda activate tfgpu
@@ -132,11 +132,13 @@ pip install tensorflow-gpu==1.15
 ```
 
 To install tensorflow with CPU in conda: ## The files can eat through GPU VRAM very quickly...
+
 ```Bash
 conda create -n tfcpu python=3.7
 conda activate tfcpu
 pip install tensorflow-cpu==1.15
 ```
+
 ###### Running trRosetta
 Running [trRosetta](https://github.com/gjoni/trRosetta) involves 3 main steps: 1) searches with [HHsuite3](https://github.com/soedinglab/hh-suite)'s hhblits to generate alignments (.a3m); 2) prediction of protein inter-residue geometries (.npz) with [trRosetta](https://github.com/gjoni/trRosetta)'s predict.py; and 3) prediction of 3D structures (.pdb) with trRosetta.py and [PyRosetta](http://www.pyrosetta.org/). Performing these predictions on several proteins can be automated with 3DFI scripts. 
 
@@ -153,7 +155,7 @@ export TR=~/TROSETTA_3D
 mkdir -p $TR
 ```
 
-1. Converting FASTA sequences to single string FASTA sequences with [fasta_oneliner.pl](https://github.com/PombertLab/3DFI/blob/master/Prediction/trRosetta/fasta_oneliner.pl):
+1. To convert FASTA sequences to single string FASTA sequences with [fasta_oneliner.pl](https://github.com/PombertLab/3DFI/blob/master/Prediction/trRosetta/fasta_oneliner.pl), type:
 
 ```Bash
 $TR_3DFI/fasta_oneliner.pl \
@@ -168,7 +170,7 @@ Options for [fasta_oneliner.pl](https://github.com/PombertLab/3DFI/blob/master/P
 -o (--output)   Output folder
 ```
 
-2. Running hhblits searches with [run_hhblits.pl](https://github.com/PombertLab/3DFI/blob/master/Prediction/trRosetta/run_hhblits.pl):
+2. To run hhblits searches with [run_hhblits.pl](https://github.com/PombertLab/3DFI/blob/master/Prediction/trRosetta/run_hhblits.pl), type:
 
 ```Bash
 ## Setting Uniclust database location:
@@ -210,7 +212,7 @@ Options for [run_hhblits.pl](https://github.com/PombertLab/3DFI/blob/master/Pred
 -ns (--num_sq)      # of hhblits iteration per sequential evalue (-s) [Default: 1] 
 ```
 
-3. Create .npz files containing inter-residue geometries with [create_npz.pl](https://github.com/PombertLab/3DFI/blob/master/Prediction/trRosetta/create_npz.pl):
+3. To create .npz files containing inter-residue geometries with [create_npz.pl](https://github.com/PombertLab/3DFI/blob/master/Prediction/trRosetta/create_npz.pl), type:
 ```Bash
 
 ## Creating npz files:
@@ -230,7 +232,7 @@ Options for [create_npz.pl](https://github.com/PombertLab/3DFI/blob/master/Predi
 -m (--model)    Path to trRosetta model directory
 ```
 
-4. Generate .pdb files containing 3D models from the .npz fil3s with [create_pdb.pl](https://github.com/PombertLab/3DFI/blob/master/Prediction/trRosetta/create_pdb.pl):
+4. To generate .pdb files containing 3D models from the .npz fil3s with [create_pdb.pl](https://github.com/PombertLab/3DFI/blob/master/Prediction/trRosetta/create_pdb.pl), type:
 
 ```Bash
 $TR_3DFI/create_pdb.pl \
@@ -253,7 +255,7 @@ Options for [create_pdb.pl](https://github.com/PombertLab/3DFI/blob/master/Predi
 -p (--python)	Preferred Python interpreter [Default: python]
 ```
 
-5. The .pdb files thus generated contain lines that are not standard and that can prevent applications such as [PDBeFOLD](https://www.ebi.ac.uk/msd-srv/ssm/) to run on the corresponding files. We can clean up the PDB files with [sanitize_pdb.pl](https://github.com/PombertLab/3DFI/blob/master/Prediction/trRosetta/sanitize_pdb.pl):
+5. The .pdb files thus generated contain lines that are not standard and that can prevent applications such as [PDBeFOLD](https://www.ebi.ac.uk/msd-srv/ssm/) to run on the corresponding files. We can clean up the PDB files with [sanitize_pdb.pl](https://github.com/PombertLab/3DFI/blob/master/Prediction/trRosetta/sanitize_pdb.pl) as follows:
 
 ```Bash
 $TR_3DFI/sanitize_pdb.pl \
