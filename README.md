@@ -235,6 +235,8 @@ Options for [run_hhblits.pl](https://github.com/PombertLab/3DFI/blob/master/Pred
 
 3. To create .npz files containing inter-residue geometries with [create_npz.pl](https://github.com/PombertLab/3DFI/blob/master/Prediction/trRosetta/create_npz.pl), type:
 ```Bash
+## activate conda environment tfcpu or tfgpu
+conda activate tfcpu
 
 ## Creating npz files:
 $TR_3DFI/create_npz.pl \
@@ -257,6 +259,7 @@ Options for [create_npz.pl](https://github.com/PombertLab/3DFI/blob/master/Predi
 ## activate conda environment tfcpu or tfgpu
 conda activate tfcpu
 
+## Creating PDB files
 $TR_3DFI/create_pdb.pl \
    -c 10 \
    -n $TR/NPZ/ \
