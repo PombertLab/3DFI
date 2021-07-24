@@ -12,17 +12,17 @@ NAME		${name}
 VERSION		${version}
 UPDATED		${updated}
 SYNOPSIS	Creates .pdb files with trRosetta from .npz files
-REQUIREMENTS	trRosetta - https://github.com/gjoni/trRosetta
+REQUIREMENTS	trRosetta scripts - https://yanglab.nankai.edu.cn/trRosetta/download/ ## trRosetta package (28M)
 
 COMMAND		${name} \\
 		  -c 10 \\
 		  -n NPZ/ \\
 		  -o PDB/ \\
 		  -f FASTA_OL/ \\
-		  -t /opt/trRosetta
+		  -t /opt/trRosetta_scripts
 
-NOTE:	The -t option is not required if the environment variable TRROSETTA_HOME is set, e.g.:
-	export TRROSETTA_HOME=/opt/trRosetta
+NOTE:	The -t option is not required if the environment variable TRROSETTA_SCRIPTS is set, e.g.:
+	export TRROSETTA_SCRIPTS=/opt/trRosetta_scripts
 
 OPTIONS:
 -c (--cpu)		Number of cpu threads to use [Default: 10] ## i.e. runs n processes in parallel
@@ -30,7 +30,7 @@ OPTIONS:
 -n (--npz)		Folder containing .npz files
 -o (--output)		Output folder [Default: ./]
 -f (--fasta)		Folder containing the oneliner fasta files
--t (--trrosetta)	trRosetta installation directory (TRROSETTA_HOME)
+-t (--trrosetta)	trRosetta scripts directory (TRROSETTA_SCRIPTS)
 -p (--python)		Preferred Python interpreter [Default: python]
 OPTIONS
 die "\n$USAGE\n" unless @ARGV;
@@ -40,7 +40,7 @@ my @commands = @ARGV;
 ## Defining options
 my $npz_dir;
 my $out = './';
-my $trrosetta_home;
+my $trrosetta_scripts;
 my $fasta;
 my $threads = 10;
 my $python = 'python';
@@ -48,25 +48,24 @@ my $memory = 16;
 GetOptions(
 	'n|npz=s' => \$npz_dir,
 	'o|output=s' => \$out,
-	't|trrosetta=s' => \$trrosetta_home,
+	't|trrosetta=s' => \$trrosetta_scripts,
 	'f|fasta=s' => \$fasta,
 	'c|cpu=i' => \$threads,
 	'p|python=s' => \$python,
 	'm|memory=i' => \$memory
 );
 
-### Checking for tRosetta installation; environment variables in Perl are loaded in %ENV
-# Checking installation folder
-if (!defined $trrosetta_home){
-	if (exists $ENV{'TRROSETTA_HOME'}){ $trrosetta_home = $ENV{'TRROSETTA_HOME'}; }
+### Checking for tRosetta scripts; environment variables in Perl are loaded in %ENV
+if (!defined $trrosetta_scripts){
+	if (exists $ENV{'TRROSETTA_SCRIPTS'}){ $trrosetta_scripts = $ENV{'TRROSETTA_SCRIPTS'}; }
 	else {
-		print "WARNING: The trRosetta installation directory is not set as an environment variable (\$TRROSETTA_HOME) and the -r option was not entered.\n";
-		print "Please check if trRosetta was installed properly\n\n";
+		print "WARNING: The trRosetta scripts directory is not set as an environment variable (\$TRROSETTA_SCRIPTS) and the -r option was not entered.\n";
+		print "Please check if trRosetta scripts were installed properly\n\n";
 		exit;
 	}
 }
-elsif (defined $trrosetta_home){
-	unless (-d $trrosetta_home){ die "WARNING: Can't find trRosetta installation folder: $trrosetta_home. Please check command line\n\n"; }
+elsif (defined $trrosetta_scripts){
+	unless (-d $trrosetta_scripts){ die "WARNING: Can't find trRosetta scripts installation folder: $trrosetta_scripts. Please check command line\n\n"; }
 }
 
 ## Load npz files into an array
@@ -211,7 +210,7 @@ sub mt_exe{
 				## Get starttime, run process, and get stop time
 				my $starttime = `date`;
 				system "$python 2>trRosetta.ERROR.log \\
-					$trrosetta_home/pdb/trRosetta.py \\
+					$trrosetta_scripts/trRosetta.py \\
 					$npz \\
 					$fasta/$prefix.fasta \\
 					$out/$prefix.$evalue.pdb"
@@ -325,7 +324,7 @@ sub st_exe{
 
 		my $starttime = `date`;
 		system "$python 2>trRosetta.ERROR.log \\
-			$trrosetta_home/pdb/trRosetta.py \\
+			$trrosetta_scripts/trRosetta.py \\
 			$npz \\
 			$fasta/$prefix.fasta \\
 			$out/$prefix.$evalue.pdb"
