@@ -209,11 +209,13 @@ sub mt_exe{
 				}
 				## Get starttime, run process, and get stop time
 				my $starttime = `date`;
-				system "$python 2>trRosetta.ERROR.log \\
+				system "$python \\
 					$trrosetta_scripts/trRosetta.py \\
 					-npz $npz \\
 					-fasta $fasta/$prefix.fasta \\
-					-o $out/$prefix.$evalue.pdb"
+					-o $out/$prefix.$evalue.pdb \\
+					1> /dev/null \\
+					2> trRosetta.ERROR.log"
 				;
 				my $endtime = `date`;
 
@@ -292,7 +294,7 @@ sub mt_po{
 			my $remaining = "." x (int((scalar(@files)/$total_files)*100));
 			my $progress = "|" x (100-int((scalar(@files)/$total_files)*100));
 			my $status = "[".$progress.$remaining."]";
-			print "\nFolding Proteins with Multi-threading\n";
+			print "\nFolding Proteins with Multi-threading with trRosetta - https://github.com/gjoni/trRosetta\n";
 			print "\n\t$status\t".($total_files-scalar(@files))."/$total_files";
 			print "\n\n\tThreads Running:\t$running_threads/$threads\n";
 			print "\tThreads Folding:\t$folding_threads/$threads\n";
@@ -323,11 +325,13 @@ sub st_exe{
 		}
 
 		my $starttime = `date`;
-		system "$python 2>trRosetta.ERROR.log \\
+		system "$python \\
 			$trrosetta_scripts/trRosetta.py \\
 			-npz $npz \\
 			-fasta $fasta/$prefix.fasta \\
-			-o $out/$prefix.$evalue.pdb"
+			-o $out/$prefix.$evalue.pdb \\
+			1> /dev/null \\
+			2> trRosetta.ERROR.log"
 		;
 
 		my $endtime = `date`;
