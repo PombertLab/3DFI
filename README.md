@@ -137,7 +137,9 @@ Consider setting $PYTHONHOME to <prefix>[:<exec_prefix>]
 
 
 ##### trRosetta - deep-learning-based protein structure modeling
-To perform 3D structure predictions locally with [trRosetta](https://github.com/gjoni/trRosetta), [tensorflow](https://www.tensorflow.org/) version 1.15, [HH-suite3](https://github.com/soedinglab/hh-suite) and [PyRosetta](http://www.pyrosetta.org/) must be installed. A database for HHsuite3's hhblits, such as [Uniclust](https://uniclust.mmseqs.com/), should also be installed. For ease of use, [tensorflow](https://www.tensorflow.org/) 1.15 can be installed in a conda environment. Note that hhblits databases should be located on a solid state disk (ideally NVME) to reduce i/o bottlenecks during homology searches.
+To perform 3D structure predictions locally with [trRosetta](https://github.com/gjoni/trRosetta), [HH-suite3](https://github.com/soedinglab/hh-suite), [tensorflow](https://www.tensorflow.org/) version 1.15 and [PyRosetta](http://www.pyrosetta.org/) must be installed. A database for HHsuite3's hhblits, such as [Uniclust](https://uniclust.mmseqs.com/), should also be installed. Note that hhblits databases should be located on a solid state disk (ideally NVME) to reduce i/o bottlenecks during homology searches.
+
+For ease of use, [tensorflow](https://www.tensorflow.org/) 1.15 and [PyRosetta](http://www.pyrosetta.org/) can be installed in a conda environment. See [trRosetta_installation_notes.sh](https://github.com/PombertLab/3DFI/blob/master/Prediction/trRosetta/trRosetta_installation_notes.sh) for more detail.
 
 ###### Tensorflow 1.15 in conda
 To install tensorflow with GPU in conda:
@@ -249,9 +251,12 @@ Options for [create_npz.pl](https://github.com/PombertLab/3DFI/blob/master/Predi
 -m (--model)		trRosetta model directory [Default: model2019_07]
 ```
 
-4. To generate .pdb files containing 3D models from the .npz fil3s with [create_pdb.pl](https://github.com/PombertLab/3DFI/blob/master/Prediction/trRosetta/create_pdb.pl), type:
+4. To generate .pdb files containing 3D models from the .npz files with [create_pdb.pl](https://github.com/PombertLab/3DFI/blob/master/Prediction/trRosetta/create_pdb.pl), type:
 
 ```Bash
+## activate conda environment tfcpu or tfgpu
+conda activate tfcpu
+
 $TR_3DFI/create_pdb.pl \
    -c 10 \
    -n $TR/NPZ/ \
