@@ -143,17 +143,22 @@ To perform 3D structure predictions locally with [trRosetta](https://github.com/
 To install tensorflow with GPU in conda:
 
 ```Bash
+## The files can eat through GPU VRAM very quickly. 8 Gb is usually insufficient.
 conda create -n tfgpu python=3.7
 conda activate tfgpu
 pip install tensorflow-gpu==1.15
+pip install numpy==1.19.5
+conda install cudatoolkit==10.0.130
+conda install cudnn==7.6.5
 ```
 
-To install tensorflow with CPU in conda: ## The files can eat through GPU VRAM very quickly...
+To install tensorflow with CPU in conda:
 
 ```Bash
 conda create -n tfcpu python=3.7
 conda activate tfcpu
 pip install tensorflow-cpu==1.15
+pip install numpy==1.19.5
 ```
 
 ###### Running trRosetta
