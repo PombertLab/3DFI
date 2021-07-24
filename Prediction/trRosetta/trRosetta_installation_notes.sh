@@ -57,6 +57,8 @@ cd ../../
 ## python
 ## import pyrosetta; pyrosetta.init()
 ## quit()
+
+## Removing PyRosetta installation files
 rm -R PyRosetta4.Release.python37*
 
 
