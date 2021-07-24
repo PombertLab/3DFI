@@ -1,6 +1,6 @@
 #!/usr/bin/perl
 ## Pombert Lab 2020
-my $version = '0.3';
+my $version = '0.3a';
 my $name = 'create_pdb.pl';
 my $updated = '2021-07-23';
 
@@ -72,7 +72,7 @@ elsif (defined $trrosetta_scripts){
 my @npz;
 opendir(DIR,$npz_dir) or die("Can't open $npz_dir: $!\n");
 while (my $file = readdir(DIR)){
-	if ($file =~ /^(\w+)\.npz/){
+	if ($file =~ /\.npz$/){
 		push(@npz,"$npz_dir/$file");
 	}
 }
@@ -211,9 +211,9 @@ sub mt_exe{
 				my $starttime = `date`;
 				system "$python 2>trRosetta.ERROR.log \\
 					$trrosetta_scripts/trRosetta.py \\
-					$npz \\
-					$fasta/$prefix.fasta \\
-					$out/$prefix.$evalue.pdb"
+					-npz $npz \\
+					-fasta $fasta/$prefix.fasta \\
+					-o $out/$prefix.$evalue.pdb"
 				;
 				my $endtime = `date`;
 
@@ -325,9 +325,9 @@ sub st_exe{
 		my $starttime = `date`;
 		system "$python 2>trRosetta.ERROR.log \\
 			$trrosetta_scripts/trRosetta.py \\
-			$npz \\
-			$fasta/$prefix.fasta \\
-			$out/$prefix.$evalue.pdb"
+			-npz $npz \\
+			-fasta $fasta/$prefix.fasta \\
+			-o $out/$prefix.$evalue.pdb"
 		;
 
 		my $endtime = `date`;
