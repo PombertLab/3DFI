@@ -1,6 +1,6 @@
 #!/usr/bin/perl
 ## Pombert Lab 2020
-my $version = '0.3b';
+my $version = '0.3c';
 my $name = 'PDB_headers.pl';
 my $updated = '2021-07-25';
 
@@ -124,7 +124,8 @@ while (my $pb = shift@pdb){
 			$chains =~ s/ //g;
 			my @chains = split (",", $chains);
 			foreach my $chain (@chains){
-				print OUT "$pdb\t$chain\t$molecule\n";
+				if ($molecule){	print OUT "$pdb\t$chain\t$molecule\n"; }
+				else { print OUT "$pdb\t$chain\tundefined molecule\n"; }
 			}
 		}
 	}
