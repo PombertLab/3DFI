@@ -491,9 +491,11 @@ Options for [update_PDB.pl](https://github.com/PombertLab/3DFI/blob/master/Homol
 To create a tab-delimited list of PDB entries and their titles and chains from the downloaded PDB gzipped files (pdb*.ent.gz), we can use [PDB_headers.pl](https://github.com/PombertLab/3DFI/blob/master/Homology_search/PDB_headers.pl):
 
 ```Bash
+export RESULTS=~/Results_3DFI
+
 $HS_3DFI/PDB_headers.pl \
    -p $RCSB_PDB \
-   -o PDB_titles.tsv
+   -o $RESULTS/PDB_titles.tsv
 ```
 
 Options for [PDB_headers.pl](https://github.com/PombertLab/3DFI/blob/master/Homology_search/PDB_headers.pl) are:
@@ -560,8 +562,9 @@ Structural homology searches with GESAMT can also be performed with [run_GESAMT.
 
 ```Bash
 ## Creating a working directory for GESAMT:
-export GSMT=~/GESAMT_RESULTS
-mkdir -p $GSMT
+export RESULTS=~/Results_3DFI
+export GSMT=$RESULTS/GESAMT_RESULTS
+mkdir -p $RESULTS $GSMT
 
 ## Performing structural homology searches with GESAMT:
 $HS_3DFI/run_GESAMT.pl \
@@ -597,7 +600,7 @@ To add definitions/products to the PDB matches found with GESAMT, we can use the
 
 ```Bash
 $HS_3DFI/descriptive_GESAMT_matches.pl \
-   -r PDB_titles.tsv \
+   -r $RESULTS/PDB_titles.tsv \
    -m $GSMT/*.gesamt \
    -q 0.3 \
    -o GESAMT.matches
