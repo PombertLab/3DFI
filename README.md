@@ -603,7 +603,7 @@ $HS_3DFI/descriptive_GESAMT_matches.pl \
    -r $RESULTS/PDB_titles.tsv \
    -m $GSMT/*.gesamt \
    -q 0.3 \
-   -o GESAMT.matches
+   -o $RESULTS/GESAMT.matches
 ```
 
 Options for [descriptive_GESAMT_matches.pl](https://github.com/PombertLab/3DFI/blob/master/Homology_search/descriptive_GESAMT_matches.pl) are:
