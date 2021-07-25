@@ -72,11 +72,11 @@ docker run \
 
 ##### Installing AlphaFold2 - https://github.com/deepmind/alphafold #####
 ## Setting up installation and databases directory
-export INST_DIR=/media/Data_1/opt/
+export INST_ROOT=/media/Data_1/opt/
 export AF_DB=/media/FatCat/databases/alphafold_db
 
-mkdir -p $INST_DIR $AF_DB
-cd $INST_DIR;
+mkdir -p $INST_ROOT $AF_DB
+cd $INST_ROOT;
 git clone https://github.com/deepmind/alphafold.git
 cd alphafold
 export AF_DIR=$(pwd)
