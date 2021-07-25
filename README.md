@@ -173,7 +173,7 @@ export TRROSETTA_SCRIPTS=$TRROSETTA_HOME/trRosetta_scripts
 
 ## Creating a working directory for trRosetta:
 export RESULTS=~/Results_3DFI
-export TR=$RESULTS/RAPTORX_3D
+export TR=$RESULTS/TRROSETTA_3D
 mkdir -p $RESULTS $TR
 ```
 
