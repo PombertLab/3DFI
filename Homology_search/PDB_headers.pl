@@ -136,6 +136,7 @@ while (my $pb = shift@pdb){
 
 my $final_count = commify($pdb_count);
 my $run_time = (time - $start)/60;
+$run_time = sprintf ("%.2f", $run_time);
 print "\nIterated through a total of $final_count PDB files\n";
 print "Job completed in $run_time minutes.\n";
 
