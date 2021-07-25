@@ -167,7 +167,7 @@ pip install numpy==1.19.5
 Running [trRosetta](https://github.com/gjoni/trRosetta) involves 3 main steps: 1) searches with [HHsuite3](https://github.com/soedinglab/hh-suite)'s hhblits to generate alignments (.a3m); 2) prediction of protein inter-residue geometries (.npz) with [trRosetta](https://github.com/gjoni/trRosetta)'s predict.py; and 3) prediction of 3D structures (.pdb) with trRosetta.py and [PyRosetta](http://www.pyrosetta.org/). Performing these predictions on several proteins can be automated with 3DFI scripts. 
 
 ```bash
-## Setting up trRosetta installation directories as an environment variable:
+## Setting up trRosetta installation directories as environment variables:
 export TRROSETTA_HOME=/opt/trRosetta
 export TRROSETTA_SCRIPTS=$TRROSETTA_HOME/trRosetta_scripts
 
