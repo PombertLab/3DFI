@@ -68,7 +68,8 @@ while (my $pb = shift@pdb){
 
 		## verbosity; lots of files to parse...
 		my $modulo = ($pdb_count % $verbose);
-		if ($modulo == 0){ print "Working on PDB file # $pdb_count: $pb\n"; }
+		my $current_count = commify($pdb_count);
+		if ($modulo == 0){ print "Working on PDB file # $current_count: $pb\n"; }
 
 		while (my $line = <PDB>){
 			chomp $line;
@@ -129,4 +130,12 @@ while (my $pb = shift@pdb){
 	}
 }
 
+my $final_count = commify($pdb_count);
 print "\nIterated through a total of $pdb_count PDB files\n";
+
+### Subroutine(s)
+sub commify {
+	my $text = reverse $_[0];
+	$text =~ s/(\d\d\d)(?=\d)(?!\d*\.)/$1,/g;
+	return scalar reverse $text;
+}
