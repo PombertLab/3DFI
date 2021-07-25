@@ -488,7 +488,7 @@ Options for [update_PDB.pl](https://github.com/PombertLab/3DFI/blob/master/Homol
 ```
 
 ##### Creating a list of PDB titles
-To create a tab-delimited list of PDB entries and their titles and chains from the downloaded PDB gzipped files (pdb*.ent.gz), we can use [PDB_headers.pl](https://github.com/PombertLab/3DFI/blob/master/Homology_search/PDB_headers.pl):
+To create a tab-delimited list of PDB entries and their titles and chains from the downloaded PDB gzipped files (pdb*.ent.gz), we can use [PDB_headers.pl](https://github.com/PombertLab/3DFI/blob/master/Homology_search/PDB_headers.pl) (requires [PerlIO::gzip](https://metacpan.org/pod/PerlIO::gzip)):
 
 ```Bash
 export RESULTS=~/Results_3DFI
