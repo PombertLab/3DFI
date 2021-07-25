@@ -79,7 +79,7 @@ mkdir -p $INST_ROOT $AF_DB
 cd $INST_ROOT;
 git clone https://github.com/deepmind/alphafold.git
 cd alphafold
-export AF_DIR=$(pwd)
+export ALPHA_HOME=$(pwd)
 
 
 
@@ -91,7 +91,7 @@ sudo dnf install aria2
 ## e.g. nano $AF_DIR/scripts/download_bfd.sh
 ## aria2c -x10 "${SOURCE_URL}" --dir="${ROOT_DIR}"
 ## -x, --max-connection-per-server=NUM The maximum number of connections to one server for each download. Possible Values: 1-16
-$AF_DIR/scripts/download_all_data.sh $AF_DB
+$ALPHA_HOME/scripts/download_all_data.sh $AF_DB
 
 ## Testing docker for Alphafold
 docker run \
@@ -134,7 +134,7 @@ docker run \
 ## Nvidia RTX 3000+ series (Cuda compute 8.6) need 11.1+
 ## Must update Dockerfile accordingly
 ## 
-nano $AF_DIR/docker/Dockerfile
+nano $ALPHA_HOME/docker/Dockerfile
 
 # ARG CUDA=11.0 -> ARG CUDA=11.1
 # FROM nvidia/cuda:${CUDA}-base -> FROM nvidia/cuda:${CUDA}-devel
@@ -156,7 +156,7 @@ nano $AF_DIR/docker/Dockerfile
 ## with desired locations
 
 ## e.g.
-nano $AF_DIR/docker/run_docker.py
+nano $ALPHA_HOME/docker/run_docker.py
 
 #### USER CONFIGURATION ####
 
@@ -173,7 +173,7 @@ nano $AF_DIR/docker/run_docker.py
 ## NOTE: If the 'Failed to initialize NVML: Unknown Error' shows up when running docker, we can:
 ## add 'privileged=True, to container = client.containers.run();
 # e.g.
-nano $AF_DIR/docker/run_docker.py
+nano $ALPHA_HOME/docker/run_docker.py
 
 # container = client.containers.run(
 #       image=docker_image_name,
@@ -193,11 +193,11 @@ nano $AF_DIR/docker/run_docker.py
 
 
 ## Once the Dockerfile and run_docker.py are configured
-cd $AF_DIR
+cd $ALPHA_HOME
 docker build -f docker/Dockerfile -t alphafold .
 pip3 install -r docker/requirements.txt
 
 ## Creating environment variables
 export RESULTS_DIR=/media/FatCat/results/alphafold
-echo "export ALPHA_IN=$AFDIR" >> ~/.bashrc
+echo "export ALPHA_HOME=$ALPHA_HOME" >> ~/.bashrc
 echo "export ALPHA_OUT=$RESULTS_DIR" >> ~/.bashrc
