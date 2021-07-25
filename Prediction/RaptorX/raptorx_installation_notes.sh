@@ -29,42 +29,42 @@ sudo env KEY_MODELLER=$LICENSE dpkg -i $MODELLER
 # CAL_TPL.tar.gz
 
 ## Path where RaptorX will be installed; replace with desired location
-RX=/opt/RaptorX/
+export RAPTORX_HOME=/opt/RaptorX/
 
 ## Path where RaptorX databases will be installed; replace with desired location
 ## Note: ~ 80 Gb of disk space will be required
-DB=/opt/RaptorX_databases/
+export RAPTORX_DB=/opt/RaptorX_databases/
 
 ## Path to downloaded RaptorX installation files; replace with proper location
 FILES=~/Downloads/
 
 ## Creating installation directories
-mkdir $RX $DB
-## sudo -s mkdir $RX $DB
-## if $RX $DB located in permission-restricted location:
+mkdir $RAPTORX_HOME $RAPTORX_DB
+## sudo -s mkdir $RAPTORX_HOME $RAPTORX_DB
+## if $RAPTORX_HOME $RAPTORX_DB located in permission-restricted location:
 
 
 ##### RaptorX (CNFsearch1.66_complete.zip)
-cp $FILES/CNFsearch1.66_complete.zip $RX
-cd $RX
+cp $FILES/CNFsearch1.66_complete.zip $RAPTORX_HOME
+cd $RAPTORX_HOME
 unzip CNFsearch1.66_complete.zip
-mv CNFsearch1.66_complete/* $RX/
-rmdir $RX/CNFsearch1.66_complete
-mkdir $RX/tmp
-chmod -R 775 $RX
+mv CNFsearch1.66_complete/* $RAPTORX_HOME/
+rmdir $RAPTORX_HOME/CNFsearch1.66_complete
+mkdir $RAPTORX_HOME/tmp
+chmod -R 775 $RAPTORX_HOME
 ./setup.pl
 ## setup.pl from the CNFsearch1.66_complete package replaces the /home/wangsheng/CNFsearch_Release/CNFsearch1.6
 ## hard links from its shell and Perl scripts by the current installation directory
 
 ### Creating symlink to databases
-rm -R $RX/databases
-ln -s $DB $RX/databases
+rm -R $RAPTORX_HOME/databases
+ln -s $RAPTORX_DB $RAPTORX_HOME/databases
 
 ### Decompressing databases
-cp $FILES/*.tar.gz $DB
-## mv $FILES/*.tar.gz $DB
+cp $FILES/*.tar.gz $RAPTORX_DB
+## mv $FILES/*.tar.gz $RAPTORX_DB
 ## use either cp or mv to keep (copy) or delete (move) the downloaded files in $FILES
-cd $DB
+cd $RAPTORX_DB
 for file in *.tar.gz; do tar -zxvf $file; done
 mkdir NR_new
 mv nr?0* NR_new/
@@ -73,17 +73,17 @@ mv pdb_BC40 pdb_BC100
 ## Creating the reference_tpl_list
 ls CAL_TPL/*.tpl | awk -F/ '{print $2}' | awk -F\. '{print $1}' > reference_tpl_list
 ## Deleting references to corrupted 6f45D.tpl file
-rm -f $DB/TPL_BC100/6f45D.tpl
+rm -f $RAPTORX_DB/TPL_BC100/6f45D.tpl
 for v in {40,70,90,100}; do
-  sed -i '/6f45D/d' $DB/bc${v}_list;
-  sed -i '/6f45D/d' $DB/bc${v}_map;
+  sed -i '/6f45D/d' $RAPTORX_DB/bc${v}_list;
+  sed -i '/6f45D/d' $RAPTORX_DB/bc${v}_map;
 done
 ## Deleting tar files
 rm -f *.tar.gz
 
 ### Adding PATH variables to user bashrc
-echo "export PATH=$PATH:$RX" >> ~/.bashrc
-echo "export RAPTORX_PATH=$RX" >> ~/.bashrc
+echo "export PATH=$PATH:$RAPTORX_HOME" >> ~/.bashrc
+echo "export RAPTORX_HOME=$RAPTORX_HOME" >> ~/.bashrc
 
 ### Checking for $PYTHONHOME and python2.7, python, or python3
 ### Note that this environment variable can cause issues with other

@@ -1,6 +1,6 @@
 #!/usr/bin/perl
 ## Pombert Lab 2019
-my $version = '0.6b';
+my $version = '0.6c';
 my $name = 'raptorx.pl';
 my $updated = '2021-07-23';
 
@@ -84,10 +84,10 @@ print LOG "COMMAND LINE:\nraptorx.pl @command\n"."raptorx.pl version = $version\
 print LOG "Using MODELLER binary version $modeller\n";
 print LOG "3D Folding started on: $start\n";
 
-## Checking for RaptorX path variable (RAPTORX_PATH)
-my $RAPTORX_PATH = '$RAPTORX_PATH';
-chomp ($RAPTORX_PATH = `echo $RAPTORX_PATH`);
-chdir $RAPTORX_PATH or die "Can't access RAPTORX_PATH $RAPTORX_PATH: $!\n";
+## Checking for RaptorX path variable (RAPTORX_HOME)
+my $RAPTORX_HOME = '$RAPTORX_HOME';
+chomp ($RAPTORX_HOME = `echo $RAPTORX_HOME`);
+chdir $RAPTORX_HOME or die "Can't access RAPTORX_HOME $RAPTORX_HOME: $!\n";
 
 ## Running RaptorX
 while (my $fasta_path = shift@fasta){
@@ -171,7 +171,7 @@ while (my $fasta_path = shift@fasta){
 	print LOG "Time to fold $fasta = $run_time minutes".' (cumulative)'."\n";
 
 	## Moving datafiles to output directory
-	opendir (RXDIR,"$RAPTORX_PATH");
+	opendir (RXDIR,"$RAPTORX_HOME");
 	while (my $file = readdir(RXDIR)){
 		if ($file =~ /\.pdb$/){
 			if ($topk == 1){ system "mv $file $abs_path_outdir/PDB/$protein.pdb"; }

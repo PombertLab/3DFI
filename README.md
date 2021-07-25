@@ -84,11 +84,11 @@ export VZ_3DFI=$TDFI/Visualization
 ##### RaptorX - template-based protein structure modeling
 To perform template-based 3D structure predictions locally with [RaptorX](http://raptorx.uchicago.edu/), the standalone programs should be [downloaded](http://raptorx.uchicago.edu/download/) and installed according to the authors’ instructions. Using RaptorX also requires [MODELLER](https://salilab.org/modeller/). To help with their installation, the [raptorx_installation_notes.sh](https://github.com/PombertLab/3DFI/blob/master/Prediction/RaptorX/raptorx_installation_notes.sh) is provided, with source and installation directories to be edited according to user preferences.
 
-To run [RaptorX](http://raptorx.uchicago.edu/) from anywhere with [raptorx.pl](https://github.com/PombertLab/3DFI/blob/master/Prediction/RaptorX/raptorx.pl), the environment variable RAPTORX_PATH should be set first:
+To run [RaptorX](http://raptorx.uchicago.edu/) from anywhere with [raptorx.pl](https://github.com/PombertLab/3DFI/blob/master/Prediction/RaptorX/raptorx.pl), the environment variable RAPTORX_HOME should be set first:
 
 ```Bash
 ## Setting up the RaptorX installation directory as an environment variable:
-export RAPTORX_PATH=/opt/RaptorX
+export RAPTORX_HOME=/opt/RaptorX
 
 ## Creating a working directory for RaptorX:
 export RX=~/RAPTORX_3D
