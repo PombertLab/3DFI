@@ -571,7 +571,7 @@ $HS_3DFI/run_GESAMT.pl \
    -cpu 10 \
    -query \
    -arch $GESAMT_ARCHIVE \
-   -input *.pdb \
+   -input $TDFI/Examples/PDB/*.pdb \
    -o $GSMT \
    -mode normal
 ```
