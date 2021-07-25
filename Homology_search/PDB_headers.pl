@@ -1,8 +1,8 @@
 #!/usr/bin/perl
 ## Pombert Lab 2020
-my $version = '0.3a';
+my $version = '0.3b';
 my $name = 'PDB_headers.pl';
-my $updated = '2021-04-29';
+my $updated = '2021-07-25';
 
 use strict; use warnings; use Getopt::Long qw(GetOptions); use File::Basename;
 use File::Find; use PerlIO::gzip; 
@@ -20,20 +20,24 @@ REQUIREMENTS	PDB files downloaded from RCSB PDB; e.g. pdb2zvl.ent.gz
 		
 USAGE EXAMPLE	${name} \\
 		  -p PDB/ \\
-		  -o PDB_titles.tsv
+		  -o PDB_titles.tsv \\
+		  -v 1000
 
 OPTIONS:
 -p (--pdb)	Directory containing PDB files downloaded from RCSB PDB/PDBe (gzipped)
 -o (--output)	Output file in tsv format
+-v (--verbose)	Prints info very X file [Default: 1000]
 OPTIONS
 die "\n$USAGE\n" unless @ARGV;
 
 ## Defining options
 my $pdb;
 my $out;
+my $verbose = 1000;
 GetOptions(
 	'p|pdb=s' => \$pdb,
 	'o|output=s' => \$out,
+	'v|verbose=i' => \$verbose
 );
 
 
@@ -47,9 +51,12 @@ find(
 
 ## Parsing PDB files (*.ent.gz)
 open OUT, ">", "$out" or die "Can't create file $out: $!\n";
+my $pdb_count = 0;
 while (my $pb = shift@pdb){
 
 	if ($pb =~ /.ent.gz$/){ ## skipping other files if present
+
+		$pdb_count++;
 
 		open PDB, "<:gzip", "$pb" or die "Can't open file $pb: $!\n";
 		my ($pdb, $folder) = fileparse($pb);
@@ -59,7 +66,9 @@ while (my $pb = shift@pdb){
 		my %molecules;
 		my $mol_id = undef;
 
-		print "Working on PDB file: $pb\n"; ## Added verbosity; lots of files to parse...
+		## verbosity; lots of files to parse...
+		my $modulo = ($pdb_count % $verbose);
+		if ($modulo == 0){ print "Working on PDB file # $pdb_count: $pb\n"; }
 
 		while (my $line = <PDB>){
 			chomp $line;
@@ -119,3 +128,5 @@ while (my $pb = shift@pdb){
 		}
 	}
 }
+
+print "\nIterated through a total of $pdb_count PDB files\n";
