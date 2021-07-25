@@ -503,6 +503,7 @@ Options for [PDB_headers.pl](https://github.com/PombertLab/3DFI/blob/master/Homo
 ```
 -p (--pdb)	Directory containing PDB files downloaded from RCSB PDB/PDBe (gzipped)
 -o (--output)	Output file in tsv format
+-v (--verbose)	Prints info every X file [Default: 1000]
 ```
 
 The list created should look like this:
