@@ -51,7 +51,9 @@ find(
 
 ## Parsing PDB files (*.ent.gz)
 open OUT, ">", "$out" or die "Can't create file $out: $!\n";
+
 my $pdb_count = 0;
+my $start = time;
 while (my $pb = shift@pdb){
 
 	if ($pb =~ /.ent.gz$/){ ## skipping other files if present
@@ -133,7 +135,9 @@ while (my $pb = shift@pdb){
 }
 
 my $final_count = commify($pdb_count);
+my $run_time = (time - $start)/60;
 print "\nIterated through a total of $final_count PDB files\n";
+print "Job completed in $run_time minutes.\n";
 
 ### Subroutine(s)
 sub commify {
