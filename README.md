@@ -91,8 +91,9 @@ To run [RaptorX](http://raptorx.uchicago.edu/) from anywhere with [raptorx.pl](h
 export RAPTORX_HOME=/opt/RaptorX
 
 ## Creating a working directory for RaptorX:
-export RX=~/RAPTORX_3D
-mkdir -p $RX
+export RESULTS=~/Results_3DFI
+export RX=$RESULTS/RAPTORX_3D
+mkdir -p $RESULTS $RX
 ```
 
 To predict 3D structures with [RaptorX](http://raptorx.uchicago.edu/) using [raptorx.pl](https://github.com/PombertLab/3DFI/blob/master/Prediction/RaptorX/raptorx.pl):
@@ -125,8 +126,7 @@ NOTES:
 template file 6f45D format bad or missing
 ```
 - RaptorX expects a PYTHONHOME environment variable but runs fine without it. The following warning message can be safely ignored, and silenced by setting up a PYTHONHOME environment variable. Note that setting PYTHONHOME can create issues with other applications.
-```
-Could not find platform independent libraries <prefix>
+```renamed env vars for consistencyindependent libraries <prefix>
 Could not find platform dependent libraries <exec_prefix>
 Consider setting $PYTHONHOME to <prefix>[:<exec_prefix>]
 ```
@@ -172,8 +172,9 @@ export TRROSETTA_HOME=/opt/trRosetta
 export TRROSETTA_SCRIPTS=$TRROSETTA_HOME/trRosetta_scripts
 
 ## Creating a working directory for trRosetta:
-export TR=~/TRROSETTA_3D
-mkdir -p $TR
+export RESULTS=~/Results_3DFI
+export TR=$RESULTS/RAPTORX_3D
+mkdir -p $RESULTS $TR
 ```
 
 1. To convert FASTA sequences to single string FASTA sequences with [fasta_oneliner.pl](https://github.com/PombertLab/3DFI/blob/master/Prediction/trRosetta/fasta_oneliner.pl), type:
@@ -303,8 +304,9 @@ export ALPHA_HOME=/opt/alphafold
 export ALPHA_OUT=/media/Data/alphafold_results
 
 ## Creating a working directory for AlphaFold2:
-export AF=~/ALPHAFOLD_3D
-mkdir -p $AF
+export RESULTS=~/Results_3DFI
+export AF=$RESULTS/ALPHAFOLD_3D
+mkdir -p $RESULTS $AF
 ```
 
 To run [alphafold.pl](https://github.com/PombertLab/3DFI/blob/master/Prediction/AlphaFold2/alphafold.pl) on multiple fasta files, type:
@@ -386,8 +388,9 @@ How to set up [RoseTTAFold](https://github.com/RosettaCommons/RoseTTAFold) to ru
 export ROSETTAFOLD_HOME=/opt/RoseTTAFold
 
 ## Creating a working directory for RoseTTAFold:
-export RF=~/ROSETTAFOLD_3D
-mkdir -p $RF
+export RESULTS=~/Results_3DFI
+export RF=$RESULTS/ROSETTAFOLD_3D
+mkdir -p $RESULTS $RF
 ```
 
 To run [rosettafold.pl](https://github.com/PombertLab/3DFI/blob/master/Prediction/RoseTTAFold/rosettafold.pl) on multiple fasta files, type:
