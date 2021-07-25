@@ -131,7 +131,7 @@ while (my $pb = shift@pdb){
 }
 
 my $final_count = commify($pdb_count);
-print "\nIterated through a total of $pdb_count PDB files\n";
+print "\nIterated through a total of $final_count PDB files\n";
 
 ### Subroutine(s)
 sub commify {
