@@ -26,7 +26,7 @@ USAGE EXAMPLE	${name} \\
 OPTIONS:
 -p (--pdb)	Directory containing PDB files downloaded from RCSB PDB/PDBe (gzipped)
 -o (--output)	Output file in tsv format
--v (--verbose)	Prints info every X file [Default: 1000]
+-v (--verbose)	Prints progress every X file [Default: 1000]
 OPTIONS
 die "\n$USAGE\n" unless @ARGV;
 
