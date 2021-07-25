@@ -125,6 +125,7 @@ while (my $pb = shift@pdb){
 			my @chains = split (",", $chains);
 			foreach my $chain (@chains){
 				if ($molecule){	print OUT "$pdb\t$chain\t$molecule\n"; }
+				## Molecules might not be defined if engineered
 				else { print OUT "$pdb\t$chain\tundefined molecule\n"; }
 			}
 		}
