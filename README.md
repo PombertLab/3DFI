@@ -59,7 +59,7 @@ Requirements to perform 3D structure prediction, structural homology searches an
 	- [PerlIO::gzip](https://metacpan.org/pod/PerlIO::gzip)
 	- [threads::shared](https://perldoc.perl.org/threads::shared)
 
-Alternatively, any set of PDB files can also be fed as input for structural homology searches/visualization with GESAMT/ChimeraX. For example, PDB files predicted using web-based platforms such as [SWISS-MODEL](https://swissmodel.expasy.org/), predicted locally with pipelines like [I-TASSER](https://zhanglab.ccmb.med.umich.edu/I-TASSER/download/), or downloaded from the new EMBL-EBI/Deepmind [AlphaFold Protein Structure Database](https://alphafold.ebi.ac.uk/).
+Alternatively, any set of PDB files can be fed as input for structural homology searches/visualization with GESAMT/ChimeraX. For example, protein structures predicted using web-based platforms such as [SWISS-MODEL](https://swissmodel.expasy.org/), predicted locally with pipelines like [I-TASSER](https://zhanglab.ccmb.med.umich.edu/I-TASSER/download/), or downloaded from the new EMBL-EBI/Deepmind [AlphaFold Protein Structure Database](https://alphafold.ebi.ac.uk/) can be used as queries for structural homology searches.
 
 ### Installation
 The 3DFI pipeline can be downloaded directly from GitHub with git clone. For ease of use, the 3DFI directories can be also be set as environment variables as follows: 
