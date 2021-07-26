@@ -471,7 +471,6 @@ PDB files from the [Protein Data Bank](https://www.rcsb.org/) can be downloaded 
 
 ```bash
 ## Setting up RCSB PDB database location:
-export RESULTS=~/Results_3DFI
 export RCSB_PDB=/media/FatCat/databases/RCSB_PDB/
 
 ## Downloading the RCSB PDB database:
@@ -492,6 +491,10 @@ Options for [update_PDB.pl](https://github.com/PombertLab/3DFI/blob/master/Homol
 To create a tab-delimited list of PDB entries and their titles and chains from the downloaded PDB gzipped files (pdb*.ent.gz), we can use [PDB_headers.pl](https://github.com/PombertLab/3DFI/blob/master/Homology_search/PDB_headers.pl) (requires [PerlIO::gzip](https://metacpan.org/pod/PerlIO::gzip)):
 
 ```Bash
+## Setting up 3DFI results location:
+export RESULTS=~/Results_3DFI
+
+## Running a list of titles and chains from PDB files
 $HS_3DFI/PDB_headers.pl \
    -p $RCSB_PDB \
    -o $RESULTS/PDB_titles.tsv
