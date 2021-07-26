@@ -710,7 +710,7 @@ In this example, selecting [1] will open the visualization of the predicted 3D s
 
 <img src="https://github.com/PombertLab/3DFI/blob/master/Images/Just_PDB.png">
 
-The structure can then be interacted with using ChimeraX [commands](https://www.rbvi.ucsf.edu/chimerax/docs/user/index.html). For example, the structure can be colored with rainbow scheme to better distinguish between structural domains:
+The structure can then be interacted with using ChimeraX [commands](https://www.rbvi.ucsf.edu/chimerax/docs/user/index.html). For example, the structure can be colored with a rainbow scheme to better distinguish between structural domains:
 
 <img src="https://github.com/PombertLab/3DFI/blob/master/Images/Just_PDB_rainbow.png">
 
