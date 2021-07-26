@@ -555,7 +555,7 @@ $HS_3DFI/run_GESAMT.pl \
    -arch $GESAMT_ARCHIVE \
    -pdb $RCSB_PDB
 ```
-Options for [run_GESAMT.pl](https://github.com/PombertLab/3DFI/blob/master/Homology_search/run_GESAMT.pl) are:
+Options to create/update a GESAMT archive for [run_GESAMT.pl](https://github.com/PombertLab/3DFI/blob/master/Homology_search/run_GESAMT.pl) are:
 ```
 -c (--cpu)	CPU threads [Default: 10]
 -a (--arch)	GESAMT archive location [Default: ./]
@@ -582,7 +582,7 @@ $HS_3DFI/run_GESAMT.pl \
    -o $GSMT \
    -mode normal
 ```
-Options for [run_GESAMT.pl](https://github.com/PombertLab/3DFI/blob/master/Homology_search/run_GESAMT.pl) are:
+Options to query a GESAMT archive for [run_GESAMT.pl](https://github.com/PombertLab/3DFI/blob/master/Homology_search/run_GESAMT.pl) are:
 ```
 -c (--cpu)	CPU threads [Default: 10]
 -a (--arch)	GESAMT archive location [Default: ./]
