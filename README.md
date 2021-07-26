@@ -705,14 +705,16 @@ The output should result in something similar to the following:
 		[x] to exit 3D inspection
 
 		Selection:
-		
+
 ```
 
-In this example, selecting [1] will open the visualization of the predicted 3D structure.
+In this example, selecting [1] will open the visualization of the predicted 3D structure:
+
 <img src="https://github.com/PombertLab/3DFI/blob/master/Images/Just_PDB.png">
 
 
-Alternatively, selecting [2-6] will open the visualization of the alignment of the predicted 3D structure with its selected structural homolog.
+Alternatively, selecting [2-6] will open the visualization of the alignment of the predicted 3D structure with its selected structural homolog:
+
 <img src="https://github.com/PombertLab/3DFI/blob/master/Images/With_Alignment.png">
 
 #### Miscellaneous 
