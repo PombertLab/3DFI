@@ -385,7 +385,7 @@ Options for [parse_af_results.pl](https://github.com/PombertLab/3DFI/blob/master
 ##### RoseTTAFold - deep-learning-based protein structure modeling
 How to set up [RoseTTAFold](https://github.com/RosettaCommons/RoseTTAFold) to run using conda is described on its GitHub page. Notes about how to install it on Fedora 33/34 are available in [rfold_installation_notes.sh](https://github.com/PombertLab/3DFI/blob/master/Prediction/RoseTTAFold/rfold_installation_notes.sh).
 
-The [rosettafold.pl](https://github.com/PombertLab/3DFI/blob/master/Prediction/RoseTTAFold/rosettafold.pl) script is a Perl wrapper that enables running the [RoseTTAFold](https://github.com/RosettaCommons/RoseTTAFold) run_e2e_ver.sh/run_pyrosetta_ver.sh scripts in batch mode. To simplify its use, the ROSETTAFOLD_HOME environment variable can be set in the shell.
+The [rosettafold.pl](https://github.com/PombertLab/3DFI/blob/master/Prediction/RoseTTAFold/rosettafold.pl) script is a Perl wrapper that enables running the [RoseTTAFold](https://github.com/RosettaCommons/RoseTTAFold) run_e2e_ver.sh / run_pyrosetta_ver.sh scripts in batch mode. To simplify its use, the ROSETTAFOLD_HOME environment variable can be set in the shell.
 
 ```bash
 ##  Setting up RoseTTAFold installation directory as an environment variable:
