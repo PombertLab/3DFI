@@ -645,14 +645,10 @@ sequence_3	5	3IFV	C	0.5527	2.2070	0.1075	214	240	pdb3ifv.ent.gz	PCNA
 ##### About visualization
 Visually inspecting the predicted 3D structure of a protein is an important step in determing the validity of any identified structural homolog. Though a .pdb file may be obtained from a protein structure prediction tool, the quality of the fold may be low. Alternatively, though GESAMT may return a structural homolog with a reasonable Q-score, the quality of the alignment may be low. A low fold/alignment-quality can result in both false-positives (finding a structural homolog when one doesn't exist) and false-negatives (not finding a structural homolog when one exists). Visually inspecting protein structures and structural homolog alignments is an easy way to prevent these outcomes. This can be done with the excellent [ChimeraX](https://www.rbvi.ucsf.edu/chimerax/) 3D protein visualization program.
 
-An example of a good result, in which both the folding and the alignment are good:
-<p align="center"><img src="https://github.com/PombertLab/3DFI/blob/master/Images/Good_Match.png" alt="Example of a good alignment" width="600"></p>
-
-An example of a false-negative, where the quality of the protein folding is low, resulting in a failure to find a structural homolog:
-<p align="center"><img src="https://github.com/PombertLab/3DFI/blob/master/Images/Bad_Predicted_Fold.png" alt="Example of a bad folding prediction" width="700"></p>
-
-An example of a false-positive, where the quality of the fold is high, but the alignment-quality is low and a pseudo-structural homolog is found:
-<p align="center"><img src="https://github.com/PombertLab/3DFI/blob/master/Images/Bad_Match.png" alt="Example of a bad alignment" width="400"></p>
+Examples:
+- A [good result](https://github.com/PombertLab/3DFI/blob/master/Images/Good_Match.png), in which both the folding and the alignment are good.
+- A [false-negative](https://github.com/PombertLab/3DFI/blob/master/Images/Bad_Predicted_Fold.png), where the quality of the protein folding is low, resulting in a failure to find a structural homolog.
+- A [false-positive](https://github.com/PombertLab/3DFI/blob/master/Images/Bad_Match.png), where the quality of the fold is high, but the alignment-quality is low and a pseudo-structural homolog is found.
 
 ##### Inspecting alignments with ChimeraX
 To prepare visualizations for inspection, we can use [prepare_visualizations.pl](https://github.com/PombertLab/3DFI/blob/master/Visualization/prepare_visualizations.pl) to automatically align predicted proteins with their GESAMT-determined structural homologs. These alignments are performed with [ChimeraX](https://www.rbvi.ucsf.edu/chimerax/) via its API.
@@ -712,7 +708,7 @@ In this example, selecting [1] will open the visualization of the predicted 3D s
 
 <img src="https://github.com/PombertLab/3DFI/blob/master/Images/Just_PDB.png">
 
-The structure can then be interacted with using ChimeraX [commands](https://www.rbvi.ucsf.edu/chimerax/docs/user/index.html). For examples, the structure can be colored with rainbow scheme to better distinguish between structural domains:
+The structure can then be interacted with using ChimeraX [commands](https://www.rbvi.ucsf.edu/chimerax/docs/user/index.html). For example, the structure can be colored with rainbow scheme to better distinguish between structural domains:
 
 <img src="https://github.com/PombertLab/3DFI/blob/master/Images/Just_PDB_rainbow.png">
 
