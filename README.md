@@ -334,7 +334,7 @@ Options for [alphafold.pl](https://github.com/PombertLab/3DFI/blob/master/Predic
 Folding results per protein will be located in corresponding subdirectories. Results with AlphaFold will contain PDB files for unrelaxed models (*i.e.* predicted as is before relaxation), relaxed models, and ranked models from best (0) to worst (4). Each subdirectory should look like this:
 
 ```bash
-ls -l $AF/Results/ECU03_1140/
+ls -l $AF/Results/sequence_1/
 total 4
 total 47404
 -rw-r--r-- 1 jpombert jpombert 1085545 Jul 23 08:27 features.pkl
