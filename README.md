@@ -590,10 +590,10 @@ Results of GESAMT homology searches will be found in the \*.gesamt files generat
 ```
 #  Hit   PDB  Chain  Q-score  r.m.s.d     Seq.  Nalign  nRes    File
 #  No.   code   Id                         Id.                  name
-     1   5HVM   A     0.8841   0.4410   0.4465    430    446   pdb5hvm.ent.gz
-     2   5HVM   B     0.8639   0.5333   0.4419    430    452   pdb5hvm.ent.gz
-     3   5HVO   D     0.8387   0.6602   0.4242    429    456   pdb5hvo.ent.gz
-     4   5HVO   B     0.8356   0.6841   0.4252    428    454   pdb5hvo.ent.gz
+     1   5V7K   A     0.5610   1.9652   0.1262    214    255   pdb5v7k.ent.gz
+     2   5T9D   C     0.5607   2.0399   0.1268    213    247   pdb5t9d.ent.gz
+     3   6CX4   A     0.5590   1.9153   0.1226    212    255   pdb6cx4.ent.gz
+     4   1PLR   A     0.5551   1.9919   0.1302    215    258   pdb1plr.ent.gz
 ```
 
 ##### Parsing the output of GESAMT searches
@@ -620,18 +620,23 @@ Options for [descriptive_GESAMT_matches.pl](https://github.com/PombertLab/3DFI/b
 
 The concatenated list generated should look like:
 ```
-### GPK93_01g00370-m1-5nw4V
-GPK93_01g00370-m1-5nw4V	1	5ADX	H	0.9729	0.3574	0.7811	370	370	pdb5adx.ent.gz	ACTIN, CYTOPLASMIC 1
-GPK93_01g00370-m1-5nw4V	2	5AFU	H	0.9729	0.3574	0.7811	370	370	pdb5afu.ent.gz	ACTIN, CYTOPLASMIC 1
-GPK93_01g00370-m1-5nw4V	3	5NW4	V	0.9729	0.3574	0.7811	370	370	pdb5nw4.ent.gz	BETA-ACTIN
-GPK93_01g00370-m1-5nw4V	4	6F1T	H	0.9503	0.5867	0.7811	370	370	pdb6f1t.ent.gz	ACTIN, CYTOPLASMIC 1
-GPK93_01g00370-m1-5nw4V	5	6UBY	D	0.9189	0.7482	0.7717	368	370	pdb6uby.ent.gz	ACTIN, ALPHA SKELETAL MUSCLE
-### GPK93_01g00390-m1-2v3jA
-GPK93_01g00390-m1-2v3jA	1	5JPQ	e	0.6203	0.7328	0.3354	158	211	pdb5jpq.ent.gz	EMG1
-GPK93_01g00390-m1-2v3jA	2	5TZS	j	0.6203	0.7329	0.3354	158	211	pdb5tzs.ent.gz	RIBOSOMAL RNA SMALL SUBUNIT METHYLTRANSFERASE NEP1
-GPK93_01g00390-m1-2v3jA	3	3OIJ	A	0.6174	0.7328	0.3354	158	212	pdb3oij.ent.gz	ESSENTIAL FOR MITOTIC GROWTH 1
-GPK93_01g00390-m1-2v3jA	4	3OII	A	0.6073	0.6866	0.3354	158	217	pdb3oii.ent.gz	ESSENTIAL FOR MITOTIC GROWTH 1
-GPK93_01g00390-m1-2v3jA	5	3OIN	A	0.6035	0.7288	0.3354	158	217	pdb3oin.ent.gz	ESSENTIAL FOR MITOTIC GROWTH 1
+### sequence_1
+sequence_1	1	3KDF	D	0.6587	1.6953	0.1545	110	119	pdb3kdf.ent.gz	REPLICATION PROTEIN A 32 KDA SUBUNIT
+sequence_1	2	1QUQ	C	0.6466	1.7595	0.1545	110	119	pdb1quq.ent.gz	PROTEIN (REPLICATION PROTEIN A 32 KD SUBUNIT)
+sequence_1	3	2PQA	A	0.6421	1.7176	0.1504	113	128	pdb2pqa.ent.gz	REPLICATION PROTEIN A 32 KDA SUBUNIT
+sequence_1	4	3KDF	B	0.6415	1.8156	0.1545	110	118	pdb3kdf.ent.gz	REPLICATION PROTEIN A 32 KDA SUBUNIT
+...
+### sequence_2
+sequence_2	1	3K0X	A	0.6349	1.5848	0.1163	86	99	pdb3k0x.ent.gz	PROTEIN TEN1
+sequence_2	2	3KF6	B	0.6186	1.4624	0.1163	86	105	pdb3kf6.ent.gz	PROTEIN TEN1
+sequence_2	3	5DOI	F	0.6057	1.8040	0.1310	84	93	pdb5doi.ent.gz	TELOMERASE ASSOCIATED PROTEIN P45
+sequence_2	4	5DOI	H	0.5974	1.8506	0.1310	84	93	pdb5doi.ent.gz	TELOMERASE ASSOCIATED PROTEIN P45
+...
+### sequence_3
+sequence_3	1	5V7K	A	0.5610	1.9652	0.1262	214	255	pdb5v7k.ent.gz	PROLIFERATING CELL NUCLEAR ANTIGEN
+sequence_3	2	5T9D	C	0.5607	2.0399	0.1268	213	247	pdb5t9d.ent.gz	PROLIFERATING CELL NUCLEAR ANTIGEN
+sequence_3	3	6CX4	A	0.5590	1.9153	0.1226	212	255	pdb6cx4.ent.gz	PROLIFERATING CELL NUCLEAR ANTIGEN
+sequence_3	4	1PLR	A	0.5551	1.9919	0.1302	215	258	pdb1plr.ent.gz	PROLIFERATING CELL NUCLEAR ANTIGEN (PCNA)
 ```
 
 #### Structural visualization
