@@ -659,10 +659,6 @@ To prepare visualizations for inspection, we can use [prepare_visualizations.pl]
 ## Creating shortcut to working directory
 export RAPTORX="~/Microsporidia/intestinalis_50506/Annotations/3D/RaptorX"
 
-## Setting 3DFI installation directories:
-export 3DFI=~/GitHub/3DFI
-export VZ_3DFI=${3DFI}/Visualization
-
 ## Preparing data for visualization:
 $VZ_3DFI/prepare_visualizations.pl \
     -g $RAPTORX/E_int_GESAMT_RESULTS.matches \
