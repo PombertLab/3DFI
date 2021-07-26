@@ -708,10 +708,13 @@ The output should result in something similar to the following:
 
 ```
 
-In this example, selecting [1] will open the visualization of the predicted 3D structure:
+In this example, selecting [1] will open the visualization of the predicted 3D structure with [ChimeraX](https://www.rbvi.ucsf.edu/chimerax/download.html):
 
 <img src="https://github.com/PombertLab/3DFI/blob/master/Images/Just_PDB.png">
 
+The structure can then be interacted with using ChimeraX [commands](https://www.rbvi.ucsf.edu/chimerax/docs/user/index.html). For examples, the structure can be colored with rainbow scheme to better distinguish between structural domains:
+
+<img src="https://github.com/PombertLab/3DFI/blob/master/Images/Just_PDB_rainbow.png">
 
 Alternatively, selecting [2-6] will open the visualization of the alignment of the predicted 3D structure with its selected structural homolog:
 
