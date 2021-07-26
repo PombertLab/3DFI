@@ -592,7 +592,7 @@ Options to query a GESAMT archive with [run_GESAMT.pl](https://github.com/Pomber
 -d (--mode)	Query mode: normal of high [Default: normal]
 ```
 
-Results of GESAMT homology searches will be found in the \*.gesamt files generated. Content of these should look like:
+Results of GESAMT homology searches will be found in the \*.gesamt files generated. Content of these files should look like:
 ```
 #  Hit   PDB  Chain  Q-score  r.m.s.d     Seq.  Nalign  nRes    File
 #  No.   code   Id                         Id.                  name
