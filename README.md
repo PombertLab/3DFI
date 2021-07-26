@@ -363,7 +363,7 @@ drwxr-xr-x 1 jpombert jpombert     106 Jul 23 08:27 msas
 -rw-r--r-- 1 jpombert jpombert   73112 Jul 23 08:27 unrelaxed_model_5.pdb
 ```
 
-The script [parse_af_results.pl](https://github.com/PombertLab/3DFI/blob/master/Prediction/AlphaFold2/parse_af_results.pl) can be used to recurse through the subdirectories and copy the PDB model(s) with more descriptive names including that of the proteins to a selected location. To use [parse_af_results.pl](https://github.com/PombertLab/3DFI/blob/master/Prediction/AlphaFold2/parse_af_results.pl),  type:
+The script [parse_af_results.pl](https://github.com/PombertLab/3DFI/blob/master/Prediction/AlphaFold2/parse_af_results.pl) can be used to recurse through the subdirectories and copy the PDB model(s) with more descriptive names (including that of the proteins) to a selected location. To use [parse_af_results.pl](https://github.com/PombertLab/3DFI/blob/master/Prediction/AlphaFold2/parse_af_results.pl),  type:
 
 ```bash
 $AF_3DFI/parse_af_results.pl \
