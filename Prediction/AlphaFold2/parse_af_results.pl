@@ -1,7 +1,7 @@
 #!/usr/bin/perl
 ## Pombert lab, Illinois Tech, 2021
 my $name = 'parse_af_results';
-my $version = '0.1a';
+my $version = '0.2';
 my $updated = '2021-07-22';
 
 use strict; use warnings; use Getopt::Long qw(GetOptions);
@@ -69,21 +69,63 @@ while (my $result = shift @results){
 	
 	## Ranked models
 	if (($pdbtype eq 'k') or ($pdbtype eq 'ranked')){
-		for my $num (0..$top-1){ system "cp $afdir/$result/ranked_$num.pdb $outdir/$result-k$num.pdb"; }
+		for my $num (0..$top-1){ 
+			if (-f "$afdir/$result/ranked_$num.pdb"){
+				system "cp $afdir/$result/ranked_$num.pdb $outdir/$result-k$num.pdb";
+			}
+			else {
+				print STDERR "Error: $afdir/$result/ranked_$num.pdb not found. Check if folding of $result completed correctly.\n";
+			}
+		}
 	}
 	## Relaxed models
 	elsif (($pdbtype eq 'r') or ($pdbtype eq 'relaxed')){
-		for my $num (1..$top){ system "cp $afdir/$result/relaxed_model_$num.pdb $outdir/$result-r$num.pdb"; }
+		for my $num (1..$top){ 
+			if (-f "$afdir/$result/relaxed_model_$num.pdb"){
+				system "cp $afdir/$result/relaxed_model_$num.pdb $outdir/$result-r$num.pdb";
+			}
+			else {
+				print STDERR "Error: $afdir/$result/relaxed_model_$num.pdb not found. Check if folding of $result completed correctly.\n";
+			}
+		}
 	}
 	## Unrelaxed models
 	elsif (($pdbtype eq 'u') or ($pdbtype eq 'unrelaxed')){
-		for my $num (1..$top){ system "cp $afdir/$result/relaxed_model_$num.pdb $outdir/$result-u$num.pdb"; }
+		for my $num (1..$top){
+			if (-f "$afdir/$result/unrelaxed_model_$num.pdb"){
+				system "cp $afdir/$result/unrelaxed_model_$num.pdb $outdir/$result-u$num.pdb";
+			}
+			else {
+				print STDERR "Error: $afdir/$result/unrelaxed_model_$num.pdb not found. Check if folding of $result completed correctly.\n";
+			}
+		}
 	}
 	## All models
 	elsif (($pdbtype eq 'a') or ($pdbtype eq 'all')){
-		for my $num (0..$top-1){ system "cp $afdir/$result/ranked_$num.pdb $outdir/$result-k$num.pdb"; }
-		for my $num (1..$top){ system "cp $afdir/$result/relaxed_model_$num.pdb $outdir/$result-r$num.pdb"; }
-		for my $num (1..$top){ system "cp $afdir/$result/relaxed_model_$num.pdb $outdir/$result-u$num.pdb"; }
+		for my $num (0..$top-1){ 
+			if (-f "$afdir/$result/ranked_$num.pdb"){
+				system "cp $afdir/$result/ranked_$num.pdb $outdir/$result-k$num.pdb";
+			}
+			else {
+				print STDERR "Error: $afdir/$result/ranked_$num.pdb not found. Check if folding of $result completed correctly.\n";
+			}
+		}
+		for my $num (1..$top){ 
+			if (-f "$afdir/$result/relaxed_model_$num.pdb"){
+				system "cp $afdir/$result/relaxed_model_$num.pdb $outdir/$result-r$num.pdb";
+			}
+			else {
+				print STDERR "Error: $afdir/$result/relaxed_model_$num.pdb not found. Check if folding of $result completed correctly.\n";
+			}
+		}
+		for my $num (1..$top){
+			if (-f "$afdir/$result/unrelaxed_model_$num.pdb"){
+				system "cp $afdir/$result/unrelaxed_model_$num.pdb $outdir/$result-u$num.pdb";
+			}
+			else {
+				print STDERR "Error: $afdir/$result/unrelaxed_model_$num.pdb not found. Check if folding of $result completed correctly.\n";
+			}
+		}
 	}
 	## If unrecognized command line: 
 	else { die "\nUnrecognized pdbtype: please enter ranked (k), relaxed (r), unrelaxed (u), or all (a)\n\n"; }
