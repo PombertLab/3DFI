@@ -1,8 +1,8 @@
 #!/usr/bin/perl
 ## Pombert Lab 2020
-my $version = '0.5b';
+my $version = '0.5c';
 my $name = 'run_GESAMT.pl';
-my $updated = '2021-04-25';
+my $updated = '2021-07-27';
 
 use strict; use warnings; use File::Find; use File::Basename;
 use POSIX 'strftime'; use Getopt::Long qw(GetOptions);
@@ -139,7 +139,8 @@ if ($query){
 }
 
 my $end = localtime();
-my $endtime = time - $tstart;
+my $endtime = (time - $tstart)/60;
+$endtime = sprintf ("%.2f", $endtime);
 print LOG "Completed on: $end\n";
-print LOG "Total run time: $endtime sec\n";
+print LOG "Total run time: $endtime minutes\n";
 close LOG;
