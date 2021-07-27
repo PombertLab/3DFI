@@ -1,7 +1,7 @@
 #!/usr/bin/perl
 ## Pombert Lab, Illinois Tech, 2021
 my $name = 'alphafold.pl';
-my $version = '0.3';
+my $version = '0.3a';
 my $updated = '2021-07-20';
 
 use strict; use warnings; use Getopt::Long qw(GetOptions); use File::Basename; use POSIX qw(strftime);
@@ -27,6 +27,7 @@ OPTIONS:
 -m (--max_date)		--max_template_date option (YYYY-MM-DD) from AlphaFold2 [Default: current date]
 -c (--casp14)		casp14 preset (--preset=casp14)
 -d (--full_dbs)		full_dbs preset (--preset=full_dbs)
+-n (--no_gpu)		Turns off GPU acceleration
 -ah (--alpha_home)	AlphaFold2 installation directory
 -ao (--alpha_out)	AlphaFold2 output directory
 
@@ -41,6 +42,7 @@ my $outdir;
 my $max_date = strftime("%F", localtime);
 my $casp14;
 my $fulldbs;
+my $no_gpu;
 my $alpha_home;
 my $alpha_out;
 GetOptions(
@@ -49,6 +51,7 @@ GetOptions(
 	'm|max_date=s' => \$max_date,
 	'c|casp14' => \$casp14,
 	'd|full_dbs' => \$fulldbs,
+	'n|no_gpu' => \$no_gpu,
 	'ah|alpha_home=s' => \$alpha_home,
 	'ao|alpha_out=s' => \$alpha_out,
 );
@@ -117,11 +120,15 @@ while (my $fasta = shift @fasta){
 		print "\n$time: working on $fasta\n";
 		my $start = time;
 
+		my $gpu_check = '';
+		if ($no_gpu){ $gpu_check = '--use_gpu=False'; }
+
 		# Folding
 		system "python3 \\
 			$alpha_home/docker/run_docker.py \\
 			--fasta_paths=$fasta \\
 			--max_template_date=$max_date \\
+			$gpu_check \\
 			$preset";
 
 		# Checking permissions:
