@@ -327,6 +327,7 @@ Options for [alphafold.pl](https://github.com/PombertLab/3DFI/blob/master/Predic
 -m (--max_date)		--max_template_date option (YYYY-MM-DD) from AlphaFold2 [Default: current date]
 -c (--casp14)		casp14 preset (--preset=casp14)
 -d (--full_dbs)		full_dbs preset (--preset=full_dbs)
+-n (--no_gpu)		Turns off GPU acceleration
 -ah (--alpha_home)	AlphaFold2 installation directory
 -ao (--alpha_out)	AlphaFold2 output directory
 ```
