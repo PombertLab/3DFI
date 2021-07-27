@@ -1,7 +1,7 @@
 #!/usr/bin/perl
 ## Pombert lab, Illinois Tech, 2021
 my $name = 'parse_af_results';
-my $version = '0.2';
+my $version = '0.2a';
 my $updated = '2021-07-22';
 
 use strict; use warnings; use Getopt::Long qw(GetOptions);
@@ -69,64 +69,81 @@ while (my $result = shift @results){
 	
 	## Ranked models
 	if (($pdbtype eq 'k') or ($pdbtype eq 'ranked')){
-		for my $num (0..$top-1){ 
-			if (-f "$afdir/$result/ranked_$num.pdb"){
-				system "cp $afdir/$result/ranked_$num.pdb $outdir/$result-k$num.pdb";
+		for my $num (0..$top-1){
+			my $ranked = "$afdir/$result/ranked_$num.pdb";
+			if (-f $ranked){
+				system "cp $ranked $outdir/$result-k$num.pdb";
 			}
 			else {
-				print STDERR "Error: $afdir/$result/ranked_$num.pdb not found. Check if folding of $result completed correctly.\n";
+				print STDERR "Error: $ranked not found. Check if folding of $result completed correctly.\n";
 			}
 		}
 	}
+
 	## Relaxed models
 	elsif (($pdbtype eq 'r') or ($pdbtype eq 'relaxed')){
 		for my $num (1..$top){ 
-			if (-f "$afdir/$result/relaxed_model_$num.pdb"){
-				system "cp $afdir/$result/relaxed_model_$num.pdb $outdir/$result-r$num.pdb";
+			my $relaxed = "$afdir/$result/relaxed_model_$num.pdb";
+			if (-f $relaxed){
+				system "cp $relaxed $outdir/$result-r$num.pdb";
 			}
 			else {
-				print STDERR "Error: $afdir/$result/relaxed_model_$num.pdb not found. Check if folding of $result completed correctly.\n";
+				print STDERR "Error: $relaxed not found. Check if folding of $result completed correctly.\n";
 			}
 		}
 	}
+
 	## Unrelaxed models
 	elsif (($pdbtype eq 'u') or ($pdbtype eq 'unrelaxed')){
 		for my $num (1..$top){
-			if (-f "$afdir/$result/unrelaxed_model_$num.pdb"){
-				system "cp $afdir/$result/unrelaxed_model_$num.pdb $outdir/$result-u$num.pdb";
+			my $unrelaxed = "$afdir/$result/unrelaxed_model_$num.pdb";
+			if (-f $unrelaxed){
+				system "cp $unrelaxed $outdir/$result-u$num.pdb";
 			}
 			else {
-				print STDERR "Error: $afdir/$result/unrelaxed_model_$num.pdb not found. Check if folding of $result completed correctly.\n";
+				print STDERR "Error: $unrelaxed not found. Check if folding of $result completed correctly.\n";
 			}
 		}
 	}
+
 	## All models
 	elsif (($pdbtype eq 'a') or ($pdbtype eq 'all')){
+
+		## Ranked
 		for my $num (0..$top-1){ 
-			if (-f "$afdir/$result/ranked_$num.pdb"){
-				system "cp $afdir/$result/ranked_$num.pdb $outdir/$result-k$num.pdb";
+			my $ranked = "$afdir/$result/ranked_$num.pdb";
+			if (-f $ranked){
+				system "cp $ranked $outdir/$result-k$num.pdb";
 			}
 			else {
-				print STDERR "Error: $afdir/$result/ranked_$num.pdb not found. Check if folding of $result completed correctly.\n";
+				print STDERR "Error: $ranked not found. Check if folding of $result completed correctly.\n";
 			}
 		}
+
+		## Relaxed
 		for my $num (1..$top){ 
-			if (-f "$afdir/$result/relaxed_model_$num.pdb"){
-				system "cp $afdir/$result/relaxed_model_$num.pdb $outdir/$result-r$num.pdb";
+			my $relaxed = "$afdir/$result/relaxed_model_$num.pdb";
+			if (-f $relaxed){
+				system "cp $relaxed $outdir/$result-r$num.pdb";
 			}
 			else {
-				print STDERR "Error: $afdir/$result/relaxed_model_$num.pdb not found. Check if folding of $result completed correctly.\n";
+				print STDERR "Error: $relaxed not found. Check if folding of $result completed correctly.\n";
 			}
 		}
+
+		## Unrelaxed
 		for my $num (1..$top){
-			if (-f "$afdir/$result/unrelaxed_model_$num.pdb"){
-				system "cp $afdir/$result/unrelaxed_model_$num.pdb $outdir/$result-u$num.pdb";
+			my $unrelaxed = "$afdir/$result/unrelaxed_model_$num.pdb";
+			if (-f $unrelaxed){
+				system "cp $unrelaxed $outdir/$result-u$num.pdb";
 			}
 			else {
-				print STDERR "Error: $afdir/$result/unrelaxed_model_$num.pdb not found. Check if folding of $result completed correctly.\n";
+				print STDERR "Error: $unrelaxed not found. Check if folding of $result completed correctly.\n";
 			}
 		}
+	
 	}
+	
 	## If unrecognized command line: 
 	else { die "\nUnrecognized pdbtype: please enter ranked (k), relaxed (r), unrelaxed (u), or all (a)\n\n"; }
 
