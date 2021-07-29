@@ -62,7 +62,7 @@ Requirements to perform 3D structure prediction, structural homology searches an
 Alternatively, any set of PDB files can be fed as input for structural homology searches/visualization with GESAMT/ChimeraX. For example, protein structures predicted using web-based platforms such as [SWISS-MODEL](https://swissmodel.expasy.org/), predicted locally with pipelines like [I-TASSER](https://zhanglab.ccmb.med.umich.edu/I-TASSER/download/), or downloaded from the new EMBL-EBI/Deepmind [AlphaFold Protein Structure Database](https://alphafold.ebi.ac.uk/) can be used as queries for structural homology searches.
 
 ### Installation
-The 3DFI pipeline can be downloaded directly from GitHub with git clone. For ease of use, the 3DFI directories can be also be set as environment variables as follows: 
+The 3DFI pipeline can be downloaded directly from GitHub with git clone. For ease of use, the 3DFI directories can be also be set as environment variables. The script [setup_3DFI.pl](https://github.com/PombertLab/3DFI/blob/master/setup_3DFI.pl) can be used to facilitate this process. 
 
 ```Bash
 ## To download 3DFI from GitHub:
@@ -77,6 +77,17 @@ export AF_3DFI=$TDFI/Prediction/AlphaFold2
 export RF_3DFI=$TDFI/Prediction/RoseTTAFold
 export HS_3DFI=$TDFI/Homology_search
 export VZ_3DFI=$TDFI/Visualization
+
+## To set 3DFI directories as environment variables with setup_3DFI.pl:
+setup_3DFI.pl \
+  -p ~/GitHub/3DFI/ \
+  -c ~/.bashrc
+```
+
+Options for [setup_3DFI.pl](https://github.com/PombertLab/3DFI/blob/master/setup_3DFI.pl) are:
+```
+-p (--path)		Path to 3DFI installation directory [Default: ./]
+-c (--config)		Configuration file to edit [Default: ~/.bashrc]
 ```
 
 ### Howto
@@ -107,7 +118,7 @@ $RX_3DFI/raptorx.pl \
    -o $RX
 ```
 
-Options for raptorx.pl are:
+Options for [raptorx.pl](https://github.com/PombertLab/3DFI/blob/master/Prediction/RaptorX/raptorx.pl) are:
 
 ```
 -t (--threads)	Number of threads to use [Default: 10]
