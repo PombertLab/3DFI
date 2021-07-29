@@ -12,7 +12,7 @@ VERSION		${version}
 UPDATED		${updated}
 SYNOPSIS	Adds 3DFI environment variables to configuration file
 
-EXAMPLE     ${name} \\
+EXAMPLE		${name} \\
 		  -p /path/to/3DFI \\
 		  -c ~/.bashrc
 
