@@ -17,8 +17,8 @@ EXAMPLE     ${name} \\
 		  -c ~/.bashrc
 
 OPTIONS:
--p (--path)		Path to 3DFI installation directory [Default: ./]
--c (--config)		Configuration file to edit [Default: ~/.bashrc]
+-p (--path)	Path to 3DFI installation directory [Default: ./]
+-c (--config)	Configuration file to edit [Default: ~/.bashrc]
 
 OPTIONS
 die "\n$usage\n" unless @ARGV;

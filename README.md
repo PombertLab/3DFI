@@ -86,8 +86,8 @@ setup_3DFI.pl \
 
 Options for [setup_3DFI.pl](https://github.com/PombertLab/3DFI/blob/master/setup_3DFI.pl) are:
 ```
--p (--path)		Path to 3DFI installation directory [Default: ./]
--c (--config)		Configuration file to edit [Default: ~/.bashrc]
+-p (--path)	Path to 3DFI installation directory [Default: ./]
+-c (--config)	Configuration file to edit [Default: ~/.bashrc]
 ```
 
 ### Howto
