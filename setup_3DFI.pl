@@ -1,7 +1,7 @@
 #!/usr/bin/perl
 ## Pombert Lab, Illinois Tech, 2021
 my $name = 'setup_3DFI.pl';
-my $version = '0.1';
+my $version = '0.1a';
 my $updated = '2021-07-29';
 
 use strict; use warnings; use Getopt::Long qw(GetOptions); use File::Basename; use Cwd qw(abs_path); 
@@ -17,19 +17,21 @@ EXAMPLE     ${name} \\
 		  -c ~/.bashrc
 
 OPTIONS:
+-h (--help)	Prints this help message
 -p (--path)	Path to 3DFI installation directory [Default: ./]
 -c (--config)	Configuration file to edit [Default: ~/.bashrc]
-
 OPTIONS
-die "\n$usage\n" unless @ARGV;
 
+my $help;
 my $path_3DFI = "./";
 my $home = $ENV{'HOME'};
 my $config_file = "$home/.bashrc";
 GetOptions(
 	'p|path=s' => \$path_3DFI,
-	'c|config=s' => \$config_file
+	'c|config=s' => \$config_file,
+	'h|help' => \$help
 );
+die "\n$usage\n" if $help;
 
 ## Capturing absolute paths
 my $abs_path_3DFI = abs_path($path_3DFI);
