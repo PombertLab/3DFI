@@ -1,7 +1,7 @@
 #!/usr/bin/perl
 ## Pombert Lab, Illinois Tech, 2021
 my $name = 'setup_3DFI.pl';
-my $version = '0.1a';
+my $version = '0.1b';
 my $updated = '2021-07-29';
 
 use strict; use warnings; use Getopt::Long qw(GetOptions); use File::Basename; use Cwd qw(abs_path); 
@@ -30,6 +30,10 @@ GetOptions(
 	'c|config=s' => \$config_file
 );
 
+## Checking for config file
+if (!defined $config_file){
+	die "\nPlease provide a configuration file to edit with the -c option: e.g. -c ~/.bashrc\n\n";
+}
 
 ## Capturing absolute paths
 my $abs_path_3DFI = abs_path($path_3DFI);
