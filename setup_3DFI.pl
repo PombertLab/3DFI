@@ -17,7 +17,6 @@ EXAMPLE     ${name} \\
 		  -c ~/.bashrc
 
 OPTIONS:
--h (--help)	Prints this help message
 -p (--path)	Path to 3DFI installation directory [Default: ./]
 -c (--config)	Configuration file to edit
 OPTIONS
