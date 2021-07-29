@@ -31,6 +31,7 @@ GetOptions(
 	'c|config=s' => \$config_file
 );
 
+## Capturing absolute paths
 my $abs_path_3DFI = abs_path($path_3DFI);
 my $abs_path_config = abs_path($config_file);
 
