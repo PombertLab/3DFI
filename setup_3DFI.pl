@@ -19,19 +19,17 @@ EXAMPLE     ${name} \\
 OPTIONS:
 -h (--help)	Prints this help message
 -p (--path)	Path to 3DFI installation directory [Default: ./]
--c (--config)	Configuration file to edit [Default: ~/.bashrc]
+-c (--config)	Configuration file to edit
 OPTIONS
+die "\n$usage\n" unless @ARGV;
 
-my $help;
 my $path_3DFI = "./";
-my $home = $ENV{'HOME'};
-my $config_file = "$home/.bashrc";
+my $config_file;
 GetOptions(
 	'p|path=s' => \$path_3DFI,
-	'c|config=s' => \$config_file,
-	'h|help' => \$help
+	'c|config=s' => \$config_file
 );
-die "\n$usage\n" if $help;
+
 
 ## Capturing absolute paths
 my $abs_path_3DFI = abs_path($path_3DFI);
