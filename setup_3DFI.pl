@@ -1,7 +1,7 @@
 #!/usr/bin/perl
 ## Pombert Lab, Illinois Tech, 2021
 my $name = 'setup_3DFI.pl';
-my $version = '0.1b';
+my $version = '0.2';
 my $updated = '2021-07-29';
 
 use strict; use warnings; use Getopt::Long qw(GetOptions); use File::Basename; use Cwd qw(abs_path); 
@@ -32,6 +32,32 @@ GetOptions(
 ## Checking for config file
 if (!defined $config_file){
 	die "\nPlease provide a configuration file to edit with the -c option: e.g. -c ~/.bashrc\n\n";
+}
+
+## Checking if 3DFI environment variables (or vars with same names) are already set
+my $env_flag = 0;
+if (exists $ENV{'TDFI'}){  print "\nEnv. variable \$TDFI already set to $ENV{'TDFI'}\n"; }
+if (exists $ENV{'RX_3DFI'}){  print "Env. variable \$RX_3DFI already set to $ENV{'RX_3DFI'}\n"; $env_flag = 1; }
+if (exists $ENV{'TR_3DFI'}){  print "Env. variable \$TR_3DFI already set to $ENV{'TR_3DFI'}\n"; $env_flag = 1; }
+if (exists $ENV{'AF_3DFI'}){  print "Env. variable \$AF_3DFI already set to $ENV{'AF_3DFI'}\n"; $env_flag = 1; }
+if (exists $ENV{'RF_3DFI'}){  print "Env. variable \$RF_3DFI already set to $ENV{'RF_3DFI'}\n"; $env_flag = 1; }
+if (exists $ENV{'HS_3DFI'}){  print "Env. variable \$HS_3DFI already set to $ENV{'HS_3DFI'}\n"; $env_flag = 1; }
+if (exists $ENV{'VZ_3DFI'}){  print "Env. variable \$VZ_3DFI already set to $ENV{'VZ_3DFI'}\n"; $env_flag = 1; }
+
+if ($env_flag == 1){
+	print "\nOne or more 3DFI environment variables are already set. Do you wish to continue (y/n)?\n";
+	my $answer;
+	ANSWER: {
+		$answer = <STDIN>;
+		chomp $answer;
+		$answer = lc($answer);
+		if (($answer eq 'y') or ($answer eq 'yes')){ next; }
+		elsif (($answer eq 'n') or ($answer eq 'no')){ print "\nExiting as requested...\n"; exit; }
+		else {
+			print "\nUnrecognized answer: $answer\n. Please try again...\n";
+			goto ANSWER;
+		}
+	}
 }
 
 ## Capturing absolute paths
