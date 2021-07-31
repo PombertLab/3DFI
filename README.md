@@ -701,9 +701,9 @@ $VZ_3DFI/inspect_3D_structures.pl \
 
 The output should result in something similar to the following:
 ```
-	Available 3D visualizations for sequence_1:
+	Available 3D visualizations for sequence_1-k0:
 
-		1. sequence_1.pdb
+		1. sequence_1-k0.pdb
 		2. sequence_1_1quq.cxs
 		3. sequence_1_2pqa.cxs
 		4. sequence_1_3kdf.cxs
