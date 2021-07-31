@@ -1,8 +1,8 @@
 #!/usr/bin/perl
 ## Pombert Lab 2020
-my $version = '0.6b';
+my $version = '0.7';
 my $name = 'descriptive_GESAMT_matches.pl';
-my $updated = '2021-05-04';
+my $updated = '2021-07-31';
 
 use strict; use warnings; use Getopt::Long qw(GetOptions); use File::Basename;
 
@@ -89,8 +89,8 @@ while (my $match = shift@matches){
 	## Working on GESAMT file
 	open MA, "<", "$match" or die "Can't read file $match: $!\n";
 	my ($basename, $path) = fileparse($match);
-	my ($prefix) = $basename =~ /^(\w+)/;
-	print OUT '### '."$prefix\n";
+	my ($prefix, $mode) = $basename =~ /^(\S+)\.(normal|high).gesamt$/;
+	print OUT '### '."$prefix"."; Query mode = $mode\n";
 
 	while (my $line = <MA>){
 		chomp $line;
