@@ -3,8 +3,8 @@
 use strict; use warnings; use Getopt::Long qw(GetOptions); use File::Basename;
 
 my $name = "prepare_visualizations.pl";
-my $version = "0.2b";
-my $updated = "2021-07-08";
+my $version = "0.3";
+my $updated = "2021-07-31";
 
 my $usage = << "EXIT";
 NAME	${name}
@@ -54,15 +54,15 @@ unless (-d $outdir){
 my %pred;
 opendir (PRED,$pdb) or die "\n[ERROR]\tCan't open $pdb: $!\n";
 while (my $file = readdir(PRED)){
-	if ($file =~ /^(\w+)/){
-		my $pdb_locus = $1;
-		$pred{$1} = "$pdb/$file";
+	if ($file =~ /^(\S+)\.pdb/){
+		my $model = $1;
+		$pred{$model} = "$pdb/$file";
 		## Make a directory for each locus that has a pdb file
-		unless (-d "$outdir/$pdb_locus"){
-			mkdir ("$outdir/$pdb_locus",0755) or die "Can't create $outdir/$pdb_locus: $!\n";
+		unless (-d "$outdir/$model"){
+			mkdir ("$outdir/$model",0755) or die "Can't create $outdir/$model: $!\n";
 		}
-		## Link the pdb file to the locus directory
-		system "cp $pdb/$file $outdir/$pdb_locus/$pdb_locus.pdb";
+		## Copy the pdb file to the locus directory
+		system "cp $pdb/$file $outdir/$model/$file";
 	}
 }
 closedir PRED;
@@ -91,15 +91,15 @@ if ($rcsb){
 ## For each match, get the filename of the best match for RCSB
 open MATCH, "<", "$match_file" or die "Can't open $match_file: $!\n";
 my $match;
-my $locus_tag;
+my $model_tag;
 my %sessions;
 while (my $line = <MATCH>){
 	chomp $line;
 	## Check the PDB headers for proteins that are in the selection provided
 	if ($line =~ /^###/){
 		my $filename = (fileparse($line))[0];
-		($locus_tag) = $filename =~ /### (\w+)/;
-		if (-d "$outdir/$locus_tag"){
+		($model_tag) = $filename =~ /### (\S+)\;/;
+		if (-d "$outdir/$model_tag"){
 			$match = 1;
 		}
 		else {
@@ -109,7 +109,7 @@ while (my $line = <MATCH>){
 	## Store the matching RCSB .ent.gz filepath  under the locus tag
 	elsif ($match){
 		my ($pdb_file) = $line =~ /(pdb.+\.ent\.gz)/;
-		push (@{$sessions{$locus_tag}}, "$db{$pdb_file}");
+		push (@{$sessions{$model_tag}}, "$db{$pdb_file}");
 	}
 }
 close MATCH;
