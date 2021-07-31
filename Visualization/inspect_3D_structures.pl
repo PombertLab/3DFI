@@ -3,8 +3,8 @@
 use strict; use warnings; use Getopt::Long qw(GetOptions); use File::Basename;
 
 my $name = "inspect_3D_structures.pl";
-my $version = "0.1";
-my $updated = "2021-05-11";
+my $version = "0.1a";
+my $updated = "2021-07-31";
 
 my $usage = << "EXIT";
 NAME	${name}
@@ -108,7 +108,8 @@ LOOP: while (0==0){
 			print "\n\n\t[ERROR] Invalid Choice: $selection\n";
 		}
 		my $choice = @{$visuals{$loci[$pos]}}[$selection-1];
-		system "chimerax $indir/$loci[$pos]/$choice $script &";
+		## Adding 2> /dev/null to silence the Release of profile requested but WebEnginePage python warning
+		system "chimerax 2> /dev/null $indir/$loci[$pos]/$choice $script &";
 		system "clear";
 	}
 	else {
