@@ -1,4 +1,4 @@
-name: tros2-gpu
+name: tros2-cpu
 channels:
   - defaults
   - bioconda
@@ -8,14 +8,14 @@ dependencies:
   - biopython=1.78
   - biocore::blast-legacy=2.2.26
   - hhsuite
-  - numpy=1.16.4
+  - numpy=1.17.4
   - pandas
   - psipred=4.01
   - python=3.6
   - pytorch=1.4
   - scikit-learn=0.24
   - scipy=1.5
-  - tensorflow-gpu=1.14
+  - tensorflow=1.14
   - parallel
   - pip
   - pip:
