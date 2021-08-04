@@ -321,7 +321,7 @@ export TRROSETTA2_HOME=/opt/trRosetta2
 ## Creating a working directory for trRosetta2:
 export RESULTS=~/Results_3DFI
 export TR2=$RESULTS/TROS2_3D
-mkdir -p $RESULTS $AF
+mkdir -p $RESULTS $TR2
 ```
 
 To convert FASTA sequences to single string FASTA sequences with [fasta_oneliner.pl](https://github.com/PombertLab/3DFI/blob/master/Prediction/trRosetta2/fasta_oneliner.pl), type:
