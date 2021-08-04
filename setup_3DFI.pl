@@ -1,8 +1,8 @@
 #!/usr/bin/perl
 ## Pombert Lab, Illinois Tech, 2021
 my $name = 'setup_3DFI.pl';
-my $version = '0.2';
-my $updated = '2021-07-29';
+my $version = '0.2a';
+my $updated = '2021-08-04';
 
 use strict; use warnings; use Getopt::Long qw(GetOptions); use File::Basename; use Cwd qw(abs_path); 
 
@@ -39,6 +39,7 @@ my $env_flag = 0;
 if (exists $ENV{'TDFI'}){  print "\nEnv. variable \$TDFI already set to $ENV{'TDFI'}\n"; }
 if (exists $ENV{'RX_3DFI'}){  print "Env. variable \$RX_3DFI already set to $ENV{'RX_3DFI'}\n"; $env_flag = 1; }
 if (exists $ENV{'TR_3DFI'}){  print "Env. variable \$TR_3DFI already set to $ENV{'TR_3DFI'}\n"; $env_flag = 1; }
+if (exists $ENV{'TR2_3DFI'}){  print "Env. variable \$TR2_3DFI already set to $ENV{'TR2_3DFI'}\n"; $env_flag = 1; }
 if (exists $ENV{'AF_3DFI'}){  print "Env. variable \$AF_3DFI already set to $ENV{'AF_3DFI'}\n"; $env_flag = 1; }
 if (exists $ENV{'RF_3DFI'}){  print "Env. variable \$RF_3DFI already set to $ENV{'RF_3DFI'}\n"; $env_flag = 1; }
 if (exists $ENV{'HS_3DFI'}){  print "Env. variable \$HS_3DFI already set to $ENV{'HS_3DFI'}\n"; $env_flag = 1; }
@@ -81,6 +82,7 @@ sub set_env {
 	print $fh "export TDFI=$abs_path_3DFI\n";
 	print $fh "export RX_3DFI=$abs_path_3DFI/Prediction/RaptorX\n";
 	print $fh "export TR_3DFI=$abs_path_3DFI/Prediction/trRosetta\n";
+	print $fh "export TR2_3DFI=$abs_path_3DFI/Prediction/trRosetta2\n";
 	print $fh "export AF_3DFI=$abs_path_3DFI/Prediction/AlphaFold2\n";
 	print $fh "export RF_3DFI=$abs_path_3DFI/Prediction/RoseTTAFold\n";
 	print $fh "export HS_3DFI=$abs_path_3DFI/Homology_search\n";
