@@ -1,8 +1,8 @@
 #!/usr/bin/perl
 ## Pombert lab, Illinois Tech, 2021
 my $name = 'parse_af_results';
-my $version = '0.2a';
-my $updated = '2021-07-22';
+my $version = '0.3';
+my $updated = '2021-08-12';
 
 use strict; use warnings; use Getopt::Long qw(GetOptions);
 
@@ -70,9 +70,12 @@ while (my $result = shift @results){
 	## Ranked models
 	if (($pdbtype eq 'k') or ($pdbtype eq 'ranked')){
 		for my $num (0..$top-1){
+
 			my $ranked = "$afdir/$result/ranked_$num.pdb";
+			my $outfile = "$outdir/$result-k$num.pdb";
+
 			if (-f $ranked){
-				system "cp $ranked $outdir/$result-k$num.pdb";
+				unless (-f $outfile){ system "cp $ranked $outfile"; }
 			}
 			else {
 				print STDERR "Error: $ranked not found. Check if folding of $result completed correctly.\n";
@@ -83,9 +86,12 @@ while (my $result = shift @results){
 	## Relaxed models
 	elsif (($pdbtype eq 'r') or ($pdbtype eq 'relaxed')){
 		for my $num (1..$top){ 
+
 			my $relaxed = "$afdir/$result/relaxed_model_$num.pdb";
+			my $outfile = "$outdir/$result-r$num.pdb";
+
 			if (-f $relaxed){
-				system "cp $relaxed $outdir/$result-r$num.pdb";
+				unless (-f $outfile){ system "cp $relaxed $outfile"; }
 			}
 			else {
 				print STDERR "Error: $relaxed not found. Check if folding of $result completed correctly.\n";
@@ -96,9 +102,12 @@ while (my $result = shift @results){
 	## Unrelaxed models
 	elsif (($pdbtype eq 'u') or ($pdbtype eq 'unrelaxed')){
 		for my $num (1..$top){
+
 			my $unrelaxed = "$afdir/$result/unrelaxed_model_$num.pdb";
+			my $outfile = "$outdir/$result-u$num.pdb";
+
 			if (-f $unrelaxed){
-				system "cp $unrelaxed $outdir/$result-u$num.pdb";
+				unless (-f $outfile){ system "cp $unrelaxed $outfile"; }
 			}
 			else {
 				print STDERR "Error: $unrelaxed not found. Check if folding of $result completed correctly.\n";
@@ -111,9 +120,12 @@ while (my $result = shift @results){
 
 		## Ranked
 		for my $num (0..$top-1){ 
+
 			my $ranked = "$afdir/$result/ranked_$num.pdb";
+			my $outfile = "$outdir/$result-k$num.pdb";
+
 			if (-f $ranked){
-				system "cp $ranked $outdir/$result-k$num.pdb";
+				unless (-f $outfile){ system "cp $ranked $outfile"; }
 			}
 			else {
 				print STDERR "Error: $ranked not found. Check if folding of $result completed correctly.\n";
@@ -122,9 +134,12 @@ while (my $result = shift @results){
 
 		## Relaxed
 		for my $num (1..$top){ 
+
 			my $relaxed = "$afdir/$result/relaxed_model_$num.pdb";
+			my $outfile = "$outdir/$result-r$num.pdb";
+
 			if (-f $relaxed){
-				system "cp $relaxed $outdir/$result-r$num.pdb";
+				unless (-f $outfile){ system "cp $relaxed $outfile"; }
 			}
 			else {
 				print STDERR "Error: $relaxed not found. Check if folding of $result completed correctly.\n";
@@ -133,9 +148,12 @@ while (my $result = shift @results){
 
 		## Unrelaxed
 		for my $num (1..$top){
+
 			my $unrelaxed = "$afdir/$result/unrelaxed_model_$num.pdb";
+			my $outfile = "$outdir/$result-u$num.pdb";
+
 			if (-f $unrelaxed){
-				system "cp $unrelaxed $outdir/$result-u$num.pdb";
+				unless (-f $outfile){ system "cp $unrelaxed $outfile"; }
 			}
 			else {
 				print STDERR "Error: $unrelaxed not found. Check if folding of $result completed correctly.\n";
