@@ -1,8 +1,8 @@
 #!/usr/bin/perl
 ## Pombert lab, Illinois Tech, 2021
 my $name = 'parse_rf_results';
-my $version = '0.1';
-my $updated = '2021-07-22';
+my $version = '0.2';
+my $updated = '2021-08-12';
 
 use strict; use warnings; use Getopt::Long qw(GetOptions);
 
@@ -69,8 +69,13 @@ while (my $result = shift @results){
 	
 	## e2e
 	if (($pdbtype eq 'e2e') or ($pdbtype eq 'end-to-end')){
+
 		my $filename = "$rfdir/$result/t000_.e2e.pdb";
-		if (-f "$filename"){ system "cp $filename $outdir/$result.pdb"; }
+		my $outfile = "$outdir/$result.pdb";
+
+		if (-f "$filename"){ 
+			unless (-f $outfile) { system "cp $filename $outfile"; }
+		}
 		else {
 			print "$result: No PDB file found. ";
 			print "Check for possible video RAM issue ('RuntimeError: CUDA out of memory') in $rfdir/$result/log/network.stderr.\n";
@@ -78,7 +83,13 @@ while (my $result = shift @results){
 	}
 	## pyrosetta
 	elsif (($pdbtype eq 'py') or ($pdbtype eq 'pyrosetta')){
-		for my $num (1..$top){ system "cp $rfdir/$result/model/model_$num.crderr.pdb $outdir/$result-m$num.pdb"; }
+		for my $num (1..$top){ 
+
+			my $filename = "$rfdir/$result/model/model_$num.crderr.pdb";
+			my $outfile = "$outdir/$result-m$num.pdb";
+
+			unless (-f $outfile) { system "cp $filename $outfile"; }
+		}
 	}
 	## If unrecognized command line: 
 	else { die "\nUnrecognized pdbtype: please enter end-to-end (e2e) or pyrosetta (py).\n\n"; }
