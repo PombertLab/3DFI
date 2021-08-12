@@ -310,9 +310,7 @@ Options for [sanitize_pdb.pl](https://github.com/PombertLab/3DFI/blob/master/Pre
 ```
 
 ##### trRosetta2 - deep-learning-based protein structure modeling
-How to set up [trRosetta2](https://github.com/RosettaCommons/trRosetta2) is described on its GitHub page. See [installation_notes_trRosetta2.sh](https://github.com/PombertLab/3DFI/blob/master/Prediction/trRosetta2/installation_notes_trRosetta2.sh) for details on how to install it with modifications (see files in [modified_trRosetta2_files](https://github.com/PombertLab/3DFI/blob/master/Prediction/trRosetta2/modified_trRosetta2_files/)).
-
-The [trRosetta2.pl](https://github.com/PombertLab/3DFI/blob/master/Prediction/trRosetta2/trRosetta2.pl) script is a Perl wrapper that enables running trRosetta2 in batch mode. To simplify its use, the TRROSETTA2_HOME environment variable can be set in the shell.
+How to set up [trRosetta2](https://github.com/RosettaCommons/trRosetta2) is described on its GitHub page. The [trRosetta2.pl](https://github.com/PombertLab/3DFI/blob/master/Prediction/trRosetta2/trRosetta2.pl) script is a Perl wrapper that enables running trRosetta2 in batch mode. To simplify its use, the TRROSETTA2_HOME environment variable can be set in the shell.
 
 ```bash
 ## Setting up trRosetta2 installation directory as environment variable:
