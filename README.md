@@ -828,7 +828,7 @@ Alternatively, selecting [2-6] will open the visualization of the alignment of t
 <img src="https://github.com/PombertLab/3DFI/blob/master/Images/With_Alignment.png">
 
 ##### Coloring AlphaFold2 predictions per B-factor
-AlphaFold2 adds pLDDT (predicted lDDT-Cα) per-residue confidence scores to the B-factor columns of the PDB files it generates (as of 2021-08-13). To color these stuctures similarly to the scheme used in the DeepMind/EBI [AlphaFold Protein Structure Database](https://alphafold.ebi.ac.uk/), we can use the following ChimeraX command:
+AlphaFold2 adds pLDDT (predicted lDDT-Cα) per-residue confidence scores to the B-factor [columns](https://www.cgl.ucsf.edu/chimera/docs/UsersGuide/tutorials/pdbintro.html) of the PDB files it generates (as of 2021-08-13). To color these stuctures similarly to the scheme used in the DeepMind/EBI [AlphaFold Protein Structure Database](https://alphafold.ebi.ac.uk/), we can use the following ChimeraX command:
 ```
 color byattribute bfactor palette orangered:yellow:cyan:blue range 50,100
 ```
