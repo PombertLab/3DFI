@@ -22,7 +22,7 @@ The 3DFI pipeline automates 3D structure prediction, structural homology searche
   * [Structural visualization](#Structural-visualization)
     * [About visualization](#About-visualization)
     * [Inspecting alignments with ChimeraX](#Inspecting-alignments-with-ChimeraX)
-    * [Coloring residues per B-factor](#Coloring-residues-per-B---factor)
+    * [Coloring residues per B-factor](#Coloring-residues-per-B-factor)
 * [Miscellaneous](#miscellaneous)
 * [Funding and acknowledgments](#Funding-and-acknowledgments)
 * [References](#references)
