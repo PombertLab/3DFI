@@ -828,7 +828,7 @@ Alternatively, selecting [2-6] will open the visualization of the alignment of t
 <img src="https://github.com/PombertLab/3DFI/blob/master/Images/With_Alignment.png">
 
 ##### Coloring residues per B-factor
-AlphaFold2 adds pLDDT (predicted lDDT-Cα) per residue confidence scores to the B-factor columns of the PDB files it generates (as of 2021-08-13). To color these stuctures similarly to the scheme used in the DeepMind/EBI [AlphaFold Protein Structure Database](https://alphafold.ebi.ac.uk/), we can use the following ChimeraX command:
+AlphaFold2 adds pLDDT (predicted lDDT-Cα) per-residue confidence scores to the B-factor columns of the PDB files it generates (as of 2021-08-13). To color these stuctures similarly to the scheme used in the DeepMind/EBI [AlphaFold Protein Structure Database](https://alphafold.ebi.ac.uk/), we can use the following ChimeraX command:
 ```
 color byattribute bfactor palette orangered:yellow:cyan:blue range 50,100
 ```
@@ -912,3 +912,6 @@ This work was supported in part by the National Institute of Allergy and Infecti
 8) [Highly accurate protein structure prediction with AlphaFold](https://pubmed.ncbi.nlm.nih.gov/34265844/). **Jumper J,** ***et al.*** Nature. 2021 Jul 15. Online ahead of print. PMID: 34265844 DOI: 10.1038/s41586-021-03819-2.
 
 9) [Accurate prediction of protein structures and interactions using a three-track neural network](https://pubmed.ncbi.nlm.nih.gov/34282049/). **Baek M,** ***et al.*** Science. 2021 Jul 15; eabj8754. Online ahead of print. PMID: 34282049 DOI: 10.1126/science.abj8754
+
+10) [A local superposition-free score for comparing protein structures and models using distance difference tests](https://pubmed.ncbi.nlm.nih.gov/23986568/). **Mariani V, Biasini M, Barbato A, Schwede T**. Bioinformatics. 2013 Nov 1;29(21):2722-8.  PMID: 23986568 PMCID: PMC3799472 DOI: 10.1093/bioinformatics/btt473.
+
