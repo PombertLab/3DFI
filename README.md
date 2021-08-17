@@ -826,6 +826,17 @@ Alternatively, selecting [2-6] will open the visualization of the alignment of t
 
 <img src="https://github.com/PombertLab/3DFI/blob/master/Images/With_Alignment.png">
 
+AlphaFold2 (as of 2021-08-13) adds pLDDT (predicted lDDT-Cα) per residue confidence scores to the bfactor columns of the PDB files it generates. To color these stuctures similarly to the scheme used in the DeepMind/EBI [AlphaFold Protein Structure Database](https://alphafold.ebi.ac.uk/), we can use the following ChimeraX command:
+```
+color byattribute bfactor palette orangered:yellow:cyan:blue range 50,100
+```
+<img src="https://github.com/PombertLab/3DFI/blob/master/Images/bfactor.png">
+
+Note that to save an image with a transparent background in Chimerax (see [manual](https://www.cgl.ucsf.edu/chimerax/docs/user/commands/save.html)), we can use:
+```
+save ~/bfactor.png transparentBackground True
+```
+
 #### Miscellaneous 
 ###### Splitting multifasta files
 Single FASTA files for protein structure prediction can be created with [split_Fasta.pl](https://github.com/PombertLab/3DFI/blob/master/Misc_tools/split_Fasta.pl):
