@@ -834,6 +834,23 @@ color byattribute bfactor palette orangered:yellow:cyan:blue range 50,100
 ```
 <img src="https://github.com/PombertLab/3DFI/blob/master/Images/bfactor.png">
 
+We can also add a color legend by appending 'key true' to the Chimerax [color byattribute](https://www.cgl.ucsf.edu/chimerax/docs/user/commands/color.html#byattribute) command. The added legend can be adjusted with the interactive 'Adjust key' graphical tool (launched automatically):
+```
+color byattribute bfactor palette orangered:yellow:cyan:blue range 50,100 key true
+```
+<img src="https://github.com/PombertLab/3DFI/blob/master/Images/bfactor_key.png">
+
+Alternatively, we can also set the legend using the [key](https://www.cgl.ucsf.edu/chimerax/docs/user/commands/key.html) command line. For example, we can set it to the right of the molecule with:
+```
+key pos 0.85,0.2 size 0.04,0.6 justification left labelOffset 5
+
+## In the above:
+pos x,y => x and y coordinates
+size w,h => width and height
+```
+<img src="https://github.com/PombertLab/3DFI/blob/master/Images/bfactor_key_cmd.png">
+
+
 Note that to save an image with a transparent background in Chimerax (see [manual](https://www.cgl.ucsf.edu/chimerax/docs/user/commands/save.html)), we can use:
 ```
 save ~/bfactor.png transparentBackground True
