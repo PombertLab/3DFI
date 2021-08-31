@@ -1,8 +1,8 @@
 #!/usr/bin/perl
 ## Pombert Lab, Illinois Tech, 2021
 my $name = 'setup_3DFI.pl';
-my $version = '0.3';
-my $updated = '2021-08-17';
+my $version = '0.3a';
+my $updated = '2021-08-31';
 
 use strict; use warnings; use Getopt::Long qw(GetOptions); use File::Basename; use Cwd qw(abs_path); 
 
