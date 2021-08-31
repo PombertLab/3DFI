@@ -87,7 +87,8 @@ sub set_env {
 	print $fh "export AF_3DFI=$abs_path_3DFI/Prediction/AlphaFold2\n";
 	print $fh "export RF_3DFI=$abs_path_3DFI/Prediction/RoseTTAFold\n";
 	print $fh "export HS_3DFI=$abs_path_3DFI/Homology_search\n";
-	print $fh "export VZ_3DFI=$abs_path_3DFI/Visualization\n\n";
+	print $fh "export VZ_3DFI=$abs_path_3DFI/Visualization\n";
+	print $fh "export MISC_3DFI=$abs_path_3DFI/Misc_tools\n\n";
 }
 sub set_path {
 	my $fh = shift;
@@ -99,5 +100,6 @@ sub set_path {
 	print $fh "PATH=\$PATH:$abs_path_3DFI/Prediction/RoseTTAFold\n";
 	print $fh "PATH=\$PATH:$abs_path_3DFI/Homology_search\n";
 	print $fh "PATH=\$PATH:$abs_path_3DFI/Visualization\n";
+	print $fh "PATH=\$PATH:$abs_path_3DFI/Misc_tools\n";
 	print $fh "\nexport PATH\n\n";
 }
