@@ -1,8 +1,8 @@
 #!/usr/bin/perl
 ## Pombert Lab 2019
-my $version = '0.6c';
+my $version = '0.6d';
 my $name = 'raptorx.pl';
-my $updated = '2021-07-23';
+my $updated = '2021-09-01';
 
 use strict; use warnings; use Getopt::Long qw(GetOptions); use File::Basename; use Cwd qw(abs_path);
 my @command = @ARGV; ## Keeping track of command line for log
@@ -96,19 +96,10 @@ while (my $fasta_path = shift@fasta){
 	my ($protein, $ext) = $fasta =~ /^(\S+?).(\w+)$/;
 
 	## Skipping folding if pdb file(s) are present
-	if ($topk == 1){
-		if (-e "$abs_path_outdir/PDB/$protein.pdb"){
-			print LOG "PDB has already been created for $fasta, moving to next file\n";
-			print "PDB has already been created for $fasta, moving to next file\n";
-			next;
-		}
-	}
-	else {
-		if (-e "$abs_path_outdir/PDB/$protein-m$topk.pdb"){
-			print LOG "PDB files have already been created for $fasta, moving to next file\n";
-			print "PDB files have already been created for $fasta, moving to next file\n";
-			next;
-		}
+	if (-e "$abs_path_outdir/PDB/$protein-m$topk.pdb"){
+		print LOG "PDB files have already been created for $fasta, moving to next file\n";
+		print "PDB files have already been created for $fasta, moving to next file\n";
+		next;
 	}
 
 	## Generating the feature file (.tgt)
@@ -174,11 +165,8 @@ while (my $fasta_path = shift@fasta){
 	opendir (RXDIR,"$RAPTORX_HOME");
 	while (my $file = readdir(RXDIR)){
 		if ($file =~ /\.pdb$/){
-			if ($topk == 1){ system "mv $file $abs_path_outdir/PDB/$protein.pdb"; }
-			else { ## if $topk > 1; keep model number to prevent overwriting file names
-				my ($m_number) = $file =~ /\-(m\d+)\-(\w+)\.pdb$/;
-				system "mv $file $abs_path_outdir/PDB/$protein-$m_number.pdb";
-			}
+			my ($m_number) = $file =~ /\-(m\d+)\-(\w+)\.pdb$/;
+			system "mv $file $abs_path_outdir/PDB/$protein-$m_number.pdb";
 		}
 	}
 	close RXDIR;
