@@ -390,7 +390,7 @@ $TR2_3DFI/parse_tr2_results.pl \
   -t 5
 ```
 
-Options for [parse_af_results.pl](https://github.com/PombertLab/3DFI/blob/master/Prediction/AlphaFold2/parse_af_results.pl) are:
+Options for [parse_tr2_results.pl](https://github.com/PombertLab/3DFI/blob/master/Prediction/trRosetta2/parse_tr2_results.pl) are:
 
 ```
 -r (--r2dir)	trRosetta2 output directory
