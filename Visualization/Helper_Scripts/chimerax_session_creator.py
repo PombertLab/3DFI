@@ -6,8 +6,8 @@ import re
 import os
 
 name = 'chimerax_session_creator.py'
-version = '0.1.1'
-updated = '2021-07-08'
+version = '0.2.0'
+updated = '2021-09-02'
 
 usage = f'''
 NAME		{name}
@@ -27,6 +27,7 @@ OPTIONS
 -p (--pred)		Predicted .pdb file
 -r (--rcsb)		RCSB .pdb file
 -m (--match)	RCSB match name
+-c (--chain)	RCSB matched chain
 -o (--outdir)		Output directory for .cxs files [Default: ./3D_Visualizations]
 '''
 
@@ -38,6 +39,7 @@ parser = argparse.ArgumentParser(usage=usage)
 parser.add_argument('-p','--pred',type=str,required=True)
 parser.add_argument('-r','--rcsb',type=str)
 parser.add_argument('-m','--match',type=str,default="NoFileName")
+parser.add_argument('-c','--chain',type=str)
 parser.add_argument('-o','--outdir',type=str,default="./3D_Visualizations")
 parser.add_argument('--nogui')
 
@@ -45,11 +47,11 @@ args = parser.parse_args()
 pred = args.pred
 rcsb_match = args.match
 rcsb = args.rcsb
+chain = args.chain
 if(args.outdir):
 	outdir = args.outdir
 
-locus_tag = os.path.basename(pred)
-locus_tag = re.findall("\w+",locus_tag)
+locus_tag = os.path.splitext(os.path.basename(pred))[0]
 
 ## Load pdb files
 model_pred = run(session,f"open {pred}")[0]
@@ -63,7 +65,7 @@ model_rcsb_name = (model_rcsb.id_string)
 run(session,"hide atoms")
 run(session,"hide ribbons")
 
-match = run(session,f"match #{model_pred_name} to #{model_rcsb_name}")
+match = run(session,f"match #{model_pred_name} to #{model_rcsb_name}/{chain}")
 chain_pred_rcsb = (match[0][0].unique_chain_ids)[0]
 chain_rcsb = (match[0][1].unique_chain_ids)[0]
 
@@ -78,6 +80,6 @@ run(session,f"show #{model_rcsb_name}/{chain_rcsb} ribbons")
 run(session,"view")
 
 ## Save match as a new file
-run(session,f"save {outdir}/{locus_tag[0]}_{rcsb_match}.cxs format session")
+run(session,f"save {outdir}/{locus_tag}_{rcsb_match}_{chain_rcsb}.cxs format session")
 
 quit()

@@ -1,10 +1,10 @@
 #!/usr/bin/perl
 
-use strict; use warnings; use Getopt::Long qw(GetOptions); use File::Basename;
+use strict; use warnings; use Getopt::Long qw(GetOptions); use File::Basename; use Cwd qw(abs_path);
 
 my $name = "prepare_visualizations.pl";
-my $version = "0.3";
-my $updated = "2021-07-31";
+my $version = "0.4";
+my $updated = "2021-09-02";
 
 my $usage = << "EXIT";
 NAME	${name}
@@ -108,8 +108,10 @@ while (my $line = <MATCH>){
 	}
 	## Store the matching RCSB .ent.gz filepath  under the locus tag
 	elsif ($match){
-		my ($pdb_file) = $line =~ /(pdb.+\.ent\.gz)/;
-		push (@{$sessions{$model_tag}}, "$db{$pdb_file}");
+		my @temp_data = split("\t",$line);
+		my $pdb_file = $temp_data[9];
+		my $pdb_chain = $temp_data[3];
+		push (@{$sessions{$model_tag}}, "$db{$pdb_file};$pdb_chain");
 	}
 }
 close MATCH;
@@ -124,17 +126,29 @@ foreach my $locus (sort(keys(%sessions))){
 	if (scalar(@{$sessions{$locus}}) > 1){
 		foreach my $match (@{$sessions{$locus}}){
 			if ($match){
-				my ($rcsb_name) = $match =~ /pdb(\w+).ent.gz$/;
+				my @temp_data = split(";",$match);
+				my $pdb_file = $temp_data[0];
+				my ($rcsb_name) = $pdb_file =~ /pdb(\w+).ent.gz$/;
+				my $chain = $temp_data[1];
+
 				## Create temporary unzipped version of RCSB file for ChimeraX session creation
 				my $temp = "$outdir/$locus/$rcsb_name.pdb";
-				system "zcat $match > $temp";
-				## ChimeraX API calling
-				system "chimerax --nogui $script \\
-					-p $pred_file \\
-					-r $temp \\
-					-m $rcsb_name \\
-					-o $outdir/$locus"
-				;
+				system "zcat $pdb_file > $temp";
+
+				$outdir = abs_path($outdir);
+				my $cxs_name = "$outdir/$locus/${locus}_${rcsb_name}_$chain.cxs";
+				if (-e $cxs_name) { print "  Alignment between $locus and $rcsb_name chain $chain found. Skipping aligment...\n"; }
+				else {
+					# ChimeraX API calling
+					print "  Aligning $locus to chain $chain from $rcsb_name with ChimeraX\n";
+					system "chimerax 1> /dev/null --nogui $script \\
+						-p $pred_file \\
+						-r $temp \\
+						-m $rcsb_name \\
+						-c $chain \\
+						-o $outdir/$locus"
+					;
+				}
 				## Remove temporary file unless explicitly told not to
 				unless ($keep){
 					system "rm $temp";
