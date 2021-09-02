@@ -81,18 +81,19 @@ open OUT, ">", "$output" or die "Can't create output file $output: $!\n";
 my $total_matches = scalar(@matches);
 while (my $match = shift@matches){
 
+	my ($basename, $path) = fileparse($match);
+	my ($prefix, $mode) = $basename =~ /^(\S+)\.(normal|high).gesamt$/;
+
 	## Progress bar
 	system "clear";
 	my $remaining = "." x (int((scalar(@matches)/$total_matches)*100));
 	my $progress = "|" x (100-int((scalar(@matches)/$total_matches)*100));
 	my $status = "[".$progress.$remaining."]";
-	print "Getting match descriptions\n";
+	print "Getting match descriptions from $path\n";
 	print "\n\t$status\t".($total_matches-scalar(@matches))."/$total_matches\n";
 
 	## Working on GESAMT file
 	open MA, "<", "$match" or die "Can't read file $match: $!\n";
-	my ($basename, $path) = fileparse($match);
-	my ($prefix, $mode) = $basename =~ /^(\S+)\.(normal|high).gesamt$/;
 	print OUT '### '."$prefix"."; Query mode = $mode\n";
 
 	while (my $line = <MA>){
