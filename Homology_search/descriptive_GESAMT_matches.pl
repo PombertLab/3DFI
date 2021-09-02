@@ -1,8 +1,8 @@
 #!/usr/bin/perl
 ## Pombert Lab 2020
-my $version = '0.7';
+my $version = '0.7a';
 my $name = 'descriptive_GESAMT_matches.pl';
-my $updated = '2021-07-31';
+my $updated = '2021-09-02';
 
 use strict; use warnings; use Getopt::Long qw(GetOptions); use File::Basename;
 
@@ -28,6 +28,7 @@ OPTIONS:
 -q (--qscore)	Q-score cut-off [Default: 0.3]
 -b (--best)	Keep the best match(es) only (top X hits)
 -o (--output)	Output name [Default: Gesamt.matches]
+-l (--log)	Log file [Default: descriptive_matches.log]
 OPTIONS
 die "\n$USAGE\n" unless @ARGV;
 
@@ -38,16 +39,18 @@ my @matches;
 my $qthreshold = 0.3;
 my $best;
 my $output = 'GESAMT.matches';
+my $log = 'descriptive_matches.log';
 GetOptions(
 	'r|rcsb=s' => \$rcsb,
 	'p|pfam=s' => \$pfam,
 	'm|matches=s@{1,}' => \@matches,
 	'q|qscore=s' => \$qthreshold,
 	'b|best=i' => \$best,
-	'o|output=s' => \$output
+	'o|output=s' => \$output,
+	'l|log=s' => \$log
 );
 
-open LOG, ">", "$name.log";
+open LOG, ">", "$log" or die "Can't create log file $log: $!\n";
 
 my %rcsb_titles;
 my %pfam_titles;
