@@ -1,8 +1,8 @@
 #!/usr/bin/perl
 ## Pombert Lab 2020
-my $version = '0.5c';
+my $version = '0.5d';
 my $name = 'run_GESAMT.pl';
-my $updated = '2021-07-27';
+my $updated = '2021-09-02';
 
 use strict; use warnings; use File::Find; use File::Basename;
 use POSIX 'strftime'; use Getopt::Long qw(GetOptions);
@@ -24,6 +24,7 @@ QUERY DB	${name} -cpu 10 -query -arch /media/Data_2/GESAMT_ARCHIVE -input *.pdb 
 OPTIONS:
 -c (--cpu)	CPU threads [Default: 10]
 -a (--arch)	GESAMT archive location [Default: ./]
+-l (--log)	Log file [Default: GESAMT.log]
 
 ## Creating/updating a GESAMT archive
 -m (--make)	Create a GESAMT archive
@@ -48,6 +49,7 @@ die "\n$USAGE\n" unless @ARGV;
 ## Defining options
 my $cpu = 10;
 my $arch = './';
+my $log = 'GESAMT.log';
 my $make;
 my $update;
 my $pdb;
@@ -58,6 +60,7 @@ my $mode = 'normal';
 GetOptions(
 	'c|cpu=i' => \$cpu,
 	'a|arch=s' => \$arch,
+	'l|log=s' => \$log,
 	'm|make' => \$make,
 	'u|update' => \$update,
 	'p|pdb=s' => \$pdb,
@@ -71,7 +74,7 @@ GetOptions(
 my $date = strftime '%Y-%m-%d', localtime;
 my $start = localtime();
 my $tstart = time;
-open LOG, ">>", "GESAMT_$date.log" or die "Can't create log file GESAMT_$date.log: $!\n";
+open LOG, ">>", "$log" or die "Can't create log file $log: $!\n";
 print LOG "\nVERSION: $version\n"."COMMAND LINE: $name @command\n";
 print LOG "Started on: $start\n";
 
