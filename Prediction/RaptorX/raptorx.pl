@@ -1,8 +1,8 @@
 #!/usr/bin/perl
 ## Pombert Lab 2019
-my $version = '0.6d';
+my $version = '0.6e';
 my $name = 'raptorx.pl';
-my $updated = '2021-09-01';
+my $updated = '2021-09-02';
 
 use strict; use warnings; use Getopt::Long qw(GetOptions); use File::Basename; use Cwd qw(abs_path);
 my @command = @ARGV; ## Keeping track of command line for log
@@ -97,8 +97,8 @@ while (my $fasta_path = shift@fasta){
 
 	## Skipping folding if pdb file(s) are present
 	if (-e "$abs_path_outdir/PDB/$protein-m$topk.pdb"){
-		print LOG "PDB files have already been created for $fasta, moving to next file\n";
-		print "PDB files have already been created for $fasta, moving to next file\n";
+		print LOG "RaptorX PDB files have already been created for $fasta, moving to next file\n";
+		print "RaptorX PDB files have already been created for $fasta, moving to next file\n";
 		next;
 	}
 
