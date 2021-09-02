@@ -1,8 +1,8 @@
 #!/usr/bin/perl
 ## Pombert Lab 2020
-my $version = '0.4';
+my $version = '0.4a';
 my $name = 'split_Fasta.pl';
-my $updated = '2021-07-01';
+my $updated = '2021-09-02';
 
 use strict; use warnings; use PerlIO::gzip; use Getopt::Long qw(GetOptions);
 
@@ -64,6 +64,9 @@ while (my $line = <FASTA>){
 	chomp $line;
 	if ($line =~ />(\S+)/){
 		$seq = $1;
+
+		## Replacing problematic filename characters from fasta headers with underscores.
+		$seq =~ s/[\|\(\)\\\#\@\:\;\?\!\$\%\^\&\*\'\"\~\+\=\[\]]/_/g;
 	}
 	else { $sequences{$seq} .= $line; }
 }
