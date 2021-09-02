@@ -110,8 +110,8 @@ while (my $fasta = shift @fasta){
 	my ($prefix) = $basename =~ /^(.*)\.\w+$/;
 
 	## Checking if protein structures are already present in output dir
-	if (-d "$outdir/$prefix"){
-		print "\nOutput found for $basename. Skipping folding...\n";
+	if (-f "$outdir/$prefix/ranked_0.pdb"){
+		print "AlphaFold predicted structure (ranked_0.pdb) found for $basename. Skipping folding...\n";
 		next;
 	}
 	else {
