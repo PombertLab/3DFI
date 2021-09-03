@@ -137,7 +137,7 @@ foreach my $locus (sort(keys(%sessions))){
 
 				$outdir = abs_path($outdir);
 				my $cxs_name = "$outdir/$locus/${locus}_${rcsb_name}_$chain.cxs";
-				if (-e $cxs_name) { print "  Alignment between $locus and $rcsb_name chain $chain found. Skipping aligment...\n"; }
+				if (-e $cxs_name) { print "  Alignment between $locus and $rcsb_name chain $chain found. Skipping alignment...\n"; }
 				else {
 					# ChimeraX API calling
 					print "  Aligning $locus to chain $chain from $rcsb_name with ChimeraX\n";
