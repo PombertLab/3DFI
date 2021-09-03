@@ -1,8 +1,8 @@
 #!/usr/bin/perl
 ## Pombert Lab 2020
-my $version = '0.7a';
+my $version = '0.7b';
 my $name = 'descriptive_GESAMT_matches.pl';
-my $updated = '2021-09-02';
+my $updated = '2021-09-03';
 
 use strict; use warnings; use Getopt::Long qw(GetOptions); use File::Basename;
 
@@ -29,6 +29,7 @@ OPTIONS:
 -b (--best)	Keep the best match(es) only (top X hits)
 -o (--output)	Output name [Default: Gesamt.matches]
 -l (--log)	Log file [Default: descriptive_matches.log]
+-n (--nobar)	Turn off the progress bar
 OPTIONS
 die "\n$USAGE\n" unless @ARGV;
 
@@ -40,6 +41,7 @@ my $qthreshold = 0.3;
 my $best;
 my $output = 'GESAMT.matches';
 my $log = 'descriptive_matches.log';
+my $nobar;
 GetOptions(
 	'r|rcsb=s' => \$rcsb,
 	'p|pfam=s' => \$pfam,
@@ -47,7 +49,8 @@ GetOptions(
 	'q|qscore=s' => \$qthreshold,
 	'b|best=i' => \$best,
 	'o|output=s' => \$output,
-	'l|log=s' => \$log
+	'l|log=s' => \$log,
+	'n|nobar' => \$nobar
 );
 
 open LOG, ">", "$log" or die "Can't create log file $log: $!\n";
@@ -84,17 +87,20 @@ while (my $match = shift@matches){
 	my ($basename, $path) = fileparse($match);
 	my ($prefix, $mode) = $basename =~ /^(\S+)\.(normal|high).gesamt$/;
 
-	## Progress bar
-	system "clear";
-	my $remaining = "." x (int((scalar(@matches)/$total_matches)*100));
-	my $progress = "|" x (100-int((scalar(@matches)/$total_matches)*100));
-	my $status = "[".$progress.$remaining."]";
-	print "Getting match descriptions from $path\n";
-	print "\n\t$status\t".($total_matches-scalar(@matches))."/$total_matches\n";
+	unless ($nobar) { ## Progress bar
+		system "clear";
+		my $remaining = "." x (int((scalar(@matches)/$total_matches)*100));
+		my $progress = "|" x (100-int((scalar(@matches)/$total_matches)*100));
+		my $status = "[".$progress.$remaining."]";
+		print "Getting match descriptions from $path\n";
+		print "\n\t$status\t".($total_matches-scalar(@matches))."/$total_matches\n";
+	}
 
 	## Working on GESAMT file
 	open MA, "<", "$match" or die "Can't read file $match: $!\n";
 	print OUT '### '."$prefix"."; Query mode = $mode\n";
+
+	if ($nobar) { print "Getting descriptive matches from $match\n"; }
 
 	while (my $line = <MA>){
 		chomp $line;
