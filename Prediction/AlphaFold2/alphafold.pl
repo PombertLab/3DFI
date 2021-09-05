@@ -33,11 +33,8 @@ OPTIONS:
 -p (--preset)		Alphafold preset: full_dbs, reduced_dbs or casp14 [Default: full_dbs]
 -g (--gpu_dev)		List of GPU devices to use: e.g. all; 0,1; 0,1,2,3 [Default: all]
 -n (--no_gpu)		Turns off GPU acceleration
--ah (--alpha_home)	AlphaFold2 installation directory
--ao (--alpha_out)	AlphaFold2 output directory
-
-NOTE:	The -ia and -ao options are not required if the environment variables \$ALPHAFOLD_HOME and \$ALPHAFOLD_OUT are set, e.g.:
-	export ALPHA_HOME=/opt/alphafold
+-ah (--alpha_home)	AlphaFold2 installation directory ## if not set in \$ALPHAFOLD_HOME
+-ao (--alpha_out)	AlphaFold2 output directory ## if not set in \$ALPHAFOLD_OUT
 OPTIONS
 die "\n$usage\n" unless @ARGV;
 my @command = @ARGV;
