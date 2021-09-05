@@ -2,9 +2,14 @@
 ## Pombert Lab, Illinois Tech, 2021
 my $name = 'alphafold.pl';
 my $version = '0.3a';
-my $updated = '2021-07-20';
+my $updated = '2021-09-05';
 
-use strict; use warnings; use Getopt::Long qw(GetOptions); use File::Basename; use POSIX qw(strftime);
+use strict;
+use warnings;
+use Getopt::Long qw(GetOptions);
+use File::Basename;
+use POSIX qw(strftime);
+use Cwd qw(abs_path);
 
 my $usage = <<"OPTIONS";
 NAME		${name}
@@ -25,23 +30,23 @@ OPTIONS:
 -f (--fasta)		FASTA files to fold
 -o (--outdir)		Output directory
 -m (--max_date)		--max_template_date option (YYYY-MM-DD) from AlphaFold2 [Default: current date]
--c (--casp14)		casp14 preset (--preset=casp14)
--d (--full_dbs)		full_dbs preset (--preset=full_dbs)
+-p (--preset)		Alphafold preset: full_dbs, reduced_dbs or casp14 [Default: full_dbs]
+-g (--gpu_dev)		List of GPU devices to use: e.g. all; 0,1; 0,1,2,3 [Default: all]
 -n (--no_gpu)		Turns off GPU acceleration
 -ah (--alpha_home)	AlphaFold2 installation directory
 -ao (--alpha_out)	AlphaFold2 output directory
 
-NOTE:	The -ia and -ao options are not required if the environment variables \$ALPHA_HOME and \$ALPHA_OUT are set, e.g.:
+NOTE:	The -ia and -ao options are not required if the environment variables \$ALPHAFOLD_HOME and \$ALPHAFOLD_OUT are set, e.g.:
 	export ALPHA_HOME=/opt/alphafold
 OPTIONS
 die "\n$usage\n" unless @ARGV;
 my @command = @ARGV;
 
 my @fasta;
-my $outdir;
+my $outdir = './';
 my $max_date = strftime("%F", localtime);
-my $casp14;
-my $fulldbs;
+my $preset = 'full_dbs';
+my $gpus = 'all';
 my $no_gpu;
 my $alpha_home;
 my $alpha_out;
@@ -49,19 +54,19 @@ GetOptions(
 	'f|fasta=s@{1,}' => \@fasta,
 	'o|outdir=s' => \$outdir,
 	'm|max_date=s' => \$max_date,
-	'c|casp14' => \$casp14,
-	'd|full_dbs' => \$fulldbs,
+	'p|preset=s' => \$preset,
+	'g|gpu_dev=s' => $gpus,
 	'n|no_gpu' => \$no_gpu,
 	'ah|alpha_home=s' => \$alpha_home,
-	'ao|alpha_out=s' => \$alpha_out,
+	'ao|alpha_out=s' => \$alpha_out
 );
 
 ### Checking for AlphaFold2 installation; environment variables in Perl are loaded in %ENV
 # Checking installation folder
 if (!defined $alpha_home){
-	if (exists $ENV{'ALPHA_HOME'}){ $alpha_home = $ENV{'ALPHA_HOME'}; }
+	if (exists $ENV{'ALPHAFOLD_HOME'}){ $alpha_home = $ENV{'ALPHAFOLD_HOME'}; }
 	else {
-		print "WARNING: The AlphaFold2 installation directory is not set as an environment variable (\$ALPHA_home) and the -ah option was not entered.\n";
+		print "WARNING: The AlphaFold2 installation directory is not set as an environment variable (\$ALPHAFOLD_HOME) and the -ah option was not entered.\n";
 		print "Please check if AlphaFold2 was installed properly\n\n";
 		exit;
 	}
@@ -74,9 +79,9 @@ elsif (defined $alpha_home){
 }
 # Checking output folder
 if (!defined $alpha_out){
-	if (exists $ENV{'ALPHA_OUT'}){ $alpha_out = $ENV{'ALPHA_OUT'}; }
+	if (exists $ENV{'ALPHAFOLD_OUT'}){ $alpha_out = $ENV{'ALPHAFOLD_OUT'}; }
 	else {
-		print "WARNING: The AlphaFold2 output directory is not set as an environment variable (\$ALPHA_OUT) and the -ao option was not entered.\n";
+		print "WARNING: The AlphaFold2 output directory is not set as an environment variable (\$ALPHAFOLD_OUT) and the -ao option was not entered.\n";
 		print "Please check if AlphaFold2 was installed properly\n\n";
 		exit;
 	}
@@ -88,7 +93,18 @@ elsif (defined $alpha_out){
 	}
 }
 
+### Checking AlphaFold2 preset
+my %presets = (
+	full_dbs => '',
+	reduced_dbs => '',
+	casp14 => ''
+);
+unless (exists $presets{$preset}){
+	die "Unrecognized AlphaFold2 preset. Please use full_dbs, reduced_dbs, or casp14\n";
+}
+
 ### Checking output directory + creating log file
+$outdir = abs_path($outdir);
 unless (-d $outdir){ mkdir ($outdir, 0755) or die "Can't create $outdir: $!\n"; }
 open LOG, ">>", "$outdir/alphafold2.log" or die "Can't create $outdir/alphafold2.log: $!\n";
 
@@ -97,11 +113,6 @@ print LOG "\nCOMMAND = $name @command\n";
 print LOG "\nFolding started on $timestamp\n";
 print LOG "\nSetting AlphaFold2 --max_template_date option to: $max_date\n\n";
 print "\nSetting AlphaFold2 --max_template_date option to: $max_date\n";
-
-### Checking if CASP14 is requested
-my $preset = '';
-if ($casp14){ $preset = '--preset=casp14'; }
-elsif ($fulldbs) { $preset = '--preset=full_dbs'; }
 
 ### Running AlphaFold2 docker image
 while (my $fasta = shift @fasta){
@@ -120,20 +131,30 @@ while (my $fasta = shift @fasta){
 		print "\n$time: working on $fasta\n";
 		my $start = time;
 
+		my $gpu_devices = "--gpu_devices=$gpus";
+
 		my $gpu_check = '';
-		if ($no_gpu){ $gpu_check = '--use_gpu=False'; }
+		if ($no_gpu){
+			$gpu_check = '--use_gpu=False';
+			$gpu_devices = '';
+		}
 
 		# Folding
 		system "python3 \\
 			$alpha_home/docker/run_docker.py \\
 			--fasta_paths=$fasta \\
 			--max_template_date=$max_date \\
-			$gpu_check \\
-			$preset";
+			--preset=$preset \\
+			$gpu_devices \\
+			$gpu_check
+		";
 
 		# Checking permissions:
 		# if docker image is ran with --privileged=True files will be owned by the root
 		# if so, use cp instead of mv
+		
+		exit;
+
 		if (-w "$alpha_out/$prefix"){
 			system "mv \\
 				$alpha_home/$prefix \\
