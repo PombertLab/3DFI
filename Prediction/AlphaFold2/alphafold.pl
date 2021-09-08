@@ -150,11 +150,9 @@ while (my $fasta = shift @fasta){
 		# if docker image is ran with --privileged=True files will be owned by the root
 		# if so, use cp instead of mv
 		
-		exit;
-
 		if (-w "$alpha_out/$prefix"){
 			system "mv \\
-				$alpha_home/$prefix \\
+				$alpha_out/$prefix \\
 				$outdir/";
 		}
 		else { # Copying results to outdir
