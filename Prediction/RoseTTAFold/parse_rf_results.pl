@@ -1,8 +1,8 @@
 #!/usr/bin/perl
 ## Pombert lab, Illinois Tech, 2021
 my $name = 'parse_rf_results';
-my $version = '0.2';
-my $updated = '2021-08-12';
+my $version = '0.2a';
+my $updated = '2021-09-07';
 
 use strict; use warnings; use Getopt::Long qw(GetOptions);
 
@@ -71,7 +71,7 @@ while (my $result = shift @results){
 	if (($pdbtype eq 'e2e') or ($pdbtype eq 'end-to-end')){
 
 		my $filename = "$rfdir/$result/t000_.e2e.pdb";
-		my $outfile = "$outdir/$result.pdb";
+		my $outfile = "$outdir/$result-m1.pdb";
 
 		if (-f "$filename"){ 
 			unless (-f $outfile) { system "cp $filename $outfile"; }

@@ -1,8 +1,8 @@
 #!/usr/bin/perl
 ## Pombert Lab, Illinois Tech, 2021
 my $name = 'setup_3DFI.pl';
-my $version = '0.3a';
-my $updated = '2021-08-31';
+my $version = '0.4 WIP';
+my $updated = '2021-09-04';
 
 use strict; use warnings; use Getopt::Long qw(GetOptions); use File::Basename; use Cwd qw(abs_path); 
 
@@ -10,89 +10,164 @@ my $usage = <<"OPTIONS";
 NAME		${name}
 VERSION		${version}
 UPDATED		${updated}
-SYNOPSIS	Adds 3DFI environment variables to configuration file
+SYNOPSIS	Adds 3DFI environment variables to the specified configuration file
 
 EXAMPLE		${name} \\
+		  -c ~/.bashrc \\
 		  -p /path/to/3DFI \\
-		  -c ~/.bashrc
+		  -d /path/to/3DFI_databases
 
 OPTIONS:
--p (--path)	Path to 3DFI installation directory [Default: ./]
--c (--config)	Configuration file to edit
+-c (--config)	Configuration file to edit/create
+-p (--path)	3DFI installation directory (\$TDFI_HOME) [Default: ./]
+-d (-db)	Desired 3DFI database location (\$TDFI_DB)
+
+## Protein structure predictor(s)
+--raptorx	RaptorX installation directory
+--rosetta	RoseTTAFold installation directory
+--alphain	AlphaFold installation directory
+--alphaout	AlphaFold output directory
 OPTIONS
 die "\n$usage\n" unless @ARGV;
 
 my $path_3DFI = "./";
 my $config_file;
+my $database;
+my $raptorx_home;
+my $rosettafold_home;
+my $alphafold_home;
+my $alphafold_out;
 GetOptions(
 	'p|path=s' => \$path_3DFI,
-	'c|config=s' => \$config_file
+	'c|config=s' => \$config_file,
+	'd|db=s' => \$database,
+	'raptorx=s' => \$raptorx_home,
+	'rosetta=s' => \$rosettafold_home,
+	'alphain=s' => \$alphafold_home,
+	'alphaout=s' => \$alphafold_out
 );
 
-## Checking for config file
+##### Checking for config file
 if (!defined $config_file){
-	die "\nPlease provide a configuration file to edit with the -c option: e.g. -c ~/.bashrc\n\n";
+	print "\nPlease provide a configuration file to edit with the -c option: e.g.\n";
+	print "~/.bashrc or /etc/profile.d/3DFI.sh\n\n";
+	exit;
 }
 
-## Checking if 3DFI environment variables (or vars with same names) are already set
-my $env_flag = 0;
-if (exists $ENV{'TDFI'}){  print "\nEnv. variable \$TDFI already set to $ENV{'TDFI'}\n"; }
-if (exists $ENV{'RX_3DFI'}){  print "Env. variable \$RX_3DFI already set to $ENV{'RX_3DFI'}\n"; $env_flag = 1; }
-if (exists $ENV{'TR_3DFI'}){  print "Env. variable \$TR_3DFI already set to $ENV{'TR_3DFI'}\n"; $env_flag = 1; }
-if (exists $ENV{'TR2_3DFI'}){  print "Env. variable \$TR2_3DFI already set to $ENV{'TR2_3DFI'}\n"; $env_flag = 1; }
-if (exists $ENV{'AF_3DFI'}){  print "Env. variable \$AF_3DFI already set to $ENV{'AF_3DFI'}\n"; $env_flag = 1; }
-if (exists $ENV{'RF_3DFI'}){  print "Env. variable \$RF_3DFI already set to $ENV{'RF_3DFI'}\n"; $env_flag = 1; }
-if (exists $ENV{'HS_3DFI'}){  print "Env. variable \$HS_3DFI already set to $ENV{'HS_3DFI'}\n"; $env_flag = 1; }
-if (exists $ENV{'VZ_3DFI'}){  print "Env. variable \$VZ_3DFI already set to $ENV{'VZ_3DFI'}\n"; $env_flag = 1; }
+##### Capturing absolute paths
+my $abs_path_3DFI = abs_path($path_3DFI);
+my $abs_path_config = abs_path($config_file);
+my $abs_path_db = abs_path($database);
 
-if ($env_flag == 1){
-	print "\nOne (or more) 3DFI environment variable(s) is already set. Do you wish to continue (y/n)?\n\n";
-	my $answer;
-	ANSWER: {
-		$answer = <STDIN>;
+##### Checking for 3DFI environment variables
+if ((exists $ENV{'TDFI_HOME'}) and (exists $ENV{'TDFI_DB'})){ 
+	print "Found \$TDFI_HOME as $ENV{'TDFI_HOME'}.\n";
+	print "Found \$TDFI_DB as $ENV{'TDFI_DB'}.\n";
+	print "Do you want to continue? y/n (y => proceed; n => exit):";
+	AUTODETECT:{
+		my $answer = <STDIN>;
 		chomp $answer;
-		$answer = lc($answer);
-		if (($answer eq 'y') or ($answer eq 'yes')){ next; }
-		elsif (($answer eq 'n') or ($answer eq 'no')){ print "\nExiting as requested...\n"; exit; }
+		my $check = lc ($answer);
+		if (($check eq 'y') or ($check eq 'yes')){
+			print "\# Setting 3DFI environment variables as:\n";
+			open CONFIG, ">>", "$abs_path_config" or die "Can't open $abs_path_config: $!\n";
+			set_main(\*STDOUT);
+			set_main(\*CONFIG);
+		}
+		elsif (($check eq 'n') or ($check eq 'no')){
+			print "Exiting setup as requested\n";
+			exit;
+		}
 		else {
-			print "\nUnrecognized answer: $answer\n. Please try again...\n";
-			goto ANSWER;
+			print "Unrecognized answer: $answer. Please enter y (yes) or n (no).\n";
+			goto AUTODETECT;
 		}
 	}
 }
 
-## Capturing absolute paths
-my $abs_path_3DFI = abs_path($path_3DFI);
-my $abs_path_config = abs_path($config_file);
+##### Checking entries
+print "\n";
+print "Configuration file to edit/create:"."\t"."\t"."$abs_path_config\n\n";
+print "3DFI installation directory (\$TDFI_HOME):"."\t"."$abs_path_3DFI\n";
+print "3DFI database directory (\$TDFI_DB):"."\t"."\t"."$abs_path_db\n";
+print "\n";
+if ($raptorx_home){ print "RAPTORX_HOME=$raptorx_home\n"; }
+if ($rosettafold_home){ print "ROSETTAFOLD_HOME=$rosettafold_home\n"; }
+if ($alphafold_home){ print "ALPHAFOLD_HOME=$alphafold_home\n"; }
+if ($alphafold_out){ print "ALPHAFOLD_OUT=$alphafold_out\n"; }
 
-## Verbosity
-print "\n3DFI installation directory: $abs_path_3DFI\n";
-print "Configuration file to edit: $abs_path_config\n\n";
-print "\# Setting 3DFI environment variables as:\n";
-set_env(\*STDOUT);
+print "\nIs this correct? y/n (y => proceed; n => exit): ";
+MAINVARS:{
+	my $answer = <STDIN>;
+	chomp $answer;
+	my $check = lc ($answer);
+	if (($check eq 'y') or ($check eq 'yes')){
+		open CONFIG, ">>", "$abs_path_config" or die "Can't open $abs_path_config: $!\n";
+		set_main(\*CONFIG);
+	}
+	elsif (($check eq 'n') or ($check eq 'no')){
+		print "Exiting setup as requested\n";
+		exit;
+	}
+	else {
+		print "Unrecognized answer: $answer. Please enter y (yes) or n (no).\n";
+		goto MAINVARS;
+	}
+}
 
-## Adding environment variables and PATH to configuration file
-open CONFIG, ">>", "$abs_path_config" or die "Can't open $abs_path_config: $!\n";
-set_env(\*CONFIG);
-set_path(\*CONFIG);
+## Adding ALPHAFOLD, ROSETTAFOLD and/or RAPTORX to contig file
+if (($raptorx_home) or ($rosettafold_home) or ($alphafold_home)){
+	print CONFIG "\n".'### 3DFI environment variables for protein structure predictor(s)'."\n";
+}
+if ($raptorx_home){
+	print CONFIG "export RAPTORX_HOME=$raptorx_home\n";
+}
+if ($rosettafold_home){
+	print CONFIG "export ROSETTAFOLD_HOME=$rosettafold_home\n";
+}
+if ($alphafold_home){
+	print CONFIG "export ALPHAFOLD_HOME=$alphafold_home\n";
+}
+if ($alphafold_out){
+	print CONFIG "export ALPHAFOLD_OUT=$alphafold_out\n";
+}
 
-## subroutine
-sub set_env {
+## Adding environment variables and PATH to configuration file (if yes)
+print "Do you want to add the 3DFI installation folder and its ";
+print "subdirectories to the \$PATH environment variable? y/n: ";
+PATHVARS:{
+	my $answer = <STDIN>;
+	chomp $answer;
+	my $check = lc ($answer);
+	if (($check eq 'y') or ($check eq 'yes')){
+		open CONFIG, ">>", "$abs_path_config" or die "Can't open $abs_path_config: $!\n";
+		set_path(\*CONFIG);
+	}
+	elsif (($check eq 'n') or ($check eq 'no')){
+		print "Skipping additions to the \$PATH environment variable.\n";
+		next;
+	}
+	else {
+		print "Unrecognized answer: $answer. Please enter y (yes) or n (no).\n";
+		goto PATHVARS;
+	}
+}
+
+print "\n";
+exit;
+
+##### subroutines
+sub set_main {
 	my $fh = shift;
 	print $fh "\n".'### 3DFI environment variables'."\n";
-	print $fh "export TDFI=$abs_path_3DFI\n";
-	print $fh "export RX_3DFI=$abs_path_3DFI/Prediction/RaptorX\n";
-	print $fh "export TR_3DFI=$abs_path_3DFI/Prediction/trRosetta\n";
-	print $fh "export TR2_3DFI=$abs_path_3DFI/Prediction/trRosetta2\n";
-	print $fh "export AF_3DFI=$abs_path_3DFI/Prediction/AlphaFold2\n";
-	print $fh "export RF_3DFI=$abs_path_3DFI/Prediction/RoseTTAFold\n";
-	print $fh "export HS_3DFI=$abs_path_3DFI/Homology_search\n";
-	print $fh "export VZ_3DFI=$abs_path_3DFI/Visualization\n";
-	print $fh "export MISC_3DFI=$abs_path_3DFI/Misc_tools\n\n";
+	print $fh "export TDFI_HOME=$abs_path_3DFI\n";
+	print $fh "export TDFI_DB=$abs_path_db\n";
 }
+
 sub set_path {
 	my $fh = shift;
 	print $fh "\n".'### 3DFI PATH variables'."\n";
+	print $fh "PATH=\$PATH:$abs_path_3DFI\n";
 	print $fh "PATH=\$PATH:$abs_path_3DFI/Prediction/RaptorX\n";
 	print $fh "PATH=\$PATH:$abs_path_3DFI/Prediction/trRosetta\n";
 	print $fh "PATH=\$PATH:$abs_path_3DFI/Prediction/trRosetta2\n";

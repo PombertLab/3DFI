@@ -1,0 +1,6 @@
+
+VERSION: 0.5e
+COMMAND LINE: run_GESAMT.pl -cpu 20 -query -arch /media/Data_3/databases/3DFI/RCSB_GESAMT -input RESULTS_20210915//Folding/ROSETTAFOLD_3D_Parsed/ECU03_1140-m1.pdb RESULTS_20210915//Folding/ROSETTAFOLD_3D_Parsed/ECU06_1350-m1.pdb RESULTS_20210915//Folding/ROSETTAFOLD_3D_Parsed/ECU08_1425-m1.pdb -o RESULTS_20210915//Homology/GESAMT/ROSETTAFOLD -l RESULTS_20210915//Homology/LOGS/GESAMT_ROSETTAFOLD_2021-09-15.log -mode normal -z
+Started on: Wed Sep 15 16:04:37 2021
+Completed on: Wed Sep 15 16:08:21 2021
+Total run time: 3.73 minutes

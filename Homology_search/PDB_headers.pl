@@ -20,7 +20,7 @@ REQUIREMENTS	PDB files downloaded from RCSB PDB; e.g. pdb2zvl.ent.gz
 		
 USAGE EXAMPLE	${name} \\
 		  -p PDB/ \\
-		  -o PDB_titles.tsv \\
+		  -o RCSB_PDB_titles.tsv \\
 		  -v 1000
 
 OPTIONS:

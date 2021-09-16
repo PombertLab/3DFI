@@ -1,0 +1,19 @@
+COMMAND LINE:
+raptorx.pl -t 20 -k 5 -i RESULTS_20210915//FASTA -o RESULTS_20210915//Folding/RAPTORX_3D/
+raptorx.pl version = 0.6e
+Using MODELLER binary version mod10.1
+3D Folding started on: Wed Sep 15 14:43:30 2021
+Time to fold ECU03_1140.fasta = 24.07 minutes
+Time to fold ECU03_1140.fasta = 24.07 minutes (cumulative)
+Time to fold ECU06_1350.fasta = 22.28 minutes
+Time to fold ECU06_1350.fasta = 46.35 minutes (cumulative)
+Time to fold ECU08_1425.fasta = 15.10 minutes
+Time to fold ECU08_1425.fasta = 61.45 minutes (cumulative)
+3D Folding ended on Wed Sep 15 15:44:57 2021
+
+OUTPUT directory = /home/jpombert/TEST/RESULTS_20210915/Folding/RAPTORX_3D
+PDB/: Contains the protein structure(s) (.pdb) predicted for each FASTA files
+TGT/: Contains the feature files (.tgt) generated for each FASTA files
+RANK/: Contains the lists (.rank) of the best templates/models found for each FASTA files
+FASTA_ALN/: Contains pairwise alignments between FASTA sequences and their best template(s)/model(s) found in FASTA format
+CNFPRED/: Contains pairwise alignments between FASTA sequences and their best template(s)/model(s) found in CNFPRED format

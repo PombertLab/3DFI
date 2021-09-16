@@ -1,10 +1,14 @@
 #!/usr/bin/perl
 ## Pombert Lab 2020
-my $version = '0.7b';
+my $version = '0.7d';
 my $name = 'descriptive_GESAMT_matches.pl';
-my $updated = '2021-09-03';
+my $updated = '2021-09-13';
 
-use strict; use warnings; use Getopt::Long qw(GetOptions); use File::Basename;
+use strict;
+use warnings;
+use Getopt::Long qw(GetOptions);
+use File::Basename;
+use PerlIO::gzip; 
 
 ## Usage definition
 my $USAGE = <<"OPTIONS";
@@ -16,7 +20,7 @@ SYNOPSIS	Adds descriptive information from PDB headers to the gesamt matches;
 
 EXAMPLE		${name} \
 		  -r /media/Data_2/PDB/PDB_titles.tsv \
-		  -m *.gesamt \
+		  -m *.gesamt.gz \
 		  -q 0.3 \
 		  -b 5 \
 		  -o GESAMT.matches 
@@ -24,12 +28,13 @@ EXAMPLE		${name} \
 OPTIONS:
 -r (--rcsb)	Tab-delimited list of RCSB structures and their titles ## see PDB_headers.pl 
 -p (--pfam)	Tab-delimited list of PFAM structures and their titles (http://ftp.ebi.ac.uk/pub/databases/Pfam/current_release/Pfam-A.clans.tsv.gz)
--m (--matches)	Results from GESAMT searches ## see run_GESAMT.pl
+-m (--matches)	Results from GESAMT searches ## Supports GZIPPEd files; see run_GESAMT.pl
 -q (--qscore)	Q-score cut-off [Default: 0.3]
 -b (--best)	Keep the best match(es) only (top X hits)
 -o (--output)	Output name [Default: Gesamt.matches]
--l (--log)	Log file [Default: descriptive_matches.log]
+-l (--log)	Error log file [Default: descriptive_matches.err]
 -n (--nobar)	Turn off the progress bar
+-x (--regex)	Regex to parse filenames: word (\\w+) or nonspace (\\S+) [Default: nonspace]
 OPTIONS
 die "\n$USAGE\n" unless @ARGV;
 
@@ -40,8 +45,9 @@ my @matches;
 my $qthreshold = 0.3;
 my $best;
 my $output = 'GESAMT.matches';
-my $log = 'descriptive_matches.log';
+my $log = 'descriptive_matches.err';
 my $nobar;
+my $regex = 'nonspace';
 GetOptions(
 	'r|rcsb=s' => \$rcsb,
 	'p|pfam=s' => \$pfam,
@@ -50,7 +56,8 @@ GetOptions(
 	'b|best=i' => \$best,
 	'o|output=s' => \$output,
 	'l|log=s' => \$log,
-	'n|nobar' => \$nobar
+	'n|nobar' => \$nobar,
+	'x|regex=s' => \$regex
 );
 
 open LOG, ">", "$log" or die "Can't create log file $log: $!\n";
@@ -84,8 +91,12 @@ open OUT, ">", "$output" or die "Can't create output file $output: $!\n";
 my $total_matches = scalar(@matches);
 while (my $match = shift@matches){
 
+	my $rgx = '\S+';
+	$regex = lc($regex);
+	if ($regex eq 'word'){ $rgx = '\w+'; }
+
 	my ($basename, $path) = fileparse($match);
-	my ($prefix, $mode) = $basename =~ /^(\S+)\.(normal|high).gesamt$/;
+	my ($prefix, $mode) = $basename =~ /^($rgx).*\.(normal|high).gesamt(.gz)?$/;
 
 	unless ($nobar) { ## Progress bar
 		system "clear";
@@ -97,7 +108,9 @@ while (my $match = shift@matches){
 	}
 
 	## Working on GESAMT file
-	open MA, "<", "$match" or die "Can't read file $match: $!\n";
+	my $gzip = '';
+	if ($match =~ /.gz$/){ $gzip = ':gzip'; }
+	open MA, "<$gzip", "$match" or die "Can't read file $match: $!\n";
 	print OUT '### '."$prefix"."; Query mode = $mode\n";
 
 	if ($nobar) { print "Getting descriptive matches from $match\n"; }
@@ -176,4 +189,7 @@ while (my $match = shift@matches){
 			}
 		}
 	}
+
+	if ($gzip eq ':gzip'){ binmode MA, ":gzip(none)"; }
+
 }

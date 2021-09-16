@@ -1,11 +1,16 @@
 #!/usr/bin/perl
 ## Pombert Lab 2020
-my $version = '0.5d';
+my $version = '0.5e';
 my $name = 'run_GESAMT.pl';
-my $updated = '2021-09-02';
+my $updated = '2021-09-11';
 
-use strict; use warnings; use File::Find; use File::Basename;
-use POSIX 'strftime'; use Getopt::Long qw(GetOptions);
+use strict;
+use warnings;
+use File::Find;
+use File::Basename;
+use POSIX 'strftime';
+use Getopt::Long qw(GetOptions);
+
 my @command = @ARGV; ## Keeping track of command line for log
 
 ## Usage definition
@@ -36,6 +41,7 @@ OPTIONS:
 -i (--input)	PDF files to query
 -o (--outdir)	Output directory [Default: ./]
 -d (--mode)	Query mode: normal of high [Default: normal]
+-z (--gzip) Compress output files [Default: off]
 
 ## References
 1) Enhanced fold recognition using efficient short fragment clustering.
@@ -57,6 +63,7 @@ my $query;
 my @input;
 my $outdir = './';
 my $mode = 'normal';
+my $gnuzip;
 GetOptions(
 	'c|cpu=i' => \$cpu,
 	'a|arch=s' => \$arch,
@@ -67,7 +74,8 @@ GetOptions(
 	'q|query' => \$query,
 	'i|input=s@{1,}' => \@input,
 	'o|outdir=s' => \$outdir,
-	'd|mode=s' => \$mode
+	'd|mode=s' => \$mode,
+	'z|gzip' => \$gnuzip
 );
 
 ## Creating log
@@ -119,7 +127,8 @@ find (sub {push @gsm, $File::Find::name unless -d}, $outdir);
 
 while (my $gsm = shift(@gsm)){
 	my ($result, $folder) = fileparse($gsm);
-	$result =~ s/\.\w+\.gesamt$//;
+	if ($gnuzip){ $result =~ s/\.\w+\.gesamt.gz$//; }
+	else { $result =~ s/\.\w+\.gesamt$//; }
 	$results{$result} = 'done';
 }
 
@@ -133,6 +142,12 @@ if ($query){
 			  -nthreads=$cpu \\
 			  -$mode \\
 			  -o $outdir/$pdb.$mode.gesamt";
+			
+			if ($gnuzip){
+				## Compressing data with GZIP to save some space
+				print "\nCompressing $outdir/$pdb.$mode.gesamt with GZIP ...\n";
+				system "gzip $outdir/$pdb.$mode.gesamt";
+			}
 		}
 		## Searches can take a while, best to skip if done previously
 		else { 

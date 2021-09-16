@@ -1,8 +1,8 @@
 #!/usr/bin/perl
 ## Pombert Lab, Illinois Tech, 2021
 my $name = 'alphafold.pl';
-my $version = '0.3a';
-my $updated = '2021-09-05';
+my $version = '0.3b';
+my $updated = '2021-09-07';
 
 use strict;
 use warnings;
@@ -109,17 +109,24 @@ my $timestamp = localtime;
 print LOG "\nCOMMAND = $name @command\n";
 print LOG "\nFolding started on $timestamp\n";
 print LOG "\nSetting AlphaFold2 --max_template_date option to: $max_date\n\n";
-print "\nSetting AlphaFold2 --max_template_date option to: $max_date\n";
+print "\nSetting AlphaFold2 options --preset to $preset and --max_template_date to $max_date\n";
 
 ### Running AlphaFold2 docker image
+my $prefix;
 while (my $fasta = shift @fasta){
 
 	my $basename = fileparse($fasta);
-	my ($prefix) = $basename =~ /^(.*)\.\w+$/;
+	($prefix) = $basename =~ /^(.*)\.\w+$/;
 
-	## Checking if protein structures are already present in output dir
+	## Checking if protein structures are already present in 3DFI output dir
 	if (-f "$outdir/$prefix/ranked_0.pdb"){
 		print "AlphaFold predicted structure (ranked_0.pdb) found for $basename. Skipping folding...\n";
+		next;
+	}
+	## Checking if protein structures are already present in AlphaFold output dir
+	elsif (-f "$alpha_out/$prefix/ranked_0.pdb"){
+		print "AlphaFold predicted structure (ranked_0.pdb) found for $basename. Skipping folding...\n";
+		copy_af_data();
 		next;
 	}
 	else {
@@ -150,6 +157,26 @@ while (my $fasta = shift @fasta){
 		# if docker image is ran with --privileged=True files will be owned by the root
 		# if so, use cp instead of mv
 		
+		copy_af_data();
+
+		my $run_time = time - $start;
+		$run_time = $run_time/60;
+		$run_time = sprintf ("%.2f", $run_time);
+		print "\nTime to fold $basename: $run_time minutes\n";
+		print LOG "Time to fold $basename: $run_time minutes\n";
+	}
+}
+
+close LOG;
+
+### Subroutines
+sub copy_af_data {
+		
+		# Checking permissions:
+		# if docker image is ran without: flags.DEFINE_string('docker_user', f"{os.geteuid()}:{os.getegid()}", '')
+		# files will be owned by the root
+		# if so, use cp instead of mv
+		
 		if (-w "$alpha_out/$prefix"){
 			system "mv \\
 				$alpha_out/$prefix \\
@@ -161,12 +188,4 @@ while (my $fasta = shift @fasta){
 				$outdir/";
 		}
 
-		my $run_time = time - $start;
-		$run_time = $run_time/60;
-		$run_time = sprintf ("%.2f", $run_time);
-		print "\nTime to fold $basename: $run_time minutes\n";
-		print LOG "Time to fold $basename: $run_time minutes\n";
-	}
 }
-
-close LOG;

@@ -1,0 +1,22 @@
+
+T sse_real            EEEEEEEEEEEE-CCEEEEEECCCCEEEEECCCCCCCCCCCEEEEEEEEECCCCEEEEEEEEECCCC----CCCHHHHH           
+T acc_real            MBMBBBEMEEME-EEMBMBMBMMEMMBEBEMMEEMEBEEBMMBMBMBEBMEEEEMBEBEEMEMMMEE----EMEMEEMM           
+T 4gnxA            20 TVRIVGKVHKVT-GNTLLMQTSDLGNVEIAMTPDSDVSSSTFVEVTGKVSDAGSSFQANQIREFTTVDCGHDVDLTLVE   97 (114)
+                      *+|++|+*++** .**+||++** .*+++|*~  .~**~***||||+|++*  .*++++*++**~      -*++***+           
+S ECU08_1425       13 TVYSFGKVRDKLENGKYEVSFRE-KTIIITTD--RRLSIGSWIRMYGTFKS--GVLRTIFVGELD------GVDINLLE   80 (92)
+S acc_pred            MBMBBBEBMMMBEEMEBMBMMME-EMBBBMBE--EEBEEEMBBMBBBMBEE--EBBMBMBBBEBE------EBMBMBBB           
+S acc_conf            58557656545578454575555-54648455--66645767959675755--456575774455------48575884           
+S sse_pred            EEEEECCEEEEECCCEEEEEEEE-EEEEEEEC--CEECCCCEEEEEEEEEC--CEEEEEEEEEEC------CEHHHHHH           
+S sse_conf            89996547887659689999964-58999978--76677878999989876--879999996655------53389899           
+
+
+T sse_real            HHHHHHHCCHHH           
+T acc_real            EMBEEMEEEEEE           
+T 4gnxA            98 NVVQISAAFPNL  109 (114)
+                      *+|+*+******           
+S ECU08_1425       81 KAVRYVACRRKI   92 (92)
+S acc_pred            MBBMBBMMEEEE           
+S acc_conf            697567556897           
+S sse_pred            HHHHHHHHHHCC           
+S sse_conf            999998876469           
+
