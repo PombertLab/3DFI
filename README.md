@@ -295,6 +295,7 @@ run_3DFI.pl \
 -d (--db)		3DFI database location containing the RCSB PDB files / GESAMT archive [Default: $TDFI_DB]
 -q (--qscore)		Mininum Q-score to keep [Default: 0.3]
 -b (--best)		Keep the best match(es) only (top X hits) [Default: 5]
+--query		Models to query per protein and predictor: all or best [Default: all]
 ```
 </details>
 
