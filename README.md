@@ -323,7 +323,7 @@ run_3DFI.pl \
   -p alphafold rosettafold raptorx
 ```
 
-In the above example, structural homology searches will be performed automatically against the databases located in **$TDFI_DB**. On our AMD Ryzen 5950X/NVIDIA RTX A6000 workstation (equipped with an NVME SSD), the process from start to finish took XXX hours. On our Intel Xeon E5-2640/NVIDIA GTX 1070 workstation (equipped with a standard 7200 RPM hard drive), the process from start to finish took 4 hours and 25 minutes.
+In the above example, structural homology searches will be performed automatically against the databases located in **$TDFI_DB**. On our AMD Ryzen 5950X/NVIDIA RTX A6000 workstation (equipped with an NVME SSD), the process from start to finish took 1 hour and 45 minutes. On our Intel Xeon E5-2640/NVIDIA GTX 1070 workstation (equipped with a standard 7200 RPM hard drive), the process from start to finish took 4 hours and 25 minutes.
 
 <details>
   <summary> Click here to show/hide details about the contents of the 3DFI output folder.</summary>
