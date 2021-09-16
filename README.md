@@ -541,7 +541,7 @@ Selection:
 \
 Providing a number to the interactive prompt will open the corresponding alignment between the predicted 3D structure and its structural homolog in [ChimeraX](https://www.rbvi.ucsf.edu/chimerax/download.html):
 
-<img src="https://github.com/PombertLab/WIP/blob/main/3DFI_WIP/Images/ECU03_1140-m4_3kdf_B.png">  
+<img src="https://github.com/PombertLab/3DFI/blob/master/Images/ECU03_1140-m4_3kdf_B.png">  
 
 \
 \
@@ -572,7 +572,7 @@ Selection: M
 
 ```
 
-<img src="https://github.com/PombertLab/WIP/blob/main/3DFI_WIP/Images/ECU03_1140-m4.png">  
+<img src="https://github.com/PombertLab/3DFI/blob/master/Images/ECU03_1140-m4.png">  
 
 #### Interpreting the results
 > Using the approach above, we were able to identity the ECU03_1140 protein from *Encephalitozoon cuniculi* as Stn1. In yeast, Stn1 is part of the Cdc13-Stn1-Ten1 complex involved in telomere protection and maintenance. Stn1 is a telomere-specific structural homolog of replication protein A 32 (RPA32), which has been identified previously in *E. cuniculi* based on sequence homology, and which shows up in the best matches based on structural homology. This is a good example of why manual curation is recommended as assigning a function based solely on the top structural homolog could lead to an erroneous conclusion.
@@ -586,10 +586,10 @@ Selection: M
 
 ### The 3DFI pipeline process in detail
 This section details the behaviour of each independent script used by the run_3DFI.pl master script and is split into the following subsections:
-- [Preparing FASTA files](https://github.com/PombertLab/WIP/tree/main/3DFI_WIP#preparing-fasta-files)
-- [3D structure prediction](https://github.com/PombertLab/WIP/tree/main/3DFI_WIP#3D-structure-prediction)
-- [Structural homology searches](https://github.com/PombertLab/WIP/tree/main/3DFI_WIP#structural-homology-searches)
-- [Structural alignment and visualization](https://github.com/PombertLab/WIP/tree/main/3DFI_WIP#structural-alignment-and-visualization)
+- [Preparing FASTA files](https://github.com/PombertLab/3DFI#preparing-fasta-files)
+- [3D structure prediction](https://github.com/PombertLab/3DFI#3D-structure-prediction)
+- [Structural homology searches](https://github.com/PombertLab/3DFI#structural-homology-searches)
+- [Structural alignment and visualization](https://github.com/PombertLab/3DFI#structural-alignment-and-visualization)
 
 #### Preparing FASTA files
 Single FASTA files (one sequence per file) are expected by most predictors and can be created from a MULTIFASTA file with [split_Fasta.pl](https://github.com/PombertLab/3DFI/blob/master/Misc_tools/split_Fasta.pl):
