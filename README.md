@@ -205,9 +205,9 @@ export PATH
 ##### Creating the 3DFI databases
 The 3DFI pipeline leverages GESAMT from the [CCP4](https://www.ccp4.ac.uk/) package to perform structural homology searches against experimentally-determined protein structures from the [RCSB](https://www.rcsb.org/) Protein Data Bank.
 
-The [create_3DFI_db.pl]() script can be used to download the protein structures from [RCSB PCB](https://www.rcsb.org/) [~36 Gb] via rsync and to create/update the GESAMT archive [~3 Gb] queried during structural homology searches.
+The [create_3DFI_db.pl](https://github.com/PombertLab/3DFI/blob/master/create_3DFI_db.pl) script can be used to download the protein structures from [RCSB PCB](https://www.rcsb.org/) [~36 Gb] via rsync and to create/update the GESAMT archive [~3 Gb] queried during structural homology searches.
 
-If the **\$TDFI_DB** environment variable is set, [create_3DFI_db.pl]() can be used without invoking the -d command line switch:
+If the **\$TDFI_DB** environment variable is set, [create_3DFI_db.pl](https://github.com/PombertLab/3DFI/blob/master/create_3DFI_db.pl) can be used without invoking the -d command line switch:
 
 ```Bash
 ./create_3DFI_db.pl -c 10
@@ -242,7 +242,7 @@ drwxr-xr-x. 1062 jpombert jpombert   20480 Jul  4  2020 RCSB_PDB
   <summary><b><i>Show/hide section: Using 3DFI</i></b></summary>
 
 #### Using 3DFI
-The 3DFI pipeline can be lauched with the [run_3DFI.pl]() master script, which will perform the following steps:
+The 3DFI pipeline can be lauched with the [run_3DFI.pl](https://github.com/PombertLab/3DFI/blob/master/run_3DFI.pl) master script, which will perform the following steps:
 1. Prepare FASTA files (single or multifasta) for protein folding
 2. Run the selected protein structure predictor(s)
 3. Perform structural homology searches between predicted structures and [RCSB PCB](https://www.rcsb.org/) proteins
@@ -450,9 +450,9 @@ In the above, AlphaFold ranks the models predicted from best (0) to worst (4); t
 \
 The overall process of performing protein structure predictions, runnning structural homology searches, and aligning predicted structures to possible matches can take a very long time on large datasets. If long computation times are expected, we suggest running the visualization step independently after completion of the run_3DFI.pl tasks. The visualization of the alignments is not automatic and requires manual curation. This step is not computationally intensive and can be performed on machines with modest specifications.
 
-Structural homologs found with 3DFI will be summarized in the [All_GESAMT_matches_per_protein.tsv]() file located in the Homology/GESAMT subdirectory. This file ranks matches by decreasing Q-scores (a measure of structural similarity ranging from 0 to 1). For brevity, only the best match to a unique RCSB PDB + chain entry is listed.
+Structural homologs found with 3DFI will be summarized in the [All_GESAMT_matches_per_protein.tsv](https://github.com/PombertLab/3DFI/blob/master/Examples/Results_3DFI/Homology/GESAMT/All_GESAMT_matches_per_protein.tsv) file located in the Homology/GESAMT subdirectory. This file ranks matches by decreasing Q-scores (a measure of structural similarity ranging from 0 to 1). For brevity, only the best match to a unique RCSB PDB + chain entry is listed.
 
-Structural alignments can be visualized with [run_visualizations.pl]() on the output of [run_3DFI.pl]():
+Structural alignments can be visualized with [run_visualizations.pl](https://github.com/PombertLab/3DFI/blob/master/run_visualizations.pl) on the output of [run_3DFI.pl](https://github.com/PombertLab/3DFI/blob/master/run_3DFI.pl):
 ```Bash
 run_visualizations.pl -r $RESULTS
 ```
@@ -1110,7 +1110,7 @@ prepare_visualizations.pl \
 ```
 </details>
 
-To inspect the 3D structures, we can run [run_visualizations.pl]():
+To inspect the 3D structures, we can run [run_visualizations.pl](https://github.com/PombertLab/WIP/blob/main/3DFI_WIP/run_visualizations.pl):
 ```bash
 run_visualizations.pl \
     -v $RESULTS
