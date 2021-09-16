@@ -1,8 +1,8 @@
 #!/usr/bin/perl
 ## Pombert Lab 2019
-my $version = '0.6e';
+my $version = '0.7';
 my $name = 'raptorx.pl';
-my $updated = '2021-09-02';
+my $updated = '2021-09-16';
 
 use strict; use warnings; use Getopt::Long qw(GetOptions); use File::Basename; use Cwd qw(abs_path);
 my @command = @ARGV; ## Keeping track of command line for log
@@ -85,9 +85,14 @@ print LOG "Using MODELLER binary version $modeller\n";
 print LOG "3D Folding started on: $start\n";
 
 ## Checking for RaptorX path variable (RAPTORX_HOME)
-my $RAPTORX_HOME = '$RAPTORX_HOME';
-chomp ($RAPTORX_HOME = `echo $RAPTORX_HOME`);
-chdir $RAPTORX_HOME or die "Can't access RAPTORX_HOME $RAPTORX_HOME: $!\n";
+my $raptorx_home;
+if (exists $ENV{'RAPTORX_HOME'}){ $raptorx_home = $ENV{'RAPTORX_HOME'}.'/';}
+else {
+	print "WARNING: The RaptorX installation directory is not set as an environment variable (\$RAPTORX_HOME).\n";
+	print "Please check if RaptorX was installed properly\n\n";
+	exit;
+}
+chdir $raptorx_home or die "Can't access RAPTORX_HOME $raptorx_home: $!\n";
 
 ## Running RaptorX
 while (my $fasta_path = shift@fasta){
@@ -105,7 +110,7 @@ while (my $fasta_path = shift@fasta){
 	## Generating the feature file (.tgt)
 	$time = localtime;
 	print "\n$time: Generating the feature file (.tgt) for $fasta with buildFeature\n\n";
-	system "buildFeature \\
+	system "$raptorx_home"."buildFeature \\
 	  -i $fasta_path \\
 	  -o $abs_path_outdir/TGT/$protein.tgt \\
 	  -c $threads";
@@ -118,7 +123,7 @@ while (my $fasta_path = shift@fasta){
 	##  Searching databases for top hits
 	$time = localtime;
 	print "\n$time: Generating list of top hits (.rank) for $fasta with CNFsearch\n\n";
-	system "CNFsearch \\
+	system "$raptorx_home"."CNFsearch \\
 	  -a $threads \\
 	  -q $protein \\
 	  -g $abs_path_outdir/TGT \\
@@ -138,7 +143,7 @@ while (my $fasta_path = shift@fasta){
 	$time = localtime;
 	print "\n$time: Aligning $fasta to top model(s) with CNFalign_lite\n\n";
 	for (0..$topk-1){
-		system "CNFalign_lite \\
+		system "$raptorx_home"."CNFalign_lite \\
 		  -t $models[$_] \\
 		  -q $protein \\
 		  -g $abs_path_outdir/TGT \\
@@ -148,7 +153,7 @@ while (my $fasta_path = shift@fasta){
 	## Creating 3D models for the top k ranks
 	$time = localtime;
 	print "\n$time: Building PDB file(s) for $fasta from top model(s) with buildTopModels\n\n";
-	system "buildTopModels \\
+	system "$raptorx_home"."buildTopModels \\
 		-i $abs_path_outdir/RANK/$protein.rank \\
 		-k $topk \\
 		-m $modeller";
@@ -162,7 +167,7 @@ while (my $fasta_path = shift@fasta){
 	print LOG "Time to fold $fasta = $run_time minutes".' (cumulative)'."\n";
 
 	## Moving datafiles to output directory
-	opendir (RXDIR,"$RAPTORX_HOME");
+	opendir (RXDIR,"$raptorx_home");
 	while (my $file = readdir(RXDIR)){
 		if ($file =~ /\.pdb$/){
 			my ($m_number) = $file =~ /\-(m\d+)\-(\w+)\.pdb$/;
