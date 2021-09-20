@@ -103,6 +103,22 @@ Due to its excellent results in the [CASP14](https://predictioncenter.org/casp14
 
 In addition to the installation instructions provided by the software providers in the corresponding URLs, supplemental installation notes for [AlphaFold2](https://github.com/PombertLab/3DFI/blob/master/Prediction/AlphaFold2/af2_installation_notes.sh), [RoseTTAFold](https://github.com/PombertLab/3DFI/blob/master/Prediction/RoseTTAFold/rfold_installation_notes.sh) and [RaptorX](https://github.com/PombertLab/3DFI/blob/master/Prediction/RaptorX/raptorx_installation_notes.sh), are provided for convenience.
 
+##### Modeller
+RaptorX requires [Modeller](https://salilab.org/modeller/). The license for Modeller can be requested [here](https://salilab.org/modeller/registration.html). Modeller can be downloaded [here](https://salilab.org/modeller/download_installation.html).
+
+To install Modeller:
+```Bash
+# On Ubuntu
+LICENSE=XXXXX
+MODELLER=modeller_10.1-1_amd64.deb
+sudo env KEY_MODELLER=$LICENSE dpkg -i $MODELLER
+
+# On RedHat/Fedora
+LICENSE=XXXXX
+MODELLER=modeller-10.1-1.x86_64.rpm
+sudo env KEY_MODELLER=$LICENSE rpm -Uvh $MODELLER
+```
+
 ##### The CCP4 package
 The [CCP4](https://www.ccp4.ac.uk/) package can be installed by following the prompts from its graphical user interface. The gesamt program required by 3DFI will be located inside the bin subdirectory, which should be added to the **$PATH** environment variable.
 
