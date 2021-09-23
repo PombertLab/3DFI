@@ -1,8 +1,8 @@
 #!/usr/bin/perl
 ## Pombert Lab 2021
-my $version = '0.1';
+my $version = '0.2';
 my $name = 'update_PDB.pl';
-my $updated = '2021-05-17';
+my $updated = '2021-09-23';
 
 use strict;
 use warnings;
@@ -17,8 +17,8 @@ SYNOPSIS	Downloads/updates the RCSB PDB database with rsync
 
 COMMAND 	${name} \\
 		  -o ./PDB \\
-		  -n 15 \\
-		  -v
+		  -n 15
+
 OPTIONS:
 -o (--outdir)	PDB output directory [Default: PDB]
 -n (--nice)	Defines niceness (adjusts scheduling priority)
@@ -42,15 +42,14 @@ unless (-d $outdir){
 
 ## Defining niceness / verbosity
 my $prg = "";
-my $vb = "";
 if ($nice){ $prg = "nice -n $nice"; }
-if ($verbose) { $vb = "-v"; }
 
 ## Running task with adjusted niceness, if desired
+print "Downloading RCSB PDB files with rsync:\n\n";
 system "$prg \\
   rsync \\
   -rlpt \\
-  $vb \\
+  --info=progress2 \\
   -z \\
   --delete \\
   --port=33444 \\

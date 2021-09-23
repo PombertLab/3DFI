@@ -167,8 +167,7 @@ if ($rcsb or $all_databases){
 	### Downloading/updating the RCSB PDB database with rsync
 	system "$homology_dir"."update_PDB.pl \\
 			-o $PDB \\
-			-n 15 \\
-			-v";
+			-n 15";
 
 	### Downloading/updating the list of titles and chains from PDB files
 	my $list_file = 'RCSB_PDB_titles.tar.gz';
