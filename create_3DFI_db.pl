@@ -41,7 +41,7 @@ OPTIONS:
 # GESAMT options
 --make_gesamt	Create a GESAMT archive from the RCSB PDB files instead of 
 		downloading a pre-built version
---update_gesamt	Update an existing GESAMT archive
+--update_gesamt	Update an existing GESAMT archive made with --make_gesamt
 -c (--cpu)	Number of CPUs to create/update the GESAMT archive [Default: 10]
 
 ### Download size / disk usage
