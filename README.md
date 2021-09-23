@@ -223,10 +223,10 @@ export PATH
 ##### Downloading the 3DFI databases
 The [create_3DFI_db.pl](https://github.com/PombertLab/3DFI/blob/master/create_3DFI_db.pl) script can be used to download the 3DFI databases. If the **\$TDFI_DB** environment variable is set, [create_3DFI_db.pl](https://github.com/PombertLab/3DFI/blob/master/create_3DFI_db.pl) can be used without invoking the -d command line switch.
 
-To download all 3DFI databases [~770 Gb; 3.2 Tb unpacked] with create_3DFI_db.pl:
+To download all 3DFI databases [~770 Gb; 3.2 Tb unpacked] with create_3DFI_db.pl, unpack them, then delete the packed archives:
 ```Bash
 cd $TDFI_HOME
-./create_3DFI_db.pl --all
+./create_3DFI_db.pl --all --delete
 ```
 <details open>
   <summary>Options for create_3DFI_db.pl are:</summary>
