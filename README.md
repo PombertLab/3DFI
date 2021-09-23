@@ -906,8 +906,7 @@ export RCSB_PDB=$TDFI_DB/RCSB_PDB/
 ## Downloading the RCSB PDB database:
 update_PDB.pl \
   -o $RCSB_PDB \
-  -n 15 \
-  -v
+  -n 15
 ```
 
 <details open>
@@ -916,7 +915,6 @@ update_PDB.pl \
 ```
 -o (--outdir)	PDB output directory [Default: PDB]
 -n (--nice)	Defines niceness (adjusts scheduling priority)
--v (--verbose)	Adds verbosity
 ```
 </details>
 
