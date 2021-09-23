@@ -4,7 +4,10 @@ my $name = 'trRosetta2.pl';
 my $version = '0.1';
 my $updated = '2021-08-04';
 
-use strict; use warnings; use Getopt::Long qw(GetOptions); use File::Basename;
+use strict;
+use warnings;
+use Getopt::Long qw(GetOptions);
+use File::Basename;
 
 my $usage = <<"OPTIONS";
 NAME		${name}

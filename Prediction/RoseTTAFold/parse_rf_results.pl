@@ -4,7 +4,9 @@ my $name = 'parse_rf_results';
 my $version = '0.2a';
 my $updated = '2021-09-07';
 
-use strict; use warnings; use Getopt::Long qw(GetOptions);
+use strict;
+use warnings;
+use Getopt::Long qw(GetOptions);
 
 my $usage =<<"OPTIONS";
 NAME		${name}

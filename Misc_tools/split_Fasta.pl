@@ -4,7 +4,10 @@ my $version = '0.5';
 my $name = 'split_Fasta.pl';
 my $updated = '2021-09-07';
 
-use strict; use warnings; use PerlIO::gzip; use Getopt::Long qw(GetOptions);
+use strict;
+use warnings;
+use Getopt::Long qw(GetOptions);
+use PerlIO::gzip;
 
 ## Usage definition
 my $USAGE = <<"OPTIONS";

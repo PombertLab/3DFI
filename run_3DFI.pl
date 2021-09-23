@@ -1,10 +1,15 @@
 #!/usr/bin/perl
 ## Pombert Lab, Illinois Tech, 2021
 my $name = 'run_3DFI.pl';
-my $version = '0.3e';
-my $updated = '2021-09-11';
+my $version = '0.4';
+my $updated = '2021-09-21';
 
-use strict; use warnings; use Getopt::Long qw(GetOptions); use File::Basename; use Cwd qw(abs_path); use POSIX 'strftime';
+use strict;
+use warnings;
+use Getopt::Long qw(GetOptions);
+use File::Basename;
+use Cwd qw(abs_path);
+use POSIX 'strftime';
 
 my $usage = <<"USAGE";
 NAME		${name}
@@ -41,7 +46,7 @@ ADVANCED OPTIONS:
 -n (--nogpu)		ALPHAFOLD/ROSETTAFOLD: Turn off GPU acceleration / use CPU only
 -g (--gpu_dev)		ALPHAFOLD: list of GPU devices to use: e.g. all; 0,1; 0,1,2,3 [Default: all]
 -m (--maxdate)		ALPHAFOLD: --max_template_date option (YYYY-MM-DD) [Default: current date]
---preset			ALPHAFOLD:  full_dbs, reduced_dbs or casp14 [Default: full_dbs]
+--preset		ALPHAFOLD:  full_dbs, reduced_dbs or casp14 [Default: full_dbs]
 -k (--ranks)		RAPTORX: # Number of top ranks to model [Default: 5]
 --modeller		RAPTORX: Modeller version [Default: mod10.1]
 
@@ -49,7 +54,7 @@ ADVANCED OPTIONS:
 -d (--db)		3DFI database location containing the RCSB PDB files / GESAMT archive [Default: \$TDFI_DB]
 -q (--qscore)		Mininum Q-score to keep [Default: 0.3]
 -b (--best)		Keep the best match(es) only (top X hits) [Default: 5]
---query		Models to query per protein and predictor: all or best [Default: all]
+--query			Models to query per protein and predictor: all or best [Default: all]
 OPTIONS
 
 #####  Defining options

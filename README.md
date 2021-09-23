@@ -14,7 +14,7 @@ The 3DFI pipeline automates protein structure predictions, structural homology s
 	* [Software requirements](#software-requirements)
 	* [Installing 3DFI](#installing-3DFI)
 		* [Initial setup](#initial-setup)
-		* [Creating the 3DFI databases](#creating-the-3DFI-databases)
+		* [Downloading the 3DFI databases](#downloading-the-3DFI-databases)
 	* [Using 3DFI](#Using-3DFI)
 		* [A case example - Unknown proteins from Microsporidia](#a-case-example---unknown-proteins-from-microsporidia)
 			* [Interpreting the results](#Interpreting-the-results)
@@ -82,39 +82,44 @@ The following hardware is recommended to use 3DFI:
 
 3. Using [AlphaFold2](https://github.com/deepmind/alphafold) with its --full_dbs preset can require a large amount of system memory. The AlphaFold --reduced_dbs preset uses a smaller memory footprint. [3DFI](https://github.com/PombertLab/3DFI) was tested on machines with a minimum of 64 Gb of RAM but may work on machines with more modest specifications.
 
+4. If investigating large datasets, a 10 Tb+ storage solution is recommended (hard drives are fine) to store the results. AlphaFold often outputs over 50 Gb of data per protein.
+
 #### Software requirements
 The 3DFI pipeline requires the following software to perform protein structure predictions, structural homology searches/alignments and visualization:
-1. At least one of the following protein structure prediction tools:
-	- [AlphaFold2](https://github.com/deepmind/alphafold) (Deep-learning-based)
+1. The lightweight [aria2](https://aria2.github.io/) download utility tool.
+2. At least one of the following protein structure prediction tools:
+	- A [customized](https://github.com/PombertLab/alphafold) version of [AlphaFold2](https://github.com/deepmind/alphafold) (Deep-learning-based)
 		- Requires [Docker](https://www.docker.com/)
 	- [RoseTTAFold](https://github.com/RosettaCommons/RoseTTAFold) (Deep-learning-based)
-		- Requires [PyRosetta](http://www.pyrosetta.org/), [Conda](https://docs.conda.io/en/latest/)
+		- Requires [Conda](https://docs.conda.io/en/latest/), [PyRosetta](http://www.pyrosetta.org/) (Python-3.7 Release)
 	- [RaptorX](http://raptorx.uchicago.edu/) (Template-based)
 		- Requires [MODELLER](https://salilab.org/modeller/)
-2. A structural homology search tool:
+3. A structural homology search tool:
 	- GESAMT via [CCP4](https://www.ccp4.ac.uk/)
-3. An alignment/visualization tool:
+4. An alignment/visualization tool:
 	- [ChimeraX](https://www.rbvi.ucsf.edu/chimerax/download.html)
-4. [Perl5](https://www.perl.org/) and the additonal scripting module:
+5. [Perl5](https://www.perl.org/) and the additonal scripting module:
 	- [PerlIO::gzip](https://metacpan.org/pod/PerlIO::gzip)
 
-##### Protein structure prediction tools
-Due to its excellent results in the [CASP14](https://predictioncenter.org/casp14/) competition (see this Nature news [article](https://www.nature.com/articles/d41586-020-03348-4)), we recommend using [AlphaFold2](https://github.com/deepmind/alphafold) if a single predictor is desired. [RoseTTAFold](https://github.com/RosettaCommons/RoseTTAFold) is also an excellent choice and is simple to install within a conda environment. The template-based [RaptorX](http://raptorx.uchicago.edu/) is an interesting option if no CUDA-enabled GPU is available. Its template-based approach can work where deep-learning methods do not, making it an interesting alternative even if GPUs are available.
+##### Aria2
+Aria2 is a lightweight utility tool that can resume partial downloads. 3DFI uses this tool to download its databases. On Fedora, aria2 can be installed from the DNF package manager:
+```Bash
+sudo dnf install aria2
+```
 
-In addition to the installation instructions provided by the software providers in the corresponding URLs, supplemental installation notes for [AlphaFold2](https://github.com/PombertLab/3DFI/blob/master/Prediction/AlphaFold2/af2_installation_notes.sh), [RoseTTAFold](https://github.com/PombertLab/3DFI/blob/master/Prediction/RoseTTAFold/rfold_installation_notes.sh) and [RaptorX](https://github.com/PombertLab/3DFI/blob/master/Prediction/RaptorX/raptorx_installation_notes.sh), are provided for convenience.
+##### Protein structure prediction tools
+The [customized](https://github.com/PombertLab/alphafold) version of AlphaFold can be installed together with [RaptorX](http://raptorx.uchicago.edu/) and/or [RoseTTAFold](https://github.com/RosettaCommons/RoseTTAFold) with [setup_3DFI.pl](https://github.com/PombertLab/3DFI/blob/master/setup_3DFI.pl) as described [below](https://github.com/PombertLab/3DFI#installing-3DFI). Docker and/or Conda should be installed prior to running setup_3DFI.pl. Notes on how to install Docker and Conda on Fedora are provided [here](https://github.com/PombertLab/3DFI/blob/master/Notes/Installation_notes.sh) for convenience.
+
+Due to its excellent results in the [CASP14](https://predictioncenter.org/casp14/) competition (see this Nature news [article](https://www.nature.com/articles/d41586-020-03348-4)), we recommend using [AlphaFold2](https://github.com/deepmind/alphafold) if a single predictor is desired.
+
+[RaptorX](http://raptorx.uchicago.edu/) is an interesting option if no CUDA-enabled GPU is available. Its template-based approach can work where deep-learning methods do not, making it an interesting alternative even if GPUs are available. We thank Professor Jinbo Xu for allowing us to redistribute RaptorX with 3DFI for non-commercial purposes.
+
+[RoseTTAFold](https://github.com/RosettaCommons/RoseTTAFold) is also an excellent choice but a PyRosetta [license](http://www.pyrosetta.org/) and the latest PyRosetta4.Release.python37.*.tar.bz2 release should be obtained prior to running [setup_3DFI.pl](https://github.com/PombertLab/3DFI/blob/master/setup_3DFI.pl).
 
 ##### Modeller
-RaptorX requires [Modeller](https://salilab.org/modeller/). The license for Modeller can be requested [here](https://salilab.org/modeller/registration.html). Modeller can be downloaded [here](https://salilab.org/modeller/download_installation.html).
-
-To install Modeller:
+RaptorX requires [Modeller](https://salilab.org/modeller/). The license for Modeller can be requested [here](https://salilab.org/modeller/registration.html). Modeller can be downloaded [here](https://salilab.org/modeller/download_installation.html). To install Modeller on RedHat/Fedora:
 ```Bash
-# On Ubuntu
-LICENSE=XXXXX
-MODELLER=modeller_10.1-1_amd64.deb
-sudo env KEY_MODELLER=$LICENSE dpkg -i $MODELLER
-
-# On RedHat/Fedora
-LICENSE=XXXXX
+LICENSE=XXXXX ## replace XXXXX by modeller license
 MODELLER=modeller-10.1-1.x86_64.rpm
 sudo env KEY_MODELLER=$LICENSE rpm -Uvh $MODELLER
 ```
@@ -153,39 +158,39 @@ git clone https://github.com/PombertLab/3DFI.git
 ```
 
 ##### Initial setup
-The [setup_3DFI.pl](https://github.com/PombertLab/3DFI/blob/master/setup_3DFI.pl) script can be used to set up the 3DFI environment variables to the specified configuration file (e.g. ~/.bashrc or /etc/profile.d/3DFI.sh). The script can also add the 3DFI installation folder and it subdirectories to the **\$PATH** environment variable (if desired) from the interactive prompts. 
+The [setup_3DFI.pl](https://github.com/PombertLab/3DFI/blob/master/setup_3DFI.pl) script can be used to install AlphaFold, RaptorX and/or RoseTTAFold and to set up the 3DFI environment variables. The script can also add the 3DFI installation folder and it subdirectories to the **\$PATH** environment variable (if desired) from the interactive prompts. 
 
 - When run, the 3DFI pipeline will search for the following environment variables (**\$ALPHAFOLD_HOME**, **\$ROSETTAFOLD_HOME** and/or **\$RAPTORX_HOME**) depending on the requested protein structure predictor(s).
 
-- The pipeline will also look for the **\$ALPHAFOLD_OUT** environment variable if AlphaFold is requested (NOTE: The output directory in the [AlphaFold2](https://github.com/deepmind/alphafold) docker image is hardcoded (as of 2021-09-04) and cannot yet be entered from the command line).
+- The 3DFI installation and database directories will be set as environment variables (**\$TDFI_HOME** and **\$TDFI_DB**, respectively).
 
-- For ease of use, the 3DFI installation and database directories can be set as environment variables (**\$TDFI_HOME** and **\$TDFI_DB**, respectively).
-
-For example, to set the 3DFI environment variables in the ~/.bashrc with setup_3DFI.pl:
+To install AlphaFold, RaptorX and RoseTTAFold and set the 3DFI environment variables in the ~/.bashrc with setup_3DFI.pl:
 ```Bash
+export CONFIG=~/.bashrc
+export DATABASE=/media/databases/3DFI
+export PYROSETTA=~/Downloads/PyRosetta4.Release.python37.*.tar.bz2
+
 cd 3DFI/
 ./setup_3DFI.pl \
-  -c ~/.bashrc \
-  -p ./ \
-  -d /media/databases/3DFI \
-  --raptorx /opt/RaptorX  \
-  --rosetta /opt/RoseTTAFold \
-  --alphain /opt/alphafold \
-  --alphaout /media/data/af2_results
+  -c $CONFIG \
+  -d $DATABASE \
+  -i alphafold raptorx rosettafold \
+  -pyr $PYROSETTA
 ```
 <details open>
   <summary>Options for setup_3DFI.pl are:</summary>
 
 ```
--c (--config)	Configuration file to edit/create
+-c (--config)	Configuration file to edit/create (e.g. ~/.bashrc)
+-w (--write)	Write mode: (a)ppend or (o)verwrite [Default: a]
+-d (--dbdir)	3DFI databases directory ($TDFI_DB)
 -p (--path)	3DFI installation directory ($TDFI_HOME) [Default: ./]
--d (-db)	Desired 3DFI database location ($TDFI_DB)
 
-## Protein structure predictor(s)
---raptorx	RaptorX installation directory
---rosetta	RoseTTAFold installation directory
---alphain	AlphaFold installation directory
---alphaout	AlphaFold output directory
+## Protein structure predictors 
+-i (--install)		3D structure predictor(s) to install (alphafold raptorx and/or rosettafold)
+-pyr (--pyrosetta)	PyRosetta4 [Python-3.7.Release] .tar.bz2 archive to install
+			# Download - https://www.pyrosetta.org/downloads#h.xe4c0yjfkl19
+			# License - https://els2.comotion.uw.edu/product/pyrosetta
 ```
 </details>
 
@@ -198,16 +203,13 @@ export TDFI_HOME=/opt/3DFI
 export TDFI_DB=/media/databases/3DFI
 
 ### 3DFI environment variables for protein structure predictor(s)
-export RAPTORX_HOME=/opt/RaptorX
-export ROSETTAFOLD_HOME=/opt/RoseTTAFold
-export ALPHAFOLD_HOME=/opt/alphafold
-export ALPHAFOLD_OUT=/media/data/af2_results
+export RAPTORX_HOME=/opt/3DFI/3D/RaptorX
+export ROSETTAFOLD_HOME=/opt/3DFI/3D/RoseTTAFold
+export ALPHAFOLD_HOME=/opt/3DFI/3D/alphafold
 
 ### 3DFI PATH variables
 PATH=$PATH:/opt/3DFI
 PATH=$PATH:/opt/3DFI/Prediction/RaptorX
-PATH=$PATH:/opt/3DFI/Prediction/trRosetta
-PATH=$PATH:/opt/3DFI/Prediction/trRosetta2
 PATH=$PATH:/opt/3DFI/Prediction/AlphaFold2
 PATH=$PATH:/opt/3DFI/Prediction/RoseTTAFold
 PATH=$PATH:/opt/3DFI/Homology_search
@@ -218,22 +220,45 @@ export PATH
 ```
 </details>
 
-##### Creating the 3DFI databases
-The 3DFI pipeline leverages GESAMT from the [CCP4](https://www.ccp4.ac.uk/) package to perform structural homology searches against experimentally-determined protein structures from the [RCSB](https://www.rcsb.org/) Protein Data Bank.
+##### Downloading the 3DFI databases
+The [create_3DFI_db.pl](https://github.com/PombertLab/3DFI/blob/master/create_3DFI_db.pl) script can be used to download the 3DFI databases. If the **\$TDFI_DB** environment variable is set, [create_3DFI_db.pl](https://github.com/PombertLab/3DFI/blob/master/create_3DFI_db.pl) can be used without invoking the -d command line switch.
 
-The [create_3DFI_db.pl](https://github.com/PombertLab/3DFI/blob/master/create_3DFI_db.pl) script can be used to download the protein structures from [RCSB PCB](https://www.rcsb.org/) [~36 Gb] via rsync and to create/update the GESAMT archive [~3 Gb] queried during structural homology searches.
-
-If the **\$TDFI_DB** environment variable is set, [create_3DFI_db.pl](https://github.com/PombertLab/3DFI/blob/master/create_3DFI_db.pl) can be used without invoking the -d command line switch:
-
+To download all 3DFI databases [~770 Gb; 3.2 Tb unpacked] with create_3DFI_db.pl:
 ```Bash
-./create_3DFI_db.pl -c 10
+cd $TDFI_HOME
+./create_3DFI_db.pl --all
 ```
 <details open>
   <summary>Options for create_3DFI_db.pl are:</summary>
 
 ```
--c (--cpu)	Number of CPUs to create/update the GESAMT archive
--d (--db)	Target 3DFI database location ## Not required if $TDFI_DB is set.
+-a (--all)	Download all databases: RCSB, ALPHAFOLD, ROSETTAFOLD, RAPTORX
+-d (--db)	Target 3DFI database location [Default: $TDFI_DB]
+
+# Download specific databases:
+--rcsb		RCSB PDB/GESAMT
+--alpha		AlphaFold2
+--raptorx	RaptorX
+--rosetta	RoseTTAFold
+
+# Download options
+--nconnect	Number of concurrent aria2 connections [Default: 10]
+--no_unpack	Do not unpack downloaded files ## Useful for backups
+--delete	Delete downloaded archives after unpacking them
+
+# GESAMT options
+--make_gesamt	Create a GESAMT archive from the RCSB PDB files instead of 
+		downloading a pre-built version
+--update_gesamt	Update an existing GESAMT archive
+-c (--cpu)	Number of CPUs to create/update the GESAMT archive [Default: 10]
+
+### Download size / disk usage
+# TOTAL				669 Gb / 3.2 Tb
+# RSCB PDB			39 Gb / 42 Gb inflated
+# BFD (AlphaFold/RoseTTAFold)	272 Gb / 1.8 Tb inflated
+# AlphaFold (minus BFD)		176 Gb / 0.6 Tb inflated
+# RoseTTAFold (minus BFD)	146 Gb / 849 Gb inflated
+# RaptorX			37 Gb / 76 Gb inflated
 ```
 </details>
 
@@ -243,11 +268,14 @@ If the **\$TDFI_DB** environment variable is set, [create_3DFI_db.pl](https://gi
 ```Bash
 ls -l $TDFI_DB
 
-total 1228
--rw-r--r--.    1 jpombert jpombert     245 Sep  6 11:07 last_updated.log
-drwxr-xr-x.    2 jpombert jpombert   40960 Sep  1 17:52 RCSB_GESAMT
-drwxr-xr-x. 1062 jpombert jpombert   20480 Jul  4  2020 RCSB_PDB
--rw-r--r--.    1 jpombert jpombert 1187840 Sep  6 11:08 RCSB_PDB_titles.tsv
+total 2758236
+drwxr-xr-x     2 jpombert jpombert       4096 Sep 22 08:38 ALPHAFOLD
+drwxr-xr-x     2 jpombert jpombert       4096 Sep 22 08:38 BFD
+drwxr-xr-x.    9 jpombert jpombert       4096 Jul 12 15:52 RAPTORX
+drwxr-xr-x     2 jpombert jpombert      49152 Sep 21 15:33 RCSB_GESAMT
+drwxr-xr-x. 1062 jpombert jpombert      20480 Jul  4  2020 RCSB_PDB
+-rw-r--r--     1 jpombert jpombert   36715353 Sep 21 08:50 RCSB_PDB_titles.tsv
+drwxr-xr-x     5 jpombert jpombert       4096 Sep 22 08:48 ROSETTAFOLD
 ```
 </details>
 </details>
@@ -261,15 +289,17 @@ drwxr-xr-x. 1062 jpombert jpombert   20480 Jul  4  2020 RCSB_PDB
 The 3DFI pipeline can be lauched with the [run_3DFI.pl](https://github.com/PombertLab/3DFI/blob/master/run_3DFI.pl) master script, which will perform the following steps:
 1. Prepare FASTA files (single or multifasta) for protein folding
 2. Run the selected protein structure predictor(s)
-3. Perform structural homology searches between predicted structures and [RCSB PCB](https://www.rcsb.org/) proteins
+3. Perform structural homology searches between predicted structures and [RCSB PDB](https://www.rcsb.org/) proteins
 4. Align the predicted proteins with their structural homologs for later visualization with ChimeraX
 
 The 3DFI pipeline can be run on one (or more) set of single/multifasta files using all three predictors with the following command line:
 
 ```bash
+export OUTPUT=Results_3DFI
+
 run_3DFI.pl \
   -f *.fasta \
-  -o Results_3DFI \
+  -o $OUTPUT \
   -p alphafold rosettafold raptorx \
   -c 16
 ```
@@ -288,7 +318,7 @@ run_3DFI.pl \
 ```
 </details>
 
-- Because the protein structure prediction step is time-consuming even with GPU acceleration, we recommend running only one predictor at a time if using large protein datasets. [AlphaFold2](https://github.com/deepmind/alphafold) folding time on our AMD Ryzen 5950X/NVIDIA RTX A6000 workstation averaged to 31.59 minutes/protein (~ 50 proteins/day) on a ~1,900 protein dataset, with computation times as low and high as 9.07 and 4282.32 minutes per protein, respectively.
+- Because the protein structure prediction step is time-consuming even with GPU acceleration, we recommend running only one predictor at a time if using large protein datasets. The average AlphaFold folding time on our AMD Ryzen 5950X/NVIDIA RTX A6000 workstation was 31.59 minutes per protein (~ 50 proteins/day) on a ~1,900 protein dataset, with computation times as low and high as 9.07 and 4282.32 minutes per protein, respectively.
 
 - If interrupted, the pipeline can be resumed by re-entering the same command line. Previously computed protein structures, structural matches and alignments will be skipped.
 
@@ -649,23 +679,15 @@ If desired, single sequences can further be subdivided into smaller segments usi
 
 #### 3D structure prediction
 ##### AlphaFold2 - deep-learning-based protein structure modeling
-The [alphafold.pl](https://github.com/PombertLab/3DFI/blob/master/Prediction/AlphaFold2/alphafold.pl) script is a Perl wrapper that enables running AlphaFold2 in batch mode. To simplify its use, the ALPHAFOLD_HOME and ALPHAFOLD_OUT environment variables can be set in the shell.
+The [alphafold.pl](https://github.com/PombertLab/3DFI/blob/master/Prediction/AlphaFold2/alphafold.pl) script is a Perl wrapper that enables running AlphaFold2 in batch mode. To run alphafold.pl on multiple fasta files, type:
 
 ```bash
-## Setting up AlphaFold2 installation directory and output folder as environment variables:
-export ALPHAFOLD_HOME=/opt/alphafold
-export ALPHAFOLD_OUT=/media/Data/alphafold_results
-
 ## Creating working directories for 3DFI / AlphaFold2:
 export RESULTS=~/Results_3DFI
 export FOLDING=$RESULTS/Folding
 export AF=$FOLDING/ALPHAFOLD_3D
 mkdir -p $RESULTS $FOLDING $AF
-```
 
-To run [alphafold.pl](https://github.com/PombertLab/3DFI/blob/master/Prediction/AlphaFold2/alphafold.pl) on multiple fasta files, type:
-
-```bash
 ## Running AlphaFold on provided examples:
 alphafold.pl \
    -f $TDFI_HOME/Examples/FASTA/*.fasta \
@@ -678,12 +700,13 @@ alphafold.pl \
 ```
 -f (--fasta)		FASTA files to fold
 -o (--outdir)		Output directory
+-d (--docker)		Docker image name [Default: alphafold_3dfi]
 -m (--max_date)		--max_template_date option (YYYY-MM-DD) from AlphaFold2 [Default: current date]
 -p (--preset)		Alphafold preset: full_dbs, reduced_dbs or casp14 [Default: full_dbs]
 -g (--gpu_dev)		List of GPU devices to use: e.g. all; 0,1; 0,1,2,3 [Default: all]
 -n (--no_gpu)		Turns off GPU acceleration
--ah (--alpha_home)	AlphaFold2 installation directory ## if not set in \$ALPHAFOLD_HOME
--ao (--alpha_out)	AlphaFold2 output directory ## if not set in \$ALPHAFOLD_OUT
+-ah (--alpha_home)	AlphaFold2 installation directory [Default: $ALPHAFOLD_HOME]
+-ad (--alpha_db)	AlphaFold2 databases location [Default: $TDFI_DB/ALPHAFOLD]
 ```
 </details>
 
@@ -746,22 +769,15 @@ parse_af_results.pl \
 </details>
 
 ##### RoseTTAFold - deep-learning-based protein structure modeling
-The [rosettafold.pl](https://github.com/PombertLab/3DFI/blob/master/Prediction/RoseTTAFold/rosettafold.pl) script is a Perl wrapper that enables running the [RoseTTAFold](https://github.com/RosettaCommons/RoseTTAFold) run_e2e_ver.sh / run_pyrosetta_ver.sh scripts in batch mode. To simplify its use, the ROSETTAFOLD_HOME environment variable can be set in the shell.
+The [rosettafold.pl](https://github.com/PombertLab/3DFI/blob/master/Prediction/RoseTTAFold/rosettafold.pl) script is a Perl wrapper that enables running the [RoseTTAFold](https://github.com/RosettaCommons/RoseTTAFold) run_e2e_ver.sh / run_pyrosetta_ver.sh scripts in batch mode. To run rosettafold.pl on multiple fasta files, type:
 
 ```bash
-##  Setting up RoseTTAFold installation directory as an environment variable:
-export ROSETTAFOLD_HOME=/opt/RoseTTAFold
-
 ## Creating working directories for 3DFI / RoseTTAFold:
 export RESULTS=~/Results_3DFI
 export FOLDING=$RESULTS/Folding
 export RF=$FOLDING/ROSETTAFOLD_3D
 mkdir -p $RESULTS $FOLDING $RF
-```
 
-To run [rosettafold.pl](https://github.com/PombertLab/3DFI/blob/master/Prediction/RoseTTAFold/rosettafold.pl) on multiple fasta files, type:
-
-```bash
 ## Running RoseTTAFold on provided examples:
 rosettafold.pl \
    -f $TDFI_HOME/Examples/FASTA/*.fasta \
@@ -775,7 +791,7 @@ rosettafold.pl \
 -f (--fasta)	FASTA files to fold
 -o (--outdir)	Output directory
 -t (--type)	Folding type: pyrosetta (py) or end-to-end (e2e)  [Default: e2e]
--r (--rosetta)	RoseTTAFold installation directory ## if not set in \$ROSETTAFOLD_HOME
+-r (--rosetta)	RoseTTAFold installation directory ## if not set in $ROSETTAFOLD_HOME
 ```
 </details>
 
@@ -838,22 +854,15 @@ parse_rf_results.pl \
 </details>
 
 ##### RaptorX - template-based protein structure modeling
-To run [RaptorX](http://raptorx.uchicago.edu/) from anywhere with [raptorx.pl](https://github.com/PombertLab/3DFI/blob/master/Prediction/RaptorX/raptorx.pl), the environment variable RAPTORX_HOME should be set first:
+To predict 3D structures with [RaptorX](http://raptorx.uchicago.edu/) using [raptorx.pl](https://github.com/PombertLab/3DFI/blob/master/Prediction/RaptorX/raptorx.pl):
 
-```Bash
-## Setting up the RaptorX installation directory as an environment variable:
-export RAPTORX_HOME=/opt/RaptorX
-
+```bash
 ## Creating working directories for 3DFI / RaptorX:
 export RESULTS=~/Results_3DFI
 export FOLDING=$RESULTS/Folding
 export RX=$FOLDING/RAPTORX_3D
 mkdir -p $RESULTS $FOLDING $RX
-```
 
-To predict 3D structures with [RaptorX](http://raptorx.uchicago.edu/) using [raptorx.pl](https://github.com/PombertLab/3DFI/blob/master/Prediction/RaptorX/raptorx.pl):
-
-```bash
 ## Running RaptorX on provided examples with 10 CPUs and folding against the top 5 templates:
 raptorx.pl \
    -t 10 \
@@ -875,14 +884,7 @@ raptorx.pl \
 </details>
 
 NOTES:
-- If segmentation faults occur on AMD ryzen CPUs with the blastpgp version provided with the RaptorX CNFsearch1.66_complete.zip package (under util/BLAST), replace it with the latest BLAST legacy version (2.2.26) from [NCBI](https://ftp.ncbi.nlm.nih.gov/blast/executables/legacy.NOTSUPPORTED/2.2.26/).
-
-- The following warning message about 6f45D can be safely ignored; it refers to a problematic file in the RaptorX datasets but does not impede folding. To silence this error message, see how to remove references to 6f45D in [raptorx_installation_notes.sh](https://github.com/PombertLab/3DFI/blob/master/Prediction/RaptorX/raptorx_installation_notes.sh).
-```
-.....CONTENT BAD AT TEMPLATE FILE /path/to/RaptorX_databases/TPL_BC100//6f45D.tpl -> [FEAT line 115 CA_contact 21]
-template file 6f45D format bad or missing
-```
-- RaptorX expects a PYTHONHOME environment variable but runs fine without it. The following warning message can be safely ignored, and silenced by setting up a PYTHONHOME environment variable. Note that setting PYTHONHOME can create issues with other applications.
+- RaptorX expects a PYTHONHOME environment variable but runs fine without it. The following warning message can be safely ignored (silencing it by setting up the PYTHONHOME environment variable could create issues with other applications).
 ```renamed env vars for consistencyindependent libraries <prefix>
 Could not find platform dependent libraries <exec_prefix>
 Consider setting $PYTHONHOME to <prefix>[:<exec_prefix>]
@@ -1050,7 +1052,7 @@ descriptive_GESAMT_matches.pl \
    -m $GSMT/*.gesamt.gz \
    -q 0.3 \
    -b 5 \
-   -o $RESULTS/GESAMT.matches
+   -o $RESULTS/ALPHAFOLD_GESAMT_per_model.matches
 ```
 
 <details open>
@@ -1063,8 +1065,9 @@ descriptive_GESAMT_matches.pl \
 -q (--qscore)	Q-score cut-off [Default: 0.3]
 -b (--best)	Keep the best match(es) only (top X hits)
 -o (--output)	Output name [Default: Gesamt.matches]
--l (--log)	Log file [Default: descriptive_matches.log]
+-l (--log)	Error log file [Default: descriptive_matches.err]
 -n (--nobar)	Turn off the progress bar
+-x (--regex)	Regex to parse filenames: word (\w+) or nonspace (\S+) [Default: nonspace]
 ```
 </details>
 
@@ -1089,6 +1092,27 @@ ECU03_1140-m3	3	2PQA	A	0.6552	1.6470	0.1593	113	128	pdb2pqa.ent.gz	REPLICATION P
 ECU03_1140-m3	4	4GNX	B	0.6503	1.6531	0.1182	110	122	pdb4gnx.ent.gz	PUTATIVE UNCHARACTERIZED PROTEIN
 ECU03_1140-m3	5	3KDF	B	0.6496	1.7729	0.1545	110	118	pdb3kdf.ent.gz	REPLICATION PROTEIN A 32 KDA SUBUNIT
 ```
+
+##### Parsing the output of descriptive_GESAMT_matches.pl per protein accross all models, from best Q-score to worst
+Structural matches obtained from all protein stucture predictors can be parsed with [parse_all_models_by_Q.pl](https://github.com/PombertLab/3DFI/blob/master/Homology_search/parse_all_models_by_Q.pl). To summarize these matches with parse_all_models_by_Q.pl:
+
+```Bash
+parse_all_models_by_Q.pl \
+  -m *_GESAMT_per_model.matches \
+  -o All_GESAMT_matches_per_protein.tsv
+```
+
+<details open>
+  <summary>Options for parse_all_models_by_Q.pl are:</summary>
+
+```
+-m (--matches)	*.GESAMT.matches generated by descriptive_GESAMT_matches.pl
+-o (--out)	Output file in TSV format [Default: All_GESAMT_matches_per_protein.tsv]
+-x (--max)	Max number of distinct RCSB/chain hits to keep [Default: 50]
+-r (--redun)	Keep all entries for redundant RCSB chains [Default: off]
+-w (--word)	Use word regular expression (\w+) to capture locus tag [Default: off]
+```
+</details>
 
 #### Structural alignment and visualization
 ##### About alignment and visualization
@@ -1127,10 +1151,10 @@ prepare_visualizations.pl \
 ```
 </details>
 
-To inspect the 3D structures, we can run [run_visualizations.pl](https://github.com/PombertLab/WIP/blob/main/3DFI_WIP/run_visualizations.pl):
+To inspect the 3D structures, we can run [run_visualizations.pl](https://github.com/PombertLab/3DFI/blob/master/run_visualizations.pl) on the 3DFI results directory:
 ```bash
 run_visualizations.pl \
-    -v $RESULTS
+    -r $RESULTS
 ```
 
 The output should result in something similar to the following:

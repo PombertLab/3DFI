@@ -1,11 +1,15 @@
 #!/usr/bin/perl
 ## Pombert Lab 2020
-my $version = '0.3c';
+my $version = '0.4';
 my $name = 'PDB_headers.pl';
-my $updated = '2021-07-25';
+my $updated = '2021-09-21';
 
-use strict; use warnings; use Getopt::Long qw(GetOptions); use File::Basename;
-use File::Find; use PerlIO::gzip; 
+use strict;
+use warnings;
+use Getopt::Long qw(GetOptions);
+use File::Basename;
+use File::Find;
+use PerlIO::gzip; 
 
 ## Usage definition
 my $USAGE = <<"OPTIONS";
@@ -32,11 +36,11 @@ die "\n$USAGE\n" unless @ARGV;
 
 ## Defining options
 my $pdb;
-my $out;
+my $rcsb_list;
 my $verbose = 1000;
 GetOptions(
 	'p|pdb=s' => \$pdb,
-	'o|output=s' => \$out,
+	'o|output=s' => \$rcsb_list,
 	'v|verbose=i' => \$verbose
 );
 
@@ -49,8 +53,25 @@ find(
 	$dir
 );
 
+## Doing a first pass to see which files have been parsed previously
+## Should reduce overall computation time by skipping parsing
+my %previous_data;
+my $diamond = '>';
+if (-f $rcsb_list){
+	$diamond = '>>'; 
+	open LIST, "<", "$rcsb_list" or die "Can't read $rcsb_list: $!\n";
+	while (my $line = <LIST>){
+		chomp $line;
+		if ($line =~ /^(\w+)/){
+			my $rcsb_entry = $1;
+			$previous_data{$rcsb_entry} = 1;
+		}
+	}
+	close LIST;
+}
+
 ## Parsing PDB files (*.ent.gz)
-open OUT, ">", "$out" or die "Can't create file $out: $!\n";
+open OUT, "$diamond", "$rcsb_list" or die "Can't create file $rcsb_list: $!\n";
 
 my $pdb_count = 0;
 my $start = time;
@@ -60,75 +81,81 @@ while (my $pb = shift@pdb){
 
 		$pdb_count++;
 
-		open PDB, "<:gzip", "$pb" or die "Can't open file $pb: $!\n";
+		## Grabbing RCSB PDB entry name from pdb file
 		my ($pdb, $folder) = fileparse($pb);
 		$pdb =~ s/^pdb//;
 		$pdb =~ s/.ent.gz$//;
-		my $title = undef;
-		my %molecules;
-		my $mol_id = undef;
 
 		## verbosity; lots of files to parse...
 		my $modulo = ($pdb_count % $verbose);
 		my $current_count = commify($pdb_count);
 		if ($modulo == 0){ print "Working on PDB file # $current_count: $pb\n"; }
 
-		while (my $line = <PDB>){
-			chomp $line;
-			## Getting title info from TITLE entries
-			if ($line =~ /^TITLE\s{5}(.*)$/){
-				my $key = $1;
-				$key =~ s/\s+$/ /; ## Discard trailing space characters
-				$title .= $key;
-			}
-			elsif ($line =~ /^TITLE\s+\d+\s(.*)$/){
-				my $key = $1;
-				$key =~ s/\s+$/ /; ## Discard trailing space characters
-				$title .= $key;
-			}
-			## Getting chain information from COMPND entries
-			elsif ($line =~ /^COMPND\s+(\d+)?\s?MOL_ID:\s(\d+)/){
-				$mol_id = $2;
-			}
-			elsif ($line =~ /^COMPND\s+(\d+)?(.*)$/){
-				my $data = $2;
-				$data =~ s/\s+$//;
-				$molecules{$mol_id} .= $data;
-			}
-		}
-		binmode PDB, ":gzip(none)";
+		## Working on PDB if is has not been seen before
+		if (exists $previous_data{$pdb}) { next; }
+		else {
+			open PDB, "<:gzip", "$pb" or die "Can't open file $pb: $!\n";
+			my $title = undef;
+			my %molecules;
+			my $mol_id = undef;
 
-		## Printing title
-		print OUT "$pdb\tTITLE\t$title\n";
-
-		## Printing chain(s)
-		foreach my $id (sort (keys %molecules)){
-
-			my $molecule;
-			my $chains;
-
-			if ($molecules{$id} =~ /MOLECULE: (.*?);/){
-				$molecule = $1;
+			while (my $line = <PDB>){
+				chomp $line;
+				## Getting title info from TITLE entries
+				if ($line =~ /^TITLE\s{5}(.*)$/){
+					my $key = $1;
+					$key =~ s/\s+$/ /; ## Discard trailing space characters
+					$title .= $key;
+				}
+				elsif ($line =~ /^TITLE\s+\d+\s(.*)$/){
+					my $key = $1;
+					$key =~ s/\s+$/ /; ## Discard trailing space characters
+					$title .= $key;
+				}
+				## Getting chain information from COMPND entries
+				elsif ($line =~ /^COMPND\s+(\d+)?\s?MOL_ID:\s(\d+)/){
+					$mol_id = $2;
+				}
+				elsif ($line =~ /^COMPND\s+(\d+)?(.*)$/){
+					my $data = $2;
+					$data =~ s/\s+$//;
+					$molecules{$mol_id} .= $data;
+				}
 			}
-			elsif($molecules{$id} =~ /MOLECULE: (.*?)/){
-				$molecule = $1;
-				## If at end of COMPND section, no semicolon to after the molecule(s)
-			}
+			binmode PDB, ":gzip(none)";
 
-			if ($molecules{$id} =~ /CHAIN: (.*?);/){
-				$chains = $1;
-			}
-			elsif ($molecules{$id} =~ /CHAIN: (.*?)/){
-				$chains = $1;
-				## If at end of COMPND section, no semicolon to after the chain(s)
-			}
+			## Printing title
+			print OUT "$pdb\tTITLE\t$title\n";
 
-			$chains =~ s/ //g;
-			my @chains = split (",", $chains);
-			foreach my $chain (@chains){
-				if ($molecule){	print OUT "$pdb\t$chain\t$molecule\n"; }
-				## Molecules might not be defined if engineered
-				else { print OUT "$pdb\t$chain\tundefined molecule\n"; }
+			## Printing chain(s)
+			foreach my $id (sort (keys %molecules)){
+
+				my $molecule;
+				my $chains;
+
+				if ($molecules{$id} =~ /MOLECULE: (.*?);/){
+					$molecule = $1;
+				}
+				elsif($molecules{$id} =~ /MOLECULE: (.*?)/){
+					$molecule = $1;
+					## If at end of COMPND section, no semicolon to after the molecule(s)
+				}
+
+				if ($molecules{$id} =~ /CHAIN: (.*?);/){
+					$chains = $1;
+				}
+				elsif ($molecules{$id} =~ /CHAIN: (.*?)/){
+					$chains = $1;
+					## If at end of COMPND section, no semicolon to after the chain(s)
+				}
+
+				$chains =~ s/ //g;
+				my @chains = split (",", $chains);
+				foreach my $chain (@chains){
+					if ($molecule){	print OUT "$pdb\t$chain\t$molecule\n"; }
+					## Molecules might not be defined if engineered
+					else { print OUT "$pdb\t$chain\tundefined molecule\n"; }
+				}
 			}
 		}
 	}

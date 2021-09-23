@@ -4,7 +4,10 @@ my $version = '0.2a';
 my $name = 'sanitize_pdb.pl';
 my $updated = '2021-04-21';
 
-use strict; use warnings; use Getopt::Long qw(GetOptions); use File::Basename;
+use strict;
+use warnings;
+use Getopt::Long qw(GetOptions);
+use File::Basename;
 
 ## Usage definition
 my $USAGE = <<"OPTIONS";

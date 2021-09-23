@@ -4,7 +4,10 @@ my $version = '0.2';
 my $name = 'create_npz.pl';
 my $updated = '2021-07-23';
 
-use strict; use warnings; use Getopt::Long qw(GetOptions); use File::Basename;
+use strict;
+use warnings;
+use Getopt::Long qw(GetOptions);
+use File::Basename;
 
 ## Usage definition
 my $USAGE = <<"OPTIONS";

@@ -4,7 +4,9 @@ my $version = '0.1';
 my $name = 'update_PDB.pl';
 my $updated = '2021-05-17';
 
-use strict; use warnings; use Getopt::Long qw(GetOptions);
+use strict;
+use warnings;
+use Getopt::Long qw(GetOptions);
 
 ## Usage definition
 my $USAGE = <<"OPTIONS";

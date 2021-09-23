@@ -4,7 +4,10 @@ my $version = '0.2c';
 my $name = 'run_hhblits.pl';
 my $updated = '2021-04-21';
 
-use strict; use warnings; use Getopt::Long qw(GetOptions);
+use strict;
+use warnings;
+use Getopt::Long qw(GetOptions);
+
 my @command = @ARGV; ## Keeping track of command line for log
 
 ## Usage definition

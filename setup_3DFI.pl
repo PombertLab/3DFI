@@ -1,112 +1,168 @@
 #!/usr/bin/perl
 ## Pombert Lab, Illinois Tech, 2021
 my $name = 'setup_3DFI.pl';
-my $version = '0.4 WIP';
-my $updated = '2021-09-04';
+my $version = '0.5a';
+my $updated = '2021-09-23';
 
-use strict; use warnings; use Getopt::Long qw(GetOptions); use File::Basename; use Cwd qw(abs_path); 
+use strict;
+use warnings;
+use Getopt::Long qw(GetOptions);
+use File::Basename;
+use Cwd qw(abs_path);
+use File::Path qw(make_path);
 
 my $usage = <<"OPTIONS";
 NAME		${name}
 VERSION		${version}
 UPDATED		${updated}
-SYNOPSIS	Adds 3DFI environment variables to the specified configuration file
+SYNOPSIS	Installs AlphaFold, Raptorx and/or RoseTTAfold and adds the 3DFI
+		environment variables to the specified configuration file
 
 EXAMPLE		${name} \\
 		  -c ~/.bashrc \\
 		  -p /path/to/3DFI \\
-		  -d /path/to/3DFI_databases
+		  -d /path/to/3DFI_databases \\
+		  -i alphafold raptorx rosettafold \\
+		  -pyr ~/Downloads/PyRosetta4.Release.python37.*.tar.bz2
 
 OPTIONS:
--c (--config)	Configuration file to edit/create
+-c (--config)	Configuration file to edit/create (e.g. ~/.bashrc)
+-w (--write)	Write mode: (a)ppend or (o)verwrite [Default: a]
 -p (--path)	3DFI installation directory (\$TDFI_HOME) [Default: ./]
--d (-db)	Desired 3DFI database location (\$TDFI_DB)
+-d (--dbdir)	3DFI databases directory (\$TDFI_DB)
 
-## Protein structure predictor(s)
---raptorx	RaptorX installation directory
---rosetta	RoseTTAFold installation directory
---alphain	AlphaFold installation directory
---alphaout	AlphaFold output directory
+## Protein structure predictors 
+-i (--install)		3D structure predictor(s) to install (alphafold raptorx and/or rosettafold)
+-pyr (--pyrosetta)	PyRosetta4 [Python-3.7.Release] .tar.bz2 archive to install
+			# Download - https://www.pyrosetta.org/downloads#h.xe4c0yjfkl19
+			# License - https://els2.comotion.uw.edu/product/pyrosetta 
 OPTIONS
 die "\n$usage\n" unless @ARGV;
 
-my $path_3DFI = "./";
 my $config_file;
+my $write = 'a';
+my $path_3DFI = "./";
 my $database;
-my $raptorx_home;
-my $rosettafold_home;
-my $alphafold_home;
-my $alphafold_out;
+my @predictors;
+my $pyrosetta;
 GetOptions(
-	'p|path=s' => \$path_3DFI,
 	'c|config=s' => \$config_file,
-	'd|db=s' => \$database,
-	'raptorx=s' => \$raptorx_home,
-	'rosetta=s' => \$rosettafold_home,
-	'alphain=s' => \$alphafold_home,
-	'alphaout=s' => \$alphafold_out
+	'w|write=s' => \$write,
+	'p|path=s' => \$path_3DFI,
+	'd|dbdir=s' => \$database,
+	'i|install=s@{1,}' => \@predictors,
+	'pyr|pyrosetta=s' => \$pyrosetta
 );
 
-##### Checking for config file
-if (!defined $config_file){
-	print "\nPlease provide a configuration file to edit with the -c option: e.g.\n";
+######################################################
+# Checking for config file & database
+
+# Config file
+unless ($config_file){
+	print "\n[E] Please provide a configuration file to edit with the -c option: e.g.\n";
 	print "~/.bashrc or /etc/profile.d/3DFI.sh\n\n";
 	exit;
 }
 
-##### Capturing absolute paths
-my $abs_path_3DFI = abs_path($path_3DFI);
-my $abs_path_config = abs_path($config_file);
-my $abs_path_db = abs_path($database);
+my $write_mode = lc($write);
+unless (($write_mode eq 'a') or ($write_mode eq 'o')){
+	print "\n[E] Unrecognized write mode: $write. Please use a or o ...\n";
+	print "[E] Exiting...\n\n";
+	exit;
+}
 
-##### Checking for 3DFI environment variables
-if ((exists $ENV{'TDFI_HOME'}) and (exists $ENV{'TDFI_DB'})){ 
-	print "Found \$TDFI_HOME as $ENV{'TDFI_HOME'}.\n";
-	print "Found \$TDFI_DB as $ENV{'TDFI_DB'}.\n";
-	print "Do you want to continue? y/n (y => proceed; n => exit):";
-	AUTODETECT:{
-		my $answer = <STDIN>;
-		chomp $answer;
-		my $check = lc ($answer);
-		if (($check eq 'y') or ($check eq 'yes')){
-			print "\# Setting 3DFI environment variables as:\n";
-			open CONFIG, ">>", "$abs_path_config" or die "Can't open $abs_path_config: $!\n";
-			set_main(\*STDOUT);
-			set_main(\*CONFIG);
-		}
-		elsif (($check eq 'n') or ($check eq 'no')){
-			print "Exiting setup as requested\n";
+my $diamond = '>>';
+if ($write_mode eq 'o'){ $diamond = '>'; }
+
+# Database
+unless ($database){
+	print "\n[E] Please provide a database location with the -d option: e.g.\n";
+	print "-d /media/databases/3DFI\n\n";
+	exit;
+}
+if ($database){
+	unless (-d $database){
+		make_path($database, { mode => 0755 }) or die "Can't create $database: \n";
+	}
+}
+
+######################################################
+# Checking for requested predictors & dependencies
+my %predictor_homes = (
+	'raptorx' => 'RAPTORX_HOME',
+	'alphafold' => 'ALPHAFOLD_HOME',
+	'rosettafold' => 'ROSETTAFOLD_HOME'
+);
+
+foreach my $predictor (@predictors){
+	$predictor = lc($predictor);
+	unless (exists $predictor_homes{$predictor}){
+		print "\n[E] Unrecognized predictor: $predictor.\n";
+		print "[E] Possible options are alphafold, raptorx and/or rosettafold\n";
+		print "[E] Exiting...\n\n";
+		exit;
+	}
+	## Checking for Docker
+	if ($predictor eq 'alphafold'){
+		my $docker = `command -v docker`;
+		chomp $docker;
+		if ($docker eq ''){
+			print "\n[E] Docker not found. AlphaFold requires Docker. Please make sure that Docker is properly installed before using setup_3DFI.pl.\n";
+			print "[E] Exiting...\n\n";
 			exit;
 		}
-		else {
-			print "Unrecognized answer: $answer. Please enter y (yes) or n (no).\n";
-			goto AUTODETECT;
+	}
+	## Checking for Conda
+	elsif ($predictor eq 'rosettafold'){
+		my $conda = `command -v conda`;
+		chomp $conda;
+		if ($conda eq ''){
+			print "\n[E] Conda not found. RoseTTAFold requires Conda. Please make sure that Conda is properly installed before using setup_3DFI.pl.\n";
+			print "[E] Exiting...\n\n";
+			exit;
 		}
 	}
 }
 
-##### Checking entries
+######################################################
+# Capturing absolute paths
+my $root_dir = `pwd`;
+chomp $root_dir;
+my $abs_path_3DFI = abs_path($path_3DFI);
+my $abs_path_config = abs_path($config_file);
+my $abs_path_db = abs_path($database);
+
+######################################################
+# Creating default install location for 3D predictors
+
+my $root_3D = "$abs_path_3DFI".'/3D';
+unless (-d $root_3D){
+	mkdir ($root_3D,0755) or die "Can't create $root_3D: $!\n";
+}
+
+my $alphafold_home = "$root_3D".'/'.'alphafold';
+my $pip_location = "$root_3D/alphafold/python/";
+my $raptorx_home = "$root_3D".'/'.'RaptorX';
+my $rosettafold_home = "$root_3D".'/'.'RoseTTAFold';
+
+######################################################
+# Checking configuration file entries
 print "\n";
-print "Configuration file to edit/create:"."\t"."\t"."$abs_path_config\n\n";
+print "Configuration file to edit/create:"."\t"."\t"."$abs_path_config\n";
 print "3DFI installation directory (\$TDFI_HOME):"."\t"."$abs_path_3DFI\n";
 print "3DFI database directory (\$TDFI_DB):"."\t"."\t"."$abs_path_db\n";
 print "\n";
-if ($raptorx_home){ print "RAPTORX_HOME=$raptorx_home\n"; }
-if ($rosettafold_home){ print "ROSETTAFOLD_HOME=$rosettafold_home\n"; }
-if ($alphafold_home){ print "ALPHAFOLD_HOME=$alphafold_home\n"; }
-if ($alphafold_out){ print "ALPHAFOLD_OUT=$alphafold_out\n"; }
-
-print "\nIs this correct? y/n (y => proceed; n => exit): ";
+print "Is this correct? y/n (y => proceed; n => exit): ";
 MAINVARS:{
 	my $answer = <STDIN>;
 	chomp $answer;
 	my $check = lc ($answer);
 	if (($check eq 'y') or ($check eq 'yes')){
-		open CONFIG, ">>", "$abs_path_config" or die "Can't open $abs_path_config: $!\n";
+		open CONFIG, "$diamond", "$abs_path_config" or die "Can't open $abs_path_config: $!\n";
 		set_main(\*CONFIG);
 	}
 	elsif (($check eq 'n') or ($check eq 'no')){
-		print "Exiting setup as requested\n";
+		print "Exiting setup as requested\n\n";
 		exit;
 	}
 	else {
@@ -115,24 +171,8 @@ MAINVARS:{
 	}
 }
 
-## Adding ALPHAFOLD, ROSETTAFOLD and/or RAPTORX to contig file
-if (($raptorx_home) or ($rosettafold_home) or ($alphafold_home)){
-	print CONFIG "\n".'### 3DFI environment variables for protein structure predictor(s)'."\n";
-}
-if ($raptorx_home){
-	print CONFIG "export RAPTORX_HOME=$raptorx_home\n";
-}
-if ($rosettafold_home){
-	print CONFIG "export ROSETTAFOLD_HOME=$rosettafold_home\n";
-}
-if ($alphafold_home){
-	print CONFIG "export ALPHAFOLD_HOME=$alphafold_home\n";
-}
-if ($alphafold_out){
-	print CONFIG "export ALPHAFOLD_OUT=$alphafold_out\n";
-}
-
-## Adding environment variables and PATH to configuration file (if yes)
+######################################################
+# Adding 3DFI dirs to $PATH in config file (if yes)
 print "Do you want to add the 3DFI installation folder and its ";
 print "subdirectories to the \$PATH environment variable? y/n: ";
 PATHVARS:{
@@ -152,25 +192,188 @@ PATHVARS:{
 		goto PATHVARS;
 	}
 }
-
 print "\n";
+
+######################################################
+# Installing protein structure predictors
+
+foreach my $predictor (@predictors){
+	
+	$predictor = lc($predictor);
+	
+	if ($predictor eq 'alphafold'){
+
+		# Using a forked version of AlphaFold. The version was forked to
+		# - remove the hard coded output directory
+		# - remove the hard coded database directory 
+		# - remove the root ownership of files created by AlphaFold
+		# - use a CUDA version compatible with CUDA compute capability 8.6
+
+		# Downloading forked version from Git
+		print "\nDownloading AlphaFold with git clone\n";
+		my $alphafold_git = 'https://github.com/PombertLab/alphafold.git';
+		chdir ("$root_3D") or die "cannot change: $!\n";
+
+		# Update with git pull if exists
+		if (-d "$root_3D/alphafold/"){
+			chdir "$root_3D/alphafold/";
+			system "git pull";
+			chdir "$root_3D";
+		}
+		# Otherwize git clone
+		else { system "git clone $alphafold_git"; }
+
+		# Creating Docker image + pip install of reqs
+		print "\nCreating AlphaFold docker image named alphafold_3dfi\n";
+		chdir "$root_3D/alphafold/";
+		system "docker build -f $root_3D/alphafold/docker/Dockerfile -t alphafold_3dfi .";
+
+		# Creating a pip location for AlphaFold requirements
+		unless (-d $pip_location){
+			mkdir ($pip_location, 0755) or die "Can't create $pip_location: $!\n";
+		}
+
+		print "\nInstalling AlphaFold requirements with pip3\n";
+		system "pip3 install \\
+			--target=$pip_location \\
+			--upgrade \\
+			-r $root_3D/alphafold/docker/requirements.txt";
+
+		chdir "$root_3D";
+
+	}
+
+	elsif ($predictor eq 'raptorx') {
+
+		##### RaptorX
+		## We would like to thank Professor Jinbo Xu for kindly allowing us
+		## to redistribute RaptorX for non-commercial academic purposes!
+
+		my $raptorx_file = 'raptorx.tar.gz';
+		my $raptorx_url = 'http://bioinformatics.one/3DFI/raptorx/'."$raptorx_file";
+
+		print "\nDownloading RaptorX [53 Mb] with wget\n";
+		system "wget \\
+			-P $root_3D \\
+			$raptorx_url";
+
+		### Inflating RaptorX tar archive
+		system "tar \\
+			-zxvf $root_3D/$raptorx_file \\
+			-C $root_3D/";
+
+		### Creating symlink to RaptorX databases
+		my $symlink = "$root_3D/RaptorX/databases";
+
+		if (-l $symlink){ ## Removing previous link, if any
+			system "unlink $symlink";
+		}
+
+		system "ln -s \\
+			$abs_path_db/RAPTORX/ \\
+			$symlink";
+
+		### Running RaptorX setup script
+		chdir "$root_3D/RaptorX/";
+		system "./setup.pl";
+		chdir "$root_dir";
+
+	}
+
+	elsif ($predictor eq 'rosettafold') {
+
+		# Downloading RoseTTAFold from Git
+		print "\nDownloading RoseTTAFold with git clone\n";
+		my $rosettafold_git = 'https://github.com/RosettaCommons/RoseTTAFold.git';
+		chdir ("$root_3D") or die "cannot change: $!\n";
+
+		# Update with git pull if exists
+		if (-d "$root_3D/RoseTTAFold/"){
+			chdir "$root_3D/RoseTTAFold/";
+			system "git pull";
+			chdir "$root_3D";
+		}
+		# Otherwize git clone
+		else { system "git clone $rosettafold_git"; }
+
+		# Create RoseTTAFold conda environments CUDA11
+		chdir "$root_3D/RoseTTAFold/";
+		system "conda env create -f RoseTTAFold-linux.yml";
+		system "conda env create -f folding-linux.yml";
+
+		## Install RoseTTAFold dependencies
+		system "$root_3D/RoseTTAFold/install_dependencies.sh";
+
+		## Create symlinks to RoseTTAFold databases
+		my $weights = "$root_3D/RoseTTAFold/weights";
+		my $bfd = "$root_3D/RoseTTAFold/bfd";
+		my $uniref30 = "$root_3D/RoseTTAFold/UniRef30_2020_06";
+		my $pdb_templates = "$root_3D/RoseTTAFold/pdb100_2021Mar03";
+
+		# bfd
+		system "ln -s \\
+			$abs_path_db/BFD/ \\
+			$bfd";
+
+		# weights
+		system "ln -s \\
+			$abs_path_db/ROSETTAFOLD/weights \\
+			$weights";
+
+		# uniref
+		system "ln -s \\
+			$abs_path_db/ROSETTAFOLD/UniRef30_2020_06 \\
+			$uniref30";
+
+		# templates
+		system "ln -s \\
+			$abs_path_db/ROSETTAFOLD/pdb100_2021Mar03 \\
+			$pdb_templates";
+
+		## Install PyRosetta inside the Conda folding environment
+		if ($pyrosetta){
+			my $tmpdir = "/tmp/pyrosetta";
+			my $install_script = "$abs_path_3DFI/Prediction/RoseTTAFold/install_pyrosetta.sh";
+			system "$install_script \\
+				$pyrosetta \\
+				$tmpdir";
+		}
+
+		chdir "$root_dir";
+
+	}
+
+}
+
+######################################################
+# tasks completed
 exit;
 
-##### subroutines
+######################################################
+# subroutines
 sub set_main {
 	my $fh = shift;
-	print $fh "\n".'### 3DFI environment variables'."\n";
+	my $bar = '#' x 50;
+	print $fh "\n"."$bar"."\n";
+	print $fh '# 3DFI environment variables'."\n";
+	print $fh "\n";
 	print $fh "export TDFI_HOME=$abs_path_3DFI\n";
 	print $fh "export TDFI_DB=$abs_path_db\n";
+	print $fh "\n";
+	print $fh "export RAPTORX_HOME=$raptorx_home\n";
+	print $fh "export ROSETTAFOLD_HOME=$rosettafold_home\n";
+	print $fh "export ALPHAFOLD_HOME=$alphafold_home\n";
+	print $fh "export PYTHONPATH=\$PYTHONPATH:$pip_location\n"; ## Check if this breaks python...
+
 }
 
 sub set_path {
 	my $fh = shift;
-	print $fh "\n".'### 3DFI PATH variables'."\n";
+	my $bar = '#' x 50;
+	print $fh "\n"."$bar"."\n";
+	print $fh '# 3DFI PATH variables'."\n";
 	print $fh "PATH=\$PATH:$abs_path_3DFI\n";
 	print $fh "PATH=\$PATH:$abs_path_3DFI/Prediction/RaptorX\n";
-	print $fh "PATH=\$PATH:$abs_path_3DFI/Prediction/trRosetta\n";
-	print $fh "PATH=\$PATH:$abs_path_3DFI/Prediction/trRosetta2\n";
 	print $fh "PATH=\$PATH:$abs_path_3DFI/Prediction/AlphaFold2\n";
 	print $fh "PATH=\$PATH:$abs_path_3DFI/Prediction/RoseTTAFold\n";
 	print $fh "PATH=\$PATH:$abs_path_3DFI/Homology_search\n";

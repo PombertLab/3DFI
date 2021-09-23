@@ -4,7 +4,9 @@ my $name = 'parse_tr2_results';
 my $version = '0.1';
 my $updated = '2021-08-04';
 
-use strict; use warnings; use Getopt::Long qw(GetOptions);
+use strict;
+use warnings;
+use Getopt::Long qw(GetOptions);
 
 my $usage =<<"OPTIONS";
 NAME		${name}

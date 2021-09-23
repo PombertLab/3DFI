@@ -1,8 +1,8 @@
 #!/usr/bin/perl
 ## Pombert Lab, Illinois Tech, 2021
 my $name = 'alphafold.pl';
-my $version = '0.3b';
-my $updated = '2021-09-07';
+my $version = '0.5'; ## to test with alphafold fork
+my $updated = '2021-09-18';
 
 use strict;
 use warnings;
@@ -16,46 +16,52 @@ NAME		${name}
 VERSION		${version}
 UPDATED		${updated}
 SYNOPSIS	Runs AlphaFold2 from Google Deepmind in batch mode
-REQUIREMENTS	AlphaFold2: https://github.com/deepmind/alphafold
+
+REQUIREMENTS	AlphaFold2: https://github.com/PombertLab/alphafold
+
+CITATION	If you use AlphaFold2, please cite the original authors:
+		Jumper et al. Highly accurate protein structure prediction with AlphaFold.
+		Nature. 2021. 596(7873):583-589. DOI: 10.1038/s41586-021-03819-2
 
 EXAMPLE     ${name} \\
 		  -f *.fasta \\
 		  -o ALPHAFOLD_3D/ \\
 		  -m 2021-01-21 \\
-		  -c \\
-		  -ah /opt/alphafold \\
-		  -ao /media/Data_1/alphafold_results
+		  -c
 
 OPTIONS:
 -f (--fasta)		FASTA files to fold
 -o (--outdir)		Output directory
+-d (--docker)		Docker image name [Default: alphafold_3dfi]
 -m (--max_date)		--max_template_date option (YYYY-MM-DD) from AlphaFold2 [Default: current date]
 -p (--preset)		Alphafold preset: full_dbs, reduced_dbs or casp14 [Default: full_dbs]
 -g (--gpu_dev)		List of GPU devices to use: e.g. all; 0,1; 0,1,2,3 [Default: all]
 -n (--no_gpu)		Turns off GPU acceleration
--ah (--alpha_home)	AlphaFold2 installation directory ## if not set in \$ALPHAFOLD_HOME
--ao (--alpha_out)	AlphaFold2 output directory ## if not set in \$ALPHAFOLD_OUT
+-ah (--alpha_home)	AlphaFold2 installation directory [Default: \$ALPHAFOLD_HOME]
+-ad (--alpha_db)	AlphaFold2 databases location [Default: \$TDFI_DB/ALPHAFOLD]
 OPTIONS
 die "\n$usage\n" unless @ARGV;
 my @command = @ARGV;
 
 my @fasta;
 my $outdir = './';
+my $docker_image_name = 'alphafold_3dfi';
 my $max_date = strftime("%F", localtime);
 my $preset = 'full_dbs';
 my $gpus = 'all';
 my $no_gpu;
 my $alpha_home;
-my $alpha_out;
+my $alpha_db;
 GetOptions(
 	'f|fasta=s@{1,}' => \@fasta,
 	'o|outdir=s' => \$outdir,
+	'd|docker=s' => $docker_image_name,
 	'm|max_date=s' => \$max_date,
 	'p|preset=s' => \$preset,
 	'g|gpu_dev=s' => $gpus,
 	'n|no_gpu' => \$no_gpu,
 	'ah|alpha_home=s' => \$alpha_home,
-	'ao|alpha_out=s' => \$alpha_out
+	'ad|alpha_db=s' => \$alpha_db
 );
 
 ### Checking for AlphaFold2 installation; environment variables in Perl are loaded in %ENV
@@ -74,19 +80,19 @@ elsif (defined $alpha_home){
 		unless (-r $alpha_home){ die "WARNING: Can't read the content of AlphaFold2 installation folder: $alpha_home. Please check file permissions\n\n"; }
 	}
 }
-# Checking output folder
-if (!defined $alpha_out){
-	if (exists $ENV{'ALPHAFOLD_OUT'}){ $alpha_out = $ENV{'ALPHAFOLD_OUT'}; }
+# Checking AlphaFold2 database folder
+if (!defined $alpha_db){
+	if (exists $ENV{'TDFI_DB'}){ $alpha_db = "$ENV{'TDFI_DB'}".'/'.'ALPHAFOLD'; }
 	else {
-		print "WARNING: The AlphaFold2 output directory is not set as an environment variable (\$ALPHAFOLD_OUT) and the -ao option was not entered.\n";
-		print "Please check if AlphaFold2 was installed properly\n\n";
+		print "WARNING: The 3DFI database folder is not set as an environment variable (\$TDFI_DB) and the -ad option was not entered.\n";
+		print "Please check if AlphaFold2 databases were installed properly\n\n";
 		exit;
 	}
 }
-elsif (defined $alpha_out){
-	unless (-d $alpha_out){	die "WARNING: Can't find AlphaFold2 output folder: $alpha_out. Please check command line\n\n"; }
+elsif (defined $alpha_db){
+	unless (-d $alpha_db){ die "WARNING: Can't find AlphaFold2 database folder: $alpha_db. Please check command line\n\n"; }
 	else {
-		unless (-r $alpha_out){ die "WARNING: Can't read the content of AlphaFold2 output folder: $alpha_out. Please check file permissions\n\n"; }
+		unless (-r $alpha_db){ die "WARNING: Can't read the content of AlphaFold2 database folder: $alpha_db. Please check file permissions\n\n"; }
 	}
 }
 
@@ -123,12 +129,6 @@ while (my $fasta = shift @fasta){
 		print "AlphaFold predicted structure (ranked_0.pdb) found for $basename. Skipping folding...\n";
 		next;
 	}
-	## Checking if protein structures are already present in AlphaFold output dir
-	elsif (-f "$alpha_out/$prefix/ranked_0.pdb"){
-		print "AlphaFold predicted structure (ranked_0.pdb) found for $basename. Skipping folding...\n";
-		copy_af_data();
-		next;
-	}
 	else {
 		# Timestamp
 		my $time = localtime;
@@ -147,17 +147,14 @@ while (my $fasta = shift @fasta){
 		system "python3 \\
 			$alpha_home/docker/run_docker.py \\
 			--fasta_paths=$fasta \\
+			--docker_image_name=$docker_image_name \\
+			--download_dir=$alpha_db \\
+			--output_dir=$outdir \\
 			--max_template_date=$max_date \\
 			--preset=$preset \\
 			$gpu_devices \\
 			$gpu_check
 		";
-
-		# Checking permissions:
-		# if docker image is ran with --privileged=True files will be owned by the root
-		# if so, use cp instead of mv
-		
-		copy_af_data();
 
 		my $run_time = time - $start;
 		$run_time = $run_time/60;
@@ -168,24 +165,3 @@ while (my $fasta = shift @fasta){
 }
 
 close LOG;
-
-### Subroutines
-sub copy_af_data {
-		
-		# Checking permissions:
-		# if docker image is ran without: flags.DEFINE_string('docker_user', f"{os.geteuid()}:{os.getegid()}", '')
-		# files will be owned by the root
-		# if so, use cp instead of mv
-		
-		if (-w "$alpha_out/$prefix"){
-			system "mv \\
-				$alpha_out/$prefix \\
-				$outdir/";
-		}
-		else { # Copying results to outdir
-			system "cp -R \\
-				$alpha_out/$prefix \\
-				$outdir/";
-		}
-
-}

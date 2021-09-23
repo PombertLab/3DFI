@@ -1,10 +1,13 @@
 #!/usr/bin/perl
-
-use strict; use warnings; use Getopt::Long qw(GetOptions); use File::Basename;
-
+## Pombert Lab, Illinois Tech, 2021
 my $name = "inspect_3D_structures.pl";
 my $version = "0.1a";
 my $updated = "2021-07-31";
+
+use strict;
+use warnings;
+use Getopt::Long qw(GetOptions);
+use File::Basename;
 
 my $usage = << "EXIT";
 NAME	${name}

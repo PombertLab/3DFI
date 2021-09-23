@@ -1,10 +1,14 @@
 #!/usr/bin/perl
-
-use strict; use warnings; use Getopt::Long qw(GetOptions); use File::Basename; use Cwd qw(abs_path);
-
+## Pombert Lab, Illinois Tech, 2021
 my $name = "prepare_visualizations.pl";
 my $version = "0.4";
 my $updated = "2021-09-02";
+
+use strict;
+use warnings;
+use Getopt::Long qw(GetOptions);
+use File::Basename;
+use Cwd qw(abs_path);
 
 my $usage = << "EXIT";
 NAME	${name}

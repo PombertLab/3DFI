@@ -4,7 +4,9 @@ my $version = '0.2';
 my $name = 'rename_files.pl';
 my $updated = '2021-03-12';
 
-use strict; use warnings; use Getopt::Long qw(GetOptions);
+use strict;
+use warnings;
+use Getopt::Long qw(GetOptions);
 
 ## Usage definition
 my $USAGE = <<"OPTIONS";

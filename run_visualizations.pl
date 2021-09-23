@@ -1,11 +1,14 @@
 #!/usr/bin/perl
-
-########################################################################################################################
-# Initialization of Script Metadata                                                                                    #
-########################################################################################################################
+## Pombert Lab, Illinois Tech, 2021
 my $name = "run_visualizations.pl";
 my $version = "0.2.1";
 my $updated = "2021-09-15";
+
+use strict;
+use warnings;
+use Getopt::Long qw(GetOptions);
+use File::Basename;
+
 my $usage = << "EXIT";
 NAME        ${name}
 VERSION     ${version}
@@ -19,11 +22,6 @@ OPTIONS
 EXIT
 
 die("\n$usage\n") unless(@ARGV);
-
-########################################################################################################################
-# Script Functionality Begins                                                                                          #
-########################################################################################################################
-use strict; use warnings; use Getopt::Long qw(GetOptions); use File::Basename;
 
 my $in_dir;
 GetOptions(

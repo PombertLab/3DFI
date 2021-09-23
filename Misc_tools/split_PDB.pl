@@ -4,8 +4,10 @@ my $version = '0.3b';
 my $name = 'split_PDB.pl';
 my $updated = '2021-04-06';
 
-use strict; use warnings;
-use PerlIO::gzip; use File::Basename;
+use strict;
+use warnings;
+use PerlIO::gzip;
+use File::Basename;
 use Getopt::Long qw(GetOptions);
 
 ## Usage definition

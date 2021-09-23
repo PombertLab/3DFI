@@ -4,7 +4,12 @@ my $version = '0.7';
 my $name = 'raptorx.pl';
 my $updated = '2021-09-16';
 
-use strict; use warnings; use Getopt::Long qw(GetOptions); use File::Basename; use Cwd qw(abs_path);
+use strict;
+use warnings;
+use Getopt::Long qw(GetOptions);
+use File::Basename;
+use Cwd qw(abs_path);
+
 my @command = @ARGV; ## Keeping track of command line for log
 
 ## Usage definition
