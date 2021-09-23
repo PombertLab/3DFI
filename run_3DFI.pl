@@ -429,9 +429,6 @@ foreach my $predictor (@predictors){
 	elsif  ($predictor eq 'RAPTORX'){
 		$input_pdbdir .= '/PDB';
 	}
-	elsif  ($predictor eq 'TRROSETTA'){
-		$input_pdbdir .= '';
-	}
 	elsif  ($predictor eq 'ROSETTAFOLD'){
 		$input_pdbdir .= '_Parsed';
 	}
