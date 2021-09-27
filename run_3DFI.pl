@@ -1,8 +1,8 @@
 #!/usr/bin/perl
 ## Pombert Lab, Illinois Tech, 2021
 my $name = 'run_3DFI.pl';
-my $version = '0.4';
-my $updated = '2021-09-21';
+my $version = '0.4.1';
+my $updated = '2021-09-27';
 
 use strict;
 use warnings;
@@ -522,7 +522,8 @@ print "\n# $time: Working on $predictor predictions\n";
 		-g $gt_dir/${predictor}_GESAMT_per_model.matches \\
 		-p $PDB_dir/ \\
 		-r $database/RCSB_PDB \\
-		-o $vz_dir/$predictor";
+		-o $vz_dir/$predictor
+		-l $vz_dir/predicted_structures.log";
 }
 
 ##### End of ChimeraX structural alignments

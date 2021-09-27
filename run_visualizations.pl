@@ -1,8 +1,8 @@
 #!/usr/bin/perl
 ## Pombert Lab, Illinois Tech, 2021
 my $name = "run_visualizations.pl";
-my $version = "0.2.1";
-my $updated = "2021-09-15";
+my $version = "0.2.2";
+my $updated = "2021-09-27";
 
 use strict;
 use warnings;
@@ -29,7 +29,27 @@ GetOptions(
 );
 
 ########################################################################################################################
-# Parsing Results                                                                                                      #
+# Generating predicted structure database                                                                              #
+########################################################################################################################
+
+my $pred_struct_file = "$in_dir/Visualization/predicted_structures.log";
+my %predicted_structures;
+my %loci_tracker;
+my $locus;
+open PRED_LOCI, "<", $pred_struct_file or die("\n[E]  Unable to open $pred_struct_file: $!\n");
+while (my $line = <PRED_LOCI>){
+    chomp($line);
+    my @data = split("/",$line);
+    my ($model) = $data[-1] =~ /(\S+)\-/;
+    unless($loci_tracker{$model}){
+        $loci_tracker{$model} = 1;
+    }
+}
+
+close PRED_LOCI;
+
+########################################################################################################################
+# Parsing results from GESAMT match file                                                                               #
 ########################################################################################################################
 
 my $result_file = "$in_dir/Homology/GESAMT/All_GESAMT_matches_per_protein.tsv";
@@ -40,15 +60,12 @@ my %color_scripts = ("ALPHAFOLD" => "$vis_dir/color_alphafold.py", "ROSETTAFOLD"
 
 open RESULTS, "<", $result_file or die("\n[E]  Unable to open $result_file: $!\n");
 
-my $locus;
-my @loci;
 my %results;
 my %predictors;
 while (my $line = <RESULTS>){
     chomp($line);
-    if($line =~ /^### (\S+?);/){ ### Insert proper regex ### 
+    if($line =~ /^### (\S+?);/){
         $locus = $1;
-        push(@loci,$locus);
     }
     elsif($line =~ /^\S/){
         my @data = split("\t",$line);
@@ -59,7 +76,7 @@ while (my $line = <RESULTS>){
 close RESULTS;
 
 ########################################################################################################################
-# Displaying Results                                                                                                   #
+# Displaying results                                                                                                   #
 ########################################################################################################################
 
 system("clear");
@@ -68,12 +85,19 @@ system("clear");
 my $locus_counter = 0;
 ## Default into best view mode
 my $best_only = 1;
+## Default into matches only
+my $matches_only = 1;
 
 ## By default set all predictors available to VIEWABLE
 my %viewable_predictors;
 foreach my $key (keys(%predictors)){
     $viewable_predictors{$key} = 1;
 }
+
+my @loci = sort(keys(%loci_tracker));
+my $separater = "=" x 125;
+my @status = ("best","only proteins with matches");
+my $warning_statement;
 
 ## Loop until user quits the visualization script
 WHILE: while(0==0){
@@ -102,21 +126,28 @@ WHILE: while(0==0){
             }
         }
     }
-    my @match_info = @{$results{$locus}};
-    my $separater = "=" x 125;
-    my $status;
-    if($best_only){
-        $status = "best";
+
+    my @match_info;
+
+    if($results{$locus}){
+        @match_info = @{$results{$locus}};
     }
-    else{
-        $status = "all";
+    elsif($matches_only){
+        $locus_counter++;
+        if($locus_counter > scalar(@loci) - 1){
+            $locus_counter = 0;
+        }
+        next;
     }
 
     ####################################################################################################################
-    # Printout Results                                                                                                 #
+    # Printout results                                                                                                 #
     ####################################################################################################################
 
-    print("\n\t### $locus has ".scalar(@match_info)." matches. Currently in $status match mode ###\n\n");
+    if($warning_statement){
+        print("\n\t[W]  $warning_statement\n");
+    }
+    print("\n\t### $locus has ".scalar(@match_info)." matches. ### \n\n\t\t- Currently in $status[0] match mode \n\t\t- Viewing $status[1]\n\n");
     print("\t|$separater|\n");
     print("\t Selection  Q-Score     Predicted Structure     PDB-File => Chain     Structural Homolog Description\n");
     print("\t|$separater|\n");
@@ -149,23 +180,29 @@ WHILE: while(0==0){
     print("\t|$separater|\n");
 
     ####################################################################################################################
-    # Option Printouts                                                                                                 #
+    # Option printouts                                                                                                 #
     ####################################################################################################################
 
     print("\n\n\tSelectable Options:\n\n");
     
     if($printed_counter > 0){
         print("\t\t[1-$printed_counter] Open corresponding match file\n");
-        print("\t\t[M] To select predicted structure\n");
     }
+    print("\t\t[M] To select predicted structure\n");
 
-    ## Quanity display options
+    ## Standard display options
     # All
     if($best_only){
         print("\n\t\t[A] Show ALL matches\n");
     }
     else{
         print("\n\t\t[B] Show BEST matches\n");
+    }
+    if($matches_only){
+        print("\t\t[C] Include predicted structures without matches\n")
+    }
+    else{
+        print("\t\t[D] Skip proteins without matches\n")
     }
     # Best
     
@@ -176,16 +213,16 @@ WHILE: while(0==0){
     print("\t\t[P] Proceed to the previous locus\n");
     # Jump
     print("\t\t[J] Jump to a selected locus\n");
+
+    ## Predictor display options
+    # Hide
     my $shown_predictors = 0;
     foreach my $val (values(%viewable_predictors)){
         if($val){
             $shown_predictors++;
         }
     }
-
-    ## Predictor display options
-    # Hide
-    if($shown_predictors == 3){
+    if($shown_predictors == scalar(keys(%viewable_predictors))){
         print("\n\t\t[H] Hide a selected predictor\n");
     }
     # Show
@@ -200,12 +237,13 @@ WHILE: while(0==0){
     print("\n\t\t[X] Exit the visualization tool\n");
 
     ####################################################################################################################
-    # Option Selection Processing                                                                                      #
+    # Option selection processing                                                                                      #
     ####################################################################################################################
 
     print("\n\tSelection: ");
     chomp(my $selection = <STDIN>);
     $selection = uc($selection);
+    undef $warning_statement;
 
     # Selected to view a CXS file
     if($printed_counter > 0 && $selection =~ /([1-$printed_counter])/){
@@ -239,18 +277,45 @@ WHILE: while(0==0){
             my $selected_model_path = $viewable_models{$selected_predictor}{$selected_model};
             my $colored_script = $color_scripts{$selected_predictor};
             unless($colored_script){ $colored_script = ""; }
-            system "chimerax 2>/dev/null $selected_model_path $colored_script &";
+            if(-f $selected_model_path){
+                system "chimerax 2>/dev/null $selected_model_path $colored_script &";
+            }
+            else{
+                $warning_statement = "'$selected_model' is not a valid model selection.";
+            }
         }
     }
     
     # Selected to view all results
     elsif($selection eq "A" && $best_only){
+        $status[0] = "all";
         undef $best_only;
     }
 
     # Selected to view best results
     elsif($selection eq "B" && !$best_only){
+        $status[0] = "best";
         $best_only = 1;
+    }
+
+    # Selected to view all proteins
+    elsif($selection eq "C" && $matches_only){
+        $status[1] = "all proteins";
+        undef $matches_only;
+    }
+
+    # Selected to view matched proteins
+    elsif($selection eq "D" && !$matches_only){
+        $matches_only = 1;
+        $status[1] = "only proteins with matches";
+        if($printed_counter < 0){
+            $locus_counter++;
+            if($locus_counter > scalar(@loci) - 1){
+                $locus_counter = 0;
+            }
+            system "clear";
+            next;
+        }
     }
 
     # Selected to proceed to the next locus
@@ -279,19 +344,18 @@ WHILE: while(0==0){
                 $locus_counter = $index;
                 last FOR;
             }
-            $index++;
         } 
     }
 
     # Selected to hide a specific predictor
     elsif($selection eq "H" && $shown_predictors != 0){
-        print("\n\tWhich of the following predictors you would like to hide? \n");
+        print("\n\t\tWhich of the following predictors you would like to hide? \n");
         foreach my $key (sort(keys(%viewable_predictors))){
             if($viewable_predictors{$key}){
-                print("\n\t$key");
+                print("\n\t\t\t$key");
             }
         }
-        print("\n\n\tSelected predictor: ");
+        print("\n\n\t\tSelected predictor: ");
         chomp(my $hidden_predictor = <STDIN>);
         $hidden_predictor = uc($hidden_predictor);
         if($viewable_predictors{$hidden_predictor}){
@@ -301,13 +365,13 @@ WHILE: while(0==0){
 
     # Selected to show a specific predictor
     elsif($selection eq "S" && $shown_predictors != 3){
-        print("\n\tWhich of the following predictors you would like to show? \n");
+        print("\n\t\tWhich of the following predictors you would like to show? \n");
         foreach my $key (sort(keys(%viewable_predictors))){
             unless($viewable_predictors{$key}){
-                print("\n\t$key");
+                print("\n\t\t\t$key");
             }
         }
-        print("\n\n\tSelected predictor: ");
+        print("\n\n\t\tSelected predictor: ");
         chomp(my $shown_predictor = <STDIN>);
         $shown_predictor = uc($shown_predictor);
         print($viewable_predictors{$shown_predictor}."\n");

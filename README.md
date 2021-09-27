@@ -508,7 +508,10 @@ run_visualizations.pl -r $RESULTS
 
 The output should result in something similar to the following:
 ```
-### ECU03_1140 has 15 matches. Currently in best match mode ###
+### ECU03_1140 has 15 matches. ###
+
+  - Currently in all match mode 
+	- Viewing only proteins with matches
 
 |=============================================================================================================================|
   Selection  Q-Score     Predicted Structure     PDB-File => Chain     Structural Homolog Description
@@ -527,10 +530,10 @@ Selectable Options:
   [M] To select predicted structure
 
   [A] Show ALL matches
+  [C] Include predicted structures without matches
 
   [N] Proceed to the next locus
   [P] Proceed to the previous locus
-
   [J] Jump to a selected locus
 
   [H] Hide a selected predictor
@@ -545,7 +548,10 @@ Selection:
 By default, only the top 5 matches are shown for the given protein. Selecting [A] will reveal all corresponding matches:
 
 ```
-### ECU03_1140 has 15 matches. Currently in all match mode ###
+### ECU03_1140 has 15 matches. ###
+
+  - Currently in all match mode 
+	- Viewing only proteins with matches
 
 |=============================================================================================================================|
   Selection  Q-Score     Predicted Structure     PDB-File => Chain     Structural Homolog Description
@@ -574,6 +580,7 @@ Selectable Options:
   [M] To select predicted structure
 
   [B] Show BEST matches
+  [C] Include predicted structures without matches
 
   [N] Proceed to the next locus
   [P] Proceed to the previous locus
@@ -1159,7 +1166,10 @@ run_visualizations.pl \
 
 The output should result in something similar to the following:
 ```
-### ECU03_1140 has 15 matches. Currently in best match mode ###
+### ECU03_1140 has 15 matches. ###
+
+	- Currently in best match mode 
+	- Viewing only proteins with matches
 
 |=============================================================================================================================|
   Selection  Q-Score     Predicted Structure     PDB-File => Chain     Structural Homolog Description
@@ -1178,6 +1188,7 @@ Selectable Options:
   [M] To select predicted structure
 
   [A] Show ALL matches
+  [C] Include predicted structures without matches
 
   [N] Proceed to the next locus
   [P] Proceed to the previous locus

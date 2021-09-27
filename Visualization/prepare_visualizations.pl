@@ -1,8 +1,8 @@
 #!/usr/bin/perl
 ## Pombert Lab, Illinois Tech, 2021
 my $name = "prepare_visualizations.pl";
-my $version = "0.4";
-my $updated = "2021-09-02";
+my $version = "0.4.1";
+my $updated = "2021-09-27";
 
 use strict;
 use warnings;
@@ -30,6 +30,7 @@ OPTIONS
 -r (--rcsb)	Absolute path to RCSB .ent.gz files
 -k (--keep)	Keep unzipped RCSB .ent files
 -o (--outdir)	Output directory for ChimeraX sessions [Default: ./3D_Visualizations]
+-l (--log)	Location for log of predicted structures
 EXIT
 die "\n\n$usage\n\n" unless @ARGV;
 
@@ -38,6 +39,7 @@ my $pdb;
 my $rcsb;
 my $keep;
 my $outdir = "./3D_Visualizations";
+my $log_file;
 
 GetOptions(
 	"g|gesamt=s" => \$match_file,
@@ -45,7 +47,9 @@ GetOptions(
 	"r|rcsb=s" => \$rcsb,
 	"k|keep" => \$keep,
 	"o|out=s" => \$outdir,
+	"l|log=s" => \$log_file,
 );
+
 
 ## Check that all mandatory args have been provided
 Check_Mand_Args();
@@ -54,7 +58,21 @@ unless (-d $outdir){
 	mkdir ($outdir,0755) or die "\n[ERROR]\tUnable to create $outdir: $!\n";
 }
 
+## Loading pre-existing data into memory to identify new results
+my %stored_pred;
+if(-e $log_file){
+	open LOG, "<", "$log_file";
+	while (my $line = <LOG>){
+		chomp($line);
+		$stored_pred{$line} = 1;
+	}
+	close LOG;
+}
+
 ## Load predicted pdb filenames into database
+if($log_file){
+	open LOG,">>","$log_file" or die("\n[WARNING]\tUnable to access $log_file: $!\n");
+}
 my %pred;
 opendir (PRED,$pdb) or die "\n[ERROR]\tCan't open $pdb: $!\n";
 while (my $file = readdir(PRED)){
@@ -67,6 +85,9 @@ while (my $file = readdir(PRED)){
 		}
 		## Copy the pdb file to the locus directory
 		system "cp $pdb/$file $outdir/$model/$file";
+		unless($stored_pred{"$outdir/$model/$file"}){
+			print LOG "$outdir/$model/$file\n";
+		}
 	}
 }
 closedir PRED;
