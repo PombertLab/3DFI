@@ -511,7 +511,7 @@ The output should result in something similar to the following:
 ### ECU03_1140 has 15 matches. ###
 
   - Currently in all match mode 
-	- Viewing only proteins with matches
+  - Viewing only proteins with matches
 
 |=============================================================================================================================|
   Selection  Q-Score     Predicted Structure     PDB-File => Chain     Structural Homolog Description
@@ -551,7 +551,7 @@ By default, only the top 5 matches are shown for the given protein. Selecting [A
 ### ECU03_1140 has 15 matches. ###
 
   - Currently in all match mode 
-	- Viewing only proteins with matches
+  - Viewing only proteins with matches
 
 |=============================================================================================================================|
   Selection  Q-Score     Predicted Structure     PDB-File => Chain     Structural Homolog Description
@@ -1168,8 +1168,8 @@ The output should result in something similar to the following:
 ```
 ### ECU03_1140 has 15 matches. ###
 
-	- Currently in best match mode 
-	- Viewing only proteins with matches
+  - Currently in best match mode 
+  - Viewing only proteins with matches
 
 |=============================================================================================================================|
   Selection  Q-Score     Predicted Structure     PDB-File => Chain     Structural Homolog Description
