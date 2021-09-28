@@ -522,7 +522,7 @@ print "\n# $time: Working on $predictor predictions\n";
 		-g $gt_dir/${predictor}_GESAMT_per_model.matches \\
 		-p $PDB_dir/ \\
 		-r $database/RCSB_PDB \\
-		-o $vz_dir/$predictor
+		-o $vz_dir/$predictor \\
 		-l $vz_dir/predicted_structures.log";
 }
 
