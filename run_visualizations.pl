@@ -246,7 +246,7 @@ WHILE: while(0==0){
     undef $warning_statement;
 
     # Selected to view a CXS file
-    if($printed_counter > 0 && $selection =~ /([1-$printed_counter])/){
+    if($printed_counter > 0 && $selection =~ /(\d+)/ && $selection < $printed_counter - 1){
         my $selected_locus = $1 - 1;
         my @selected_data = @{$match_info[$selected_locus]};
         my ($model) = $selected_data[0] =~ /(\S+)/;
@@ -256,7 +256,6 @@ WHILE: while(0==0){
         my $outfile = "${predictor}/${model}/${model}_${match_id}_${match_chain}";
         system "chimerax 2>/dev/null $in_dir/Visualization/$outfile.cxs $vis_dir/restore_chimerax_session.py &";
     }
-
     # Selected to view a predicted PDB model
     elsif($selection eq "M"){
         print("\n\n\t\tWhich of the following predictors would you like to see viewable structural predictions for?\n\n");
