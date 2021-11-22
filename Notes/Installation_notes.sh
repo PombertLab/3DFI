@@ -21,10 +21,25 @@ sudo wget -O /etc/yum.repos.d/inttf.repo https://rpms.if-not-true-then-false.com
 sudo dnf install nvidia-docker2
 
 # On Fedora 35 (https://blog.shawonashraf.com/nvidia-podman-fedora-34)
+## Alphafold2 expects nvidia-docker2, which is becoming obsolete...
+## Workaround with the newer nvidia-container-runtime
 distribution=rhel8.3
 curl -s -L https://nvidia.github.io/nvidia-container-runtime/$distribution/nvidia-container-runtime.repo | \
 sudo tee /etc/yum.repos.d/nvidia-container-runtime.repo
 sudo dnf install nvidia-container-runtime
+sudo nano /etc/docker/daemon.json
+## Content of file, link nvidia to proper path
+{
+    "runtimes": {
+        "nvidia": {
+            "path": "/usr/bin/nvidia-container-runtime",
+            "runtimeArgs": []
+        }
+    }
+}
+## EOF
+sudo systemctl daemon-reload
+sudo systemctl restart docker
 
 
 ## Modifying configuration file
