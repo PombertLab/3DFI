@@ -15,9 +15,17 @@ sudo groupadd docker
 sudo usermod -aG docker $USER
 newgrp docker
 
-## Installing NVIDIA docker container - https://www.if-not-true-then-false.com/2020/install-nvidia-container-toolkit-on-fedora/
+## Installing NVIDIA docker container
+# On Fedora 34 (https://www.if-not-true-then-false.com/2020/install-nvidia-container-toolkit-on-fedora/)
 sudo wget -O /etc/yum.repos.d/inttf.repo https://rpms.if-not-true-then-false.com/inttf.repo
 sudo dnf install nvidia-docker2
+
+# On Fedora 35 (https://blog.shawonashraf.com/nvidia-podman-fedora-34)
+distribution=rhel8.3
+curl -s -L https://nvidia.github.io/nvidia-container-runtime/$distribution/nvidia-container-runtime.repo | \
+sudo tee /etc/yum.repos.d/nvidia-container-runtime.repo
+sudo dnf install nvidia-container-runtime
+
 
 ## Modifying configuration file
 sudo nano /etc/nvidia-container-runtime/config.toml
