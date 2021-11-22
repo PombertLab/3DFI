@@ -27,8 +27,9 @@ distribution=rhel8.3
 curl -s -L https://nvidia.github.io/nvidia-container-runtime/$distribution/nvidia-container-runtime.repo | \
 sudo tee /etc/yum.repos.d/nvidia-container-runtime.repo
 sudo dnf install nvidia-container-runtime
+
 sudo nano /etc/docker/daemon.json
-## Content of file, link nvidia to proper path
+## Content of .json configuration file, link nvidia to proper path
 {
     "runtimes": {
         "nvidia": {
