@@ -1,8 +1,8 @@
 #!/usr/bin/perl
 ## Pombert Lab, Illinois Tech, 2021
 my $name = 'create_3DFI_db.pl';
-my $version = '0.3f';
-my $updated = '2021-09-22';
+my $version = '0.4';
+my $updated = '2021-11-23';
 
 use strict;
 use warnings;
@@ -509,6 +509,9 @@ sub untar { ## For gzipped tar archives
 					--directory=$outdir";
 			}
 		}
+
+		## Making sure that database files are readable by everyone
+		system "chmod -R +r $outdir";
 
 		# Delete file if flag is on
 		if ($delete){
