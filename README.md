@@ -1587,7 +1587,7 @@ This work was supported in part by the National Institute of Allergy and Infecti
 
 [3DFI: a pipeline to infer protein function using structural homology](https://academic.oup.com/bioinformaticsadvances/article/1/1/vbab030/6424973). **Julian AT, Mascarenhas dos Santos AC, Pombert JF.** Bioinformatics Advances, Volume 1, Issue 1, 2021, vbab030. DOI: 10.1093/bioadv/vbab030.
 
-Please also cite the tool(s) used for protein stucture prediction (AlphaFold, RoseTTAFold and RaptorX), structural homology searches (GESAMT) and 3D visualization (ChimeraX), as needed:
+##### Please also cite the tool(s) used for protein stucture prediction (AlphaFold, RoseTTAFold and RaptorX), structural homology searches (GESAMT) and 3D visualization (ChimeraX), as needed:
 
 [Highly accurate protein structure prediction with AlphaFold](https://pubmed.ncbi.nlm.nih.gov/34265844/). **Jumper J,** ***et al.*** Nature. 2021 Jul 15. Online ahead of print. PMID: 34265844 DOI: 10.1038/s41586-021-03819-2.
 
