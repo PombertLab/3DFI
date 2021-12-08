@@ -1583,7 +1583,7 @@ This work was supported in part by the National Institute of Allergy and Infecti
   <summary><b><i>Show/hide section: How to cite</i></b></summary>
 
 ## How to cite
-If you use the 3DFI pipeline, please cite the 3DFI publication:
+##### If you use this pipeline, please cite the 3DFI publication:
 
 [3DFI: a pipeline to infer protein function using structural homology](https://academic.oup.com/bioinformaticsadvances/article/1/1/vbab030/6424973). **Julian AT, Mascarenhas dos Santos AC, Pombert JF.** Bioinformatics Advances, Volume 1, Issue 1, 2021, vbab030. DOI: 10.1093/bioadv/vbab030.
 
