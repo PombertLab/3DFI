@@ -42,6 +42,7 @@ The 3DFI pipeline automates protein structure predictions, structural homology s
     	* [trRosetta](#trRosetta---deep-learning-based-protein-structure-modeling)
 		* [trRosetta2](#trRosetta2---deep-learning-based-protein-structure-modeling)
 * [Funding and acknowledgments](#Funding-and-acknowledgments)
+* [How to cite](#how-to-cite)
 * [References](#references)
 </details>
 
@@ -1577,6 +1578,33 @@ This work was supported in part by the National Institute of Allergy and Infecti
 </details>
 
 <hr size="8" width="100%">  
+
+<details open>
+  <summary><b><i>Show/hide section: How to cite</i></b></summary>
+
+## How to cite
+If you use the 3DFI pipeline, please cite the following publication:
+
+[3DFI: a pipeline to infer protein function using structural homology](https://academic.oup.com/bioinformaticsadvances/article/1/1/vbab030/6424973). **Julian AT, Mascarenhas dos Santos AC, Pombert JF.** Bioinformatics Advances, Volume 1, Issue 1, 2021, vbab030. DOI: 10.1093/bioadv/vbab030.
+
+Please also cite the tool(s) used for protein stucture prediction, structural homology searches and 3D visualization:
+
+###### AlphaFold
+[Highly accurate protein structure prediction with AlphaFold](https://pubmed.ncbi.nlm.nih.gov/34265844/). **Jumper J,** ***et al.*** Nature. 2021 Jul 15. Online ahead of print. PMID: 34265844 DOI: 10.1038/s41586-021-03819-2.
+
+###### RoseTTAFold
+[Accurate prediction of protein structures and interactions using a three-track neural network](https://pubmed.ncbi.nlm.nih.gov/34282049/). **Baek M,** ***et al.*** Science. 2021 Jul 15; eabj8754. Online ahead of print. PMID: 34282049 DOI: 10.1126/science.abj8754
+
+###### RaptorX
+[RaptorX: exploiting structure information for protein alignment by statistical inference](https://pubmed.ncbi.nlm.nih.gov/21987485/). **Peng J, Xu J.** Proteins. 2011;79 Suppl 10:161-71. PMID: 21987485 PMCID: PMC3226909 DOI: 10.1002/prot.23175
+
+###### GESAMT
+[Enhanced fold recognition using efficient short fragment clustering](https://pubmed.ncbi.nlm.nih.gov/27882309/). **Krissinel E.** J Mol Biochem. 2012;1(2):76-85. PMID: 27882309 PMCID: PMC5117261
+
+###### ChimeraX
+[UCSF ChimeraX: Structure visualization for researchers, educators, and developers](https://www.ncbi.nlm.nih.gov/pubmed/32881101). **Pettersen EF, Goddard TD, Huang CC, Meng EC, Couch GS, Croll TI, Morris JH, Ferrin TE**. Protein Sci. 2021 Jan;30(1):70-82.  PMID: 32881101 PMCID: PMC7737788 DOI: 10.1002/pro.3943
+
+</details>
 
 <details open>
   <summary><b><i>Show/hide section: References</i></b></summary>
