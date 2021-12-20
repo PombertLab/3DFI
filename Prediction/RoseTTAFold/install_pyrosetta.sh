@@ -19,7 +19,7 @@ conda activate folding
 
 mkdir -p $TMPDIR
 tar -xjvf $PYROSETTA -C $TMPDIR
-cd $TMPDIR/PyRosetta4.Release.python37*
+cd $TMPDIR/PyRosetta4.*
 cd setup && python setup.py install
 cd $CWDDIR
 rm -R $TMPDIR
