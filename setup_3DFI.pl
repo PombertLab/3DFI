@@ -104,23 +104,11 @@ foreach my $predictor (@predictors){
 	}
 	## Checking for Docker
 	if ($predictor eq 'alphafold'){
-		my $docker = `command -v docker`;
-		chomp $docker;
-		if ($docker eq ''){
-			print "\n[E] Docker not found. AlphaFold requires Docker. Please make sure that Docker is properly installed before using setup_3DFI.pl.\n";
-			print "[E] Exiting...\n\n";
-			exit;
-		}
+		check_program('docker', 'AlphaFold');
 	}
 	## Checking for Conda
 	elsif ($predictor eq 'rosettafold'){
-		my $conda = `command -v conda`;
-		chomp $conda;
-		if ($conda eq ''){
-			print "\n[E] Conda not found. RoseTTAFold requires Conda. Please make sure that Conda is properly installed before using setup_3DFI.pl.\n";
-			print "[E] Exiting...\n\n";
-			exit;
-		}
+		check_program('conda', 'RoseTTAFold');
 	}
 }
 
@@ -351,6 +339,18 @@ exit;
 
 ######################################################
 # subroutines
+sub check_program {
+	my $program = $_[0];
+	my $prereq = $_[1];
+	my $status = `echo \$(command -v $program)`;
+	chomp $status;
+	if ($status eq ''){
+		print "\n[E] $program not found. $prereq requires $program. Please make sure that $program is properly installed before using setup_3DFI.pl.\n";
+		print "[E] Exiting...\n\n";
+		exit;
+	}
+}
+
 sub set_main {
 	my $fh = shift;
 	my $bar = '#' x 50;
