@@ -1,8 +1,8 @@
 #!/usr/bin/perl
 ## Pombert Lab, Illinois Tech, 2021
 my $name = 'create_3DFI_db.pl';
-my $version = '0.4';
-my $updated = '2021-11-23';
+my $version = '0.4a';
+my $updated = '2021-12-21';
 
 use strict;
 use warnings;
@@ -129,7 +129,7 @@ print "\nSpace available on device = $space_left\n\n";
 # Checking for aria2, unpigz and gesamt
 
 # Aria2
-my $aria2 = `command -v aria2c`;
+my $aria2 = `echo \$(command -v aria2c)`;
 chomp $aria2;
 if ($aria2 eq ''){
 	print "[E] aria2c not found in the \$PATH. Please check if aria2 is installed\n";
@@ -140,13 +140,13 @@ if ($aria2 eq ''){
 
 # Pigz
 my $decompression_tool = 'gunzip';
-my $unpigz = `command -v unpigz`;
+my $unpigz = `echo \$(command -v unpigz)`;
 chomp $unpigz;
 unless ($unpigz eq ''){ $decompression_tool = 'unpigz'; }
 
 # GESAMT
 if ($make_gesamt or $update_gesamt){ 
-	my $gesamt_prog = `command -v gesamt`;
+	my $gesamt_prog = `echo \$(command -v gesamt)`;
 	chomp $gesamt_prog;
 	if ($gesamt_prog eq ''){ 
 		print "[E] Cannot find gesamt but --make_gesamt/--update_gesamt was requested. Please install GESAMT in your \$PATH\n\n";

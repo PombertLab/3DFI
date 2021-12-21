@@ -1,8 +1,8 @@
 #!/usr/bin/perl
 ## Pombert Lab, Illinois Tech, 2021
 my $name = 'setup_3DFI.pl';
-my $version = '0.5a';
-my $updated = '2021-09-23';
+my $version = '0.5b';
+my $updated = '2021-12-21';
 
 use strict;
 use warnings;

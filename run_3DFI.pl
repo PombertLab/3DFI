@@ -1,8 +1,8 @@
 #!/usr/bin/perl
 ## Pombert Lab, Illinois Tech, 2021
 my $name = 'run_3DFI.pl';
-my $version = '0.4.1';
-my $updated = '2021-09-27';
+my $version = '0.4b';
+my $updated = '2021-12-21';
 
 use strict;
 use warnings;
@@ -207,7 +207,7 @@ foreach my $pred (@predictors){
 	$pred = lc($pred);
 
 	if ($pred eq 'raptorx'){
-		my $check_modeller = `command -v $modeller`;
+		my $check_modeller = `echo \$(command -v $modeller)`;
 		chomp $check_modeller;
 		unless ($check_modeller =~ /$modeller/){
 			print "\n[E] Cannot find MODELLER version: $modeller in your \$PATH. Please check if MODELLER is installed.\n\n";
@@ -218,14 +218,14 @@ foreach my $pred (@predictors){
 }
 
 unless ($tdo){
-	my $gesamt_check = `command -v gesamt`;
+	my $gesamt_check = `echo \$(command -v gesamt)`;
 	chomp $gesamt_check;
 	if ($gesamt_check eq ''){ 
 		print "\n[E]: Cannot find gesamt. Please install GESAMT in your \$PATH. Exiting..\n\n";
 		exit;
 	}
 
-	my $chimerax_check = `command -v chimerax`;
+	my $chimerax_check = `echo \$(command -v chimerax)`;
 	chomp $chimerax_check;
 	if ($chimerax_check eq ''){ 
 		print "\n[E]: Cannot find chimerax. Please install ChimeraX in your \$PATH. Exiting..\n\n";

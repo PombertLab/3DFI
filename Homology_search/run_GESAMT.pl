@@ -1,8 +1,8 @@
 #!/usr/bin/perl
 ## Pombert Lab 2020
-my $version = '0.5e';
+my $version = '0.5f';
 my $name = 'run_GESAMT.pl';
-my $updated = '2021-09-11';
+my $updated = '2021-12-21';
 
 use strict;
 use warnings;
@@ -87,7 +87,7 @@ print LOG "\nVERSION: $version\n"."COMMAND LINE: $name @command\n";
 print LOG "Started on: $start\n";
 
 ## Program check
-my $prog = `command -v gesamt`;
+my $prog = `echo \$(command -v gesamt)`;
 chomp $prog;
 if ($prog eq ''){ 
 	die "\nERROR: Cannot find gesamt. Please install GESAMT in your path\n\n";
