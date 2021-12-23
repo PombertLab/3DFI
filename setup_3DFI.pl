@@ -232,7 +232,7 @@ foreach my $predictor (@predictors){
 		system "docker \\
 			build \\
 			-f $root_3D/alphafold/docker/Dockerfile \\
-			$docker_rebuild_flags \\ 
+			$docker_rebuild_flags \\
 			-t $docker_image \\
 			.";
 
