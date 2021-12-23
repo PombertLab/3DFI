@@ -1,8 +1,8 @@
 #!/usr/bin/perl
 ## Pombert Lab, Illinois Tech, 2021
 my $name = 'alphafold.pl';
-my $version = '0.5'; ## to test with alphafold fork
-my $updated = '2021-09-18';
+my $version = '0.5a'; ## Update to match Alphafold 2.1 cmd line switches
+my $updated = '2021-12-23';
 
 use strict;
 use warnings;
@@ -34,7 +34,8 @@ OPTIONS:
 -o (--outdir)		Output directory
 -d (--docker)		Docker image name [Default: alphafold_3dfi]
 -m (--max_date)		--max_template_date option (YYYY-MM-DD) from AlphaFold2 [Default: current date]
--p (--preset)		Alphafold preset: full_dbs, reduced_dbs or casp14 [Default: full_dbs]
+-p (--preset)		Alphafold --db_preset: full_dbs or reduced_dbs [Default: full_dbs]
+-u (--use_msas)		Use precomputed MSAs
 -g (--gpu_dev)		List of GPU devices to use: e.g. all; 0,1; 0,1,2,3 [Default: all]
 -n (--no_gpu)		Turns off GPU acceleration
 -ah (--alpha_home)	AlphaFold2 installation directory [Default: \$ALPHAFOLD_HOME]
@@ -48,6 +49,7 @@ my $outdir = './';
 my $docker_image_name = 'alphafold_3dfi';
 my $max_date = strftime("%F", localtime);
 my $preset = 'full_dbs';
+my $precomputed_msas;
 my $gpus = 'all';
 my $no_gpu;
 my $alpha_home;
@@ -58,6 +60,7 @@ GetOptions(
 	'd|docker=s' => $docker_image_name,
 	'm|max_date=s' => \$max_date,
 	'p|preset=s' => \$preset,
+	'u|use_msas' => \$precomputed_msas,
 	'g|gpu_dev=s' => $gpus,
 	'n|no_gpu' => \$no_gpu,
 	'ah|alpha_home=s' => \$alpha_home,
@@ -103,7 +106,7 @@ my %presets = (
 	casp14 => ''
 );
 unless (exists $presets{$preset}){
-	die "Unrecognized AlphaFold2 preset. Please use full_dbs, reduced_dbs, or casp14\n";
+	die "Unrecognized AlphaFold2 preset. Please use full_dbs or reduced_dbs\n";
 }
 
 ### Checking output directory + creating log file
@@ -115,7 +118,7 @@ my $timestamp = localtime;
 print LOG "\nCOMMAND = $name @command\n";
 print LOG "\nFolding started on $timestamp\n";
 print LOG "\nSetting AlphaFold2 --max_template_date option to: $max_date\n\n";
-print "\nSetting AlphaFold2 options --preset to $preset and --max_template_date to $max_date\n";
+print "\nSetting AlphaFold2 options --db_preset to $preset, --max_template_date to $max_date, and --docker_image_name to $docker_image_name\n";
 
 ### Running AlphaFold2 docker image
 my $prefix;
@@ -135,23 +138,28 @@ while (my $fasta = shift @fasta){
 		print "\n$time: working on $fasta\n";
 		my $start = time;
 
+		## Gpu check
 		my $gpu_devices = "--gpu_devices=$gpus";
-
 		my $gpu_check = '';
 		if ($no_gpu){
 			$gpu_check = '--use_gpu=False';
 			$gpu_devices = '';
 		}
 
+		## MSA
+		my $msa = 'False';
+		if ($precomputed_msas){ $msa = 'True'; }
+
 		# Folding
 		system "python3 \\
 			$alpha_home/docker/run_docker.py \\
 			--fasta_paths=$fasta \\
 			--docker_image_name=$docker_image_name \\
-			--download_dir=$alpha_db \\
+			--data_dir=$alpha_db \\
 			--output_dir=$outdir \\
 			--max_template_date=$max_date \\
-			--preset=$preset \\
+			--db_preset=$preset \\
+			--use_precomputed_msas=$msa \\
 			$gpu_devices \\
 			$gpu_check
 		";

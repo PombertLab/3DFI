@@ -194,6 +194,9 @@ cd 3DFI/
 -pyr (--pyrosetta)	PyRosetta4 [Python-3.7.Release] .tar.bz2 archive to install
 			# Download - https://www.pyrosetta.org/downloads#h.xe4c0yjfkl19
 			# License - https://els2.comotion.uw.edu/product/pyrosetta
+
+## Docker
+-name (--docker_image) Name of the AlphaFold docker image to build [Default: alphafold_3dfi]
 ```
 </details>
 
@@ -336,12 +339,16 @@ run_3DFI.pl \
 
 ## 3D Folding options
 -n (--nogpu)		ALPHAFOLD/ROSETTAFOLD: Turn off GPU acceleration / use CPU only
+-g (--gpu_dev)		ALPHAFOLD: list of GPU devices to use: e.g. all; 0,1; 0,1,2,3 [Default: all]
 -m (--maxdate)		ALPHAFOLD: --max_template_date option (YYYY-MM-DD) [Default: current date]
--k (--ranks)		RAPTORX: Number of top ranks to model [Default: 5]
+-s (--preset)		ALPHAFOLD: full_dbs or reduced_dbs [Default: full_dbs]
+-i (--docker_image)	ALPHAFOLD: docker image name [Default: alphafold_3dfi]
+-u (--use_msas)		ALPHAFOLD: Use precomputed MSAs
+-k (--ranks)		RAPTORX: \# Number of top ranks to model [Default: 5]
 --modeller		RAPTORX: Modeller version [Default: mod10.1]
 
 ## Structural homology / alignment
--d (--db)		3DFI database location containing the RCSB PDB files / GESAMT archive [Default: $TDFI_DB]
+-d (--db)		3DFI database location containing the RCSB PDB files / GESAMT archive [Default: \$TDFI_DB]
 -q (--qscore)		Mininum Q-score to keep [Default: 0.3]
 -b (--best)		Keep the best match(es) only (top X hits) [Default: 5]
 --query			Models to query per protein and predictor: all or best [Default: all]
@@ -712,11 +719,12 @@ alphafold.pl \
 -o (--outdir)		Output directory
 -d (--docker)		Docker image name [Default: alphafold_3dfi]
 -m (--max_date)		--max_template_date option (YYYY-MM-DD) from AlphaFold2 [Default: current date]
--p (--preset)		Alphafold preset: full_dbs, reduced_dbs or casp14 [Default: full_dbs]
+-p (--preset)		Alphafold --db_preset: full_dbs or reduced_dbs [Default: full_dbs]
+-u (--use_msas)		Use precomputed MSAs
 -g (--gpu_dev)		List of GPU devices to use: e.g. all; 0,1; 0,1,2,3 [Default: all]
 -n (--no_gpu)		Turns off GPU acceleration
--ah (--alpha_home)	AlphaFold2 installation directory [Default: $ALPHAFOLD_HOME]
--ad (--alpha_db)	AlphaFold2 databases location [Default: $TDFI_DB/ALPHAFOLD]
+-ah (--alpha_home)	AlphaFold2 installation directory [Default: \$ALPHAFOLD_HOME]
+-ad (--alpha_db)	AlphaFold2 databases location [Default: \$TDFI_DB/ALPHAFOLD]
 ```
 </details>
 

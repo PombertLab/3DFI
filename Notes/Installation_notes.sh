@@ -1,6 +1,8 @@
 ## On Fedora 34
 ##### Installing Aria2, Conda and Docker #####
 sudo dnf install aria2 conda docker
+sudo dnf install python-docker
+sudo dnf install python-absl ## absl is required for alphafold
 
 ## Starting Docker / enabling at boot
 sudo systemctl start docker
