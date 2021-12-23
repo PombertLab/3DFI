@@ -1,8 +1,8 @@
 #!/usr/bin/perl
 ## Pombert Lab, Illinois Tech, 2021
 my $name = 'setup_3DFI.pl';
-my $version = '0.5b';
-my $updated = '2021-12-21';
+my $version = '0.5c';
+my $updated = '2021-12-23';
 
 use strict;
 use warnings;
@@ -38,8 +38,8 @@ OPTIONS:
 			# License - https://els2.comotion.uw.edu/product/pyrosetta
 
 ## Docker
--name (--docker_image) Name of the AlphaFold docker image to build [Default: alphafold_3dfi]
-
+-name (--docker_image)	Name of the AlphaFold docker image to build [Default: alphafold_3dfi]
+-rebuild		Build/rebuild the docker image with the --pull and --no-cache flags
 OPTIONS
 die "\n$usage\n" unless @ARGV;
 
@@ -50,6 +50,7 @@ my $database;
 my @predictors;
 my $pyrosetta;
 my $docker_image = 'alphafold_3dfi';
+my $rebuild_docker;
 GetOptions(
 	'c|config=s' => \$config_file,
 	'w|write=s' => \$write,
@@ -57,7 +58,8 @@ GetOptions(
 	'd|dbdir=s' => \$database,
 	'i|install=s@{1,}' => \@predictors,
 	'pyr|pyrosetta=s' => \$pyrosetta,
-	'name|docker_image=s' => \$docker_image
+	'name|docker_image=s' => \$docker_image,
+	'rebuild' => \$rebuild_docker
 );
 
 ######################################################
@@ -220,7 +222,19 @@ foreach my $predictor (@predictors){
 		# Creating Docker image + pip install of reqs
 		print "\nCreating AlphaFold docker image named $docker_image\n";
 		chdir "$root_3D/alphafold/";
-		system "docker build -f $root_3D/alphafold/docker/Dockerfile -t $docker_image .";
+
+		# rebuild flags
+		my $docker_rebuild_flags = '';
+		if ($rebuild_docker){
+			$docker_rebuild_flags = '--pull --no-cache';
+		}
+
+		system "docker \\
+			build \\
+			-f $root_3D/alphafold/docker/Dockerfile \\
+			$docker_rebuild_flags \\ 
+			-t $docker_image \\
+			.";
 
 		# Creating a pip location for AlphaFold requirements
 		unless (-d $pip_location){

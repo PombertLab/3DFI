@@ -196,7 +196,8 @@ cd 3DFI/
 			# License - https://els2.comotion.uw.edu/product/pyrosetta
 
 ## Docker
--name (--docker_image) Name of the AlphaFold docker image to build [Default: alphafold_3dfi]
+-name (--docker_image)	Name of the AlphaFold docker image to build [Default: alphafold_3dfi]
+-rebuild		Build/rebuild the docker image with the --pull and --no-cache flags
 ```
 </details>
 
