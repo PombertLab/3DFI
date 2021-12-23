@@ -1,8 +1,8 @@
 #!/usr/bin/perl
 ## Pombert Lab, Illinois Tech, 2021
 my $name = 'run_3DFI.pl';
-my $version = '0.4b';
-my $updated = '2021-12-21';
+my $version = '0.5';
+my $updated = '2021-12-23';
 
 use strict;
 use warnings;
@@ -46,7 +46,9 @@ ADVANCED OPTIONS:
 -n (--nogpu)		ALPHAFOLD/ROSETTAFOLD: Turn off GPU acceleration / use CPU only
 -g (--gpu_dev)		ALPHAFOLD: list of GPU devices to use: e.g. all; 0,1; 0,1,2,3 [Default: all]
 -m (--maxdate)		ALPHAFOLD: --max_template_date option (YYYY-MM-DD) [Default: current date]
---preset		ALPHAFOLD:  full_dbs, reduced_dbs or casp14 [Default: full_dbs]
+-s (--preset)		ALPHAFOLD: full_dbs or reduced_dbs [Default: full_dbs]
+-i (--docker_image)	ALPHAFOLD: docker image name [Default: alphafold_3dfi]
+-u (--use_msas)		ALPHAFOLD: Use precomputed MSAs
 -k (--ranks)		RAPTORX: # Number of top ranks to model [Default: 5]
 --modeller		RAPTORX: Modeller version [Default: mod10.1]
 
@@ -77,6 +79,8 @@ my $nogpu;
 my $gpus = 'all';
 my $maxdate;
 my $preset = 'full_dbs';
+my $docker_image = 'alphafold_3dfi';
+my $precomputed_msas;
 my $ranks = 5;
 my $modeller = 'mod10.1';
 
@@ -107,8 +111,11 @@ GetOptions(
 	# 3D folding
 	'n|nogpu' => \$nogpu,
 	'g|gpu_dev=s' => $gpus,
-	'k|ranks=i' => \$ranks,
 	'm|maxdate=s' => \$maxdate,
+	's|preset=s' => \$preset,
+	'i|docker_image=s' => \$docker_image,
+	'u|use_msas' => \$precomputed_msas,
+	'k|ranks=i' => \$ranks,
 	'modeller=s' => \$modeller,
 	
 	# Structural homology 
@@ -364,10 +371,17 @@ foreach my $predictor (@predictors){
 		$pred_scripts_home = "$home_3DFI".'/Prediction/AlphaFold2/';
 
 		## Checking options
+		# GPU
 		my $gpu_devices = "--gpu_dev $gpus";
 		if ($nogpu) { $gpu_devices = '--no_gpu'; }
+
+		# Maxdate
 		my $maxdate_flag = '';
 		if ($maxdate) { $maxdate_flag = "--max_date $maxdate"; }
+
+		# Use precomputed MSAs
+		my $msas_flag = '';
+		if ($precomputed_msas){ $msas_flag = "--use_msas"; }
 
 		## Running alphafold
 		$time = localtime;
@@ -375,8 +389,10 @@ foreach my $predictor (@predictors){
 		system "$pred_scripts_home"."alphafold.pl \\
 			--fasta $fasta_dir/*.fasta \\
 			--preset $preset \\
+			--docker $docker_image \\
 			$gpu_devices \\
 			$maxdate_flag \\
+			$msas_flag \\
 			-o $af_dir";
 		
 		## Parsing AlphaFold output folders
