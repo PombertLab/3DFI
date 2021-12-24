@@ -100,7 +100,7 @@ The 3DFI pipeline requires the following software to perform protein structure p
 3. A structural homology search tool:
 	- GESAMT via [CCP4](https://www.ccp4.ac.uk/)
 4. An alignment/visualization tool:
-	- [ChimeraX](https://www.rbvi.ucsf.edu/chimerax/download.html)
+	- [ChimeraX](https://www.rbvi.ucsf.edu/chimerax/older_releases.html) 1.2.5
 5. [Perl5](https://www.perl.org/) and the additonal scripting module:
 	- [PerlIO::gzip](https://metacpan.org/pod/PerlIO::gzip)
 
@@ -136,7 +136,7 @@ export PATH=$PATH:$CCP4
 ```
 
 ##### ChimeraX
-[ChimeraX](https://www.rbvi.ucsf.edu/chimerax/download.html) is provided as .deb and .rpm packages for Debian- and RedHat-based Linux distributions. On Fedora, ChimeraX can be installed from the command line with the DNF package manager.
+[ChimeraX](https://www.rbvi.ucsf.edu/chimerax/older_releases.html) 1.2.5 is provided as .deb and .rpm packages for Debian- and RedHat-based Linux distributions. On Fedora, ChimeraX can be installed from the command line with the DNF package manager.
 ```Bash
 sudo dnf install ucsf-chimerax-*.rpm
 ```
