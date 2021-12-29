@@ -1,8 +1,8 @@
 #!/usr/bin/perl
 ## Pombert Lab, Illinois Tech, 2021
 my $name = 'create_3DFI_db.pl';
-my $version = '0.4a';
-my $updated = '2021-12-21';
+my $version = '0.4b';
+my $updated = '2021-12-29';
 
 use strict;
 use warnings;
@@ -250,7 +250,7 @@ if ($alphafold or $all_databases){
 		$symlink ";
 
 	##### Downloading AlphaFold2 parameters
-	my $param_file = 'alphafold_params_2021-07-14.tar';
+	my $param_file = 'alphafold_params_2021-10-27.tar';
 	my $param_url = 'https://storage.googleapis.com/alphafold/'."$param_file";
 	my $param_dir = "$af_dbs/params";
 
