@@ -1,8 +1,8 @@
 #!/usr/bin/perl
 ## Pombert Lab, Illinois Tech, 2021
 my $name = 'alphafold.pl';
-my $version = '0.5a'; ## Update to match Alphafold 2.1 cmd line switches
-my $updated = '2021-12-23';
+my $version = '0.5b'; ## Updated to match Alphafold 2.1.1 cmd line switches
+my $updated = '2021-12-30';
 
 use strict;
 use warnings;
@@ -102,8 +102,7 @@ elsif (defined $alpha_db){
 ### Checking AlphaFold2 preset
 my %presets = (
 	full_dbs => '',
-	reduced_dbs => '',
-	casp14 => ''
+	reduced_dbs => ''
 );
 unless (exists $presets{$preset}){
 	die "Unrecognized AlphaFold2 preset. Please use full_dbs or reduced_dbs\n";
