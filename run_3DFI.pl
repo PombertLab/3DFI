@@ -1,13 +1,14 @@
 #!/usr/bin/perl
 ## Pombert Lab, Illinois Tech, 2021
 my $name = 'run_3DFI.pl';
-my $version = '0.5';
-my $updated = '2021-12-23';
+my $version = '0.5a';
+my $updated = '2022-01-22';
 
 use strict;
 use warnings;
 use Getopt::Long qw(GetOptions);
 use File::Basename;
+use File::Path qw(make_path);
 use Cwd qw(abs_path);
 use POSIX 'strftime';
 
@@ -245,7 +246,9 @@ my $fd_dir = "$outdir/Folding";
 my $hm_dir = "$outdir/Homology";
 my $vz_dir = "$outdir/Visualization";
 
-unless (-d $outdir) { mkdir ($outdir, 0755) or die "Can't create $outdir: $!\n"; }
+unless (-d $outdir) {
+	make_path( $outdir, { mode => 0755 } )  or die "Can't create $outdir: $!\n";
+}
 unless (-d $fd_dir) { mkdir ($fd_dir, 0755) or die "Can't create $fd_dir: $!\n"; }
 
 # Do not create homology/visualisation subdirs if --3D_only flag is on
