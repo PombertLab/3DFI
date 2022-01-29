@@ -1,8 +1,8 @@
 #!/usr/bin/perl
 ## Pombert Lab, Illinois Tech, 2021
 my $name = 'setup_3DFI.pl';
-my $version = '0.5c';
-my $updated = '2021-12-23';
+my $version = '0.5d';
+my $updated = '2021-01-29';
 
 use strict;
 use warnings;
@@ -149,6 +149,28 @@ print "3DFI installation directory (\$TDFI_HOME):"."\t"."$abs_path_3DFI\n";
 print "3DFI database directory (\$TDFI_DB):"."\t"."\t"."$abs_path_db\n";
 print "\n";
 print "Is this correct? y/n (y => proceed; n => exit): ";
+CHECKVARS:{
+	my $answer = <STDIN>;
+	chomp $answer;
+	my $check = lc ($answer);
+	if (($check eq 'y') or ($check eq 'yes')){
+		next;
+	}
+	elsif (($check eq 'n') or ($check eq 'no')){
+		print "Exiting setup as requested\n\n";
+		exit;
+	}
+	else {
+		print "Unrecognized answer: $answer. Please enter y (yes) or n (no).\n";
+		goto CHECKVARS;
+	}
+}
+
+######################################################
+# Adding 3DFI environment variables to config file (if yes)
+print "Do you want to add the 3DFI environment variables ";
+print "to $config_file? y/n: ";
+
 MAINVARS:{
 	my $answer = <STDIN>;
 	chomp $answer;
@@ -158,8 +180,8 @@ MAINVARS:{
 		set_main(\*CONFIG);
 	}
 	elsif (($check eq 'n') or ($check eq 'no')){
-		print "Exiting setup as requested\n\n";
-		exit;
+		print "Skipping 3DFI environment variables...\n";
+		next;
 	}
 	else {
 		print "Unrecognized answer: $answer. Please enter y (yes) or n (no).\n";
