@@ -38,6 +38,7 @@ OPTIONS:
 -u (--use_msas)		Use precomputed MSAs
 -g (--gpu_dev)		List of GPU devices to use: e.g. all; 0,1; 0,1,2,3 [Default: all]
 -n (--no_gpu)		Turns off GPU acceleration
+-r (--relax)		Turns off AlphaFold's final relaxation step
 -ah (--alpha_home)	AlphaFold2 installation directory [Default: \$ALPHAFOLD_HOME]
 -ad (--alpha_db)	AlphaFold2 databases location [Default: \$TDFI_DB/ALPHAFOLD]
 OPTIONS
@@ -52,6 +53,7 @@ my $preset = 'full_dbs';
 my $precomputed_msas;
 my $gpus = 'all';
 my $no_gpu;
+my $relax;
 my $alpha_home;
 my $alpha_db;
 GetOptions(
@@ -63,6 +65,7 @@ GetOptions(
 	'u|use_msas' => \$precomputed_msas,
 	'g|gpu_dev=s' => \$gpus,
 	'n|no_gpu' => \$no_gpu,
+	'r|relax' => \$relax,
 	'ah|alpha_home=s' => \$alpha_home,
 	'ad|alpha_db=s' => \$alpha_db
 );
@@ -140,9 +143,17 @@ while (my $fasta = shift @fasta){
 		## Gpu check
 		my $gpu_devices = "--gpu_devices=$gpus";
 		my $gpu_check = '';
+		my $gpu_relax = '--use_gpu_relax=True';
 		if ($no_gpu){
 			$gpu_check = '--use_gpu=False';
 			$gpu_devices = '';
+			$gpu_relax = '';
+		}
+
+		my $relaxation = 'True';
+		if ($relax){
+			$relaxation = 'False';
+			$gpu_relax = '';
 		}
 
 		## MSA
@@ -160,7 +171,9 @@ while (my $fasta = shift @fasta){
 			--db_preset=$preset \\
 			--use_precomputed_msas=$msa \\
 			$gpu_devices \\
-			$gpu_check
+			$gpu_check \\
+			--run_relax=$relaxation \\
+			$gpu_relax
 		";
 
 		my $run_time = time - $start;
