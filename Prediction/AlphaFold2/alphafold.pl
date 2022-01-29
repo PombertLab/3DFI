@@ -1,8 +1,8 @@
 #!/usr/bin/perl
 ## Pombert Lab, Illinois Tech, 2021
 my $name = 'alphafold.pl';
-my $version = '0.5b'; ## Updated to match Alphafold 2.1.1 cmd line switches
-my $updated = '2021-12-30';
+my $version = '0.5c'; ## Updated to match Alphafold 2.1.1 cmd line switches
+my $updated = '2022-01-29';
 
 use strict;
 use warnings;
@@ -57,11 +57,11 @@ my $alpha_db;
 GetOptions(
 	'f|fasta=s@{1,}' => \@fasta,
 	'o|outdir=s' => \$outdir,
-	'd|docker=s' => $docker_image_name,
+	'd|docker=s' => \$docker_image_name,
 	'm|max_date=s' => \$max_date,
 	'p|preset=s' => \$preset,
 	'u|use_msas' => \$precomputed_msas,
-	'g|gpu_dev=s' => $gpus,
+	'g|gpu_dev=s' => \$gpus,
 	'n|no_gpu' => \$no_gpu,
 	'ah|alpha_home=s' => \$alpha_home,
 	'ad|alpha_db=s' => \$alpha_db
