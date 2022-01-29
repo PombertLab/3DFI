@@ -141,19 +141,20 @@ while (my $fasta = shift @fasta){
 		my $start = time;
 
 		## Gpu check
-		my $gpu_devices = "--gpu_devices=$gpus";
 		my $gpu_check = '';
-		my $gpu_relax = '--use_gpu_relax=True';
+		my $gpu_devices = "--gpu_devices=$gpus";
+		my $gpu_relax = 'True';
+
 		if ($no_gpu){
 			$gpu_check = '--use_gpu=False';
 			$gpu_devices = '';
-			$gpu_relax = '';
+			$gpu_relax = 'False';
 		}
 
 		my $relaxation = 'True';
 		if ($relax){
 			$relaxation = 'False';
-			$gpu_relax = '';
+			$gpu_relax = 'False';
 		}
 
 		## MSA
@@ -173,7 +174,7 @@ while (my $fasta = shift @fasta){
 			$gpu_devices \\
 			$gpu_check \\
 			--run_relax=$relaxation \\
-			$gpu_relax
+			--use_gpu_relax=$gpu_relax
 		";
 
 		my $run_time = time - $start;
