@@ -1,8 +1,8 @@
 #!/usr/bin/perl
 ## Pombert Lab, Illinois Tech, 2021
 my $name = 'create_3DFI_db.pl';
-my $version = '0.4b';
-my $updated = '2021-12-29';
+my $version = '0.4c';
+my $updated = '2022-01-29';
 
 use strict;
 use warnings;
@@ -331,6 +331,17 @@ if ($alphafold or $all_databases){
 		ftp://ftp.wwpdb.org/pub/pdb/data/status/obsolete.dat \\
 		--dir=$mmcif_root_dir";
 
+	##### Downloading pdb_seqres
+	my $seqres_file = 'pdb_seqres.txt"';
+	my $seqres_url = 'ftp://ftp.wwpdb.org/pub/pdb/derived_data/'."$seqres_file";
+	my $seqres_dir = "$af_dbs/pdb_seqres";
+	
+	unless (-d $seqres_dir) {
+		mkdir ($seqres_dir , 0755) or die "Can't create $seqres_dir: $!\n";
+	}
+
+	aria($seqres_file, $seqres_url, $seqres_dir);
+	
 	##### Downloading small_bfd
 	my $smallbfd_file = 'bfd-first_non_consensus_sequences.fasta.gz';
 	my $smallbfd_url = 'https://storage.googleapis.com/alphafold-databases/reduced_dbs/'."$smallbfd_file";
@@ -354,6 +365,27 @@ if ($alphafold or $all_databases){
 
 	aria($uni30_file, $uni30_url, $uni30_dir);
 	untar("$uni30_dir/$uni30_file", $uni30_dir);
+
+	##### Downloading UniProt
+	my $sprot_file = 'uniprot_sprot.fasta.gz';
+	my $trembl_file = 'uniprot_trembl.fasta';
+	my $sprot_url = 'ftp://ftp.ebi.ac.uk/pub/databases/uniprot/current_release/knowledgebase/complete/'."$sprot_file";
+	my $trembl_url = 'ftp://ftp.ebi.ac.uk/pub/databases/uniprot/current_release/knowledgebase/complete/'."$trembl_file";
+
+	my $uniprot_dir = "$af_dbs/uniprot";
+	unless (-d $uniprot_dir) {
+		mkdir ($uniprot_dir , 0755) or die "Can't create $uniprot_dir: $!\n";
+	}
+
+	aria($sprot_file, $sprot_url, $uniprot_dir);
+	aria($trembl_file, $trembl_url, $uniprot_dir);
+	
+	unzip("$uniprot_dir/$sprot_file");
+	unzip("$uniprot_dir/$trembl_file");
+
+	system "cat $uniprot_dir/$sprot_file >> $uniprot_dir/$trembl_file";
+	system "mv $uniprot_dir/$trembl_file $uniprot_dir/uniprot.fasta";
+	system "rm $uniprot_dir/$sprot_file";
 
 	##### Downloading UniRef90
 	my $uni90_file = 'uniref90.fasta.gz';
