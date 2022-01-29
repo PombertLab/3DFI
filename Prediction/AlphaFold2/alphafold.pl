@@ -173,8 +173,8 @@ while (my $fasta = shift @fasta){
 			--use_precomputed_msas=$msa \\
 			$gpu_devices \\
 			$gpu_check \\
-			--run_relax=$relaxation \\
-			--use_gpu_relax=$gpu_relax
+			--use_gpu_relax=$gpu_relax \\
+			--run_relax=$relaxation
 		";
 
 		my $run_time = time - $start;
