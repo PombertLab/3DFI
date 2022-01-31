@@ -331,7 +331,7 @@ if ($alphafold or $all_databases){
 		ftp://ftp.wwpdb.org/pub/pdb/data/status/obsolete.dat \\
 		--dir=$mmcif_root_dir";
 
-	##### Downloading pdb_seqres
+	##### Downloading pdb_seqres; for AlphaFold-Multimer
 	my $seqres_file = 'pdb_seqres.txt';
 	my $seqres_url = 'ftp://ftp.wwpdb.org/pub/pdb/derived_data/'."$seqres_file";
 	my $seqres_dir = "$af_dbs/pdb_seqres";
@@ -366,7 +366,7 @@ if ($alphafold or $all_databases){
 	aria($uni30_file, $uni30_url, $uni30_dir);
 	untar("$uni30_dir/$uni30_file", $uni30_dir);
 
-	##### Downloading UniProt
+	##### Downloading UniProt; for AlphaFold-Multimer
 	my $sprot_file = 'uniprot_sprot.fasta.gz';
 	my $trembl_file = 'uniprot_trembl.fasta.gz';
 	my $sprot_url = 'ftp://ftp.ebi.ac.uk/pub/databases/uniprot/current_release/knowledgebase/complete/'."$sprot_file";
