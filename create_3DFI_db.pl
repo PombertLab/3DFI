@@ -1,8 +1,8 @@
 #!/usr/bin/perl
 ## Pombert Lab, Illinois Tech, 2021
 my $name = 'create_3DFI_db.pl';
-my $version = '0.4c';
-my $updated = '2022-01-29';
+my $version = '0.4d';
+my $updated = '2022-01-31';
 
 use strict;
 use warnings;
@@ -332,7 +332,7 @@ if ($alphafold or $all_databases){
 		--dir=$mmcif_root_dir";
 
 	##### Downloading pdb_seqres
-	my $seqres_file = 'pdb_seqres.txt"';
+	my $seqres_file = 'pdb_seqres.txt';
 	my $seqres_url = 'ftp://ftp.wwpdb.org/pub/pdb/derived_data/'."$seqres_file";
 	my $seqres_dir = "$af_dbs/pdb_seqres";
 	
@@ -368,7 +368,7 @@ if ($alphafold or $all_databases){
 
 	##### Downloading UniProt
 	my $sprot_file = 'uniprot_sprot.fasta.gz';
-	my $trembl_file = 'uniprot_trembl.fasta';
+	my $trembl_file = 'uniprot_trembl.fasta.gz';
 	my $sprot_url = 'ftp://ftp.ebi.ac.uk/pub/databases/uniprot/current_release/knowledgebase/complete/'."$sprot_file";
 	my $trembl_url = 'ftp://ftp.ebi.ac.uk/pub/databases/uniprot/current_release/knowledgebase/complete/'."$trembl_file";
 
@@ -382,6 +382,9 @@ if ($alphafold or $all_databases){
 	
 	unzip("$uniprot_dir/$sprot_file");
 	unzip("$uniprot_dir/$trembl_file");
+
+	$sprot_file =~ s/.gz$//;
+	$trembl_file =~ s/.gz$//;
 
 	system "cat $uniprot_dir/$sprot_file >> $uniprot_dir/$trembl_file";
 	system "mv $uniprot_dir/$trembl_file $uniprot_dir/uniprot.fasta";
