@@ -1,8 +1,8 @@
 #!/usr/bin/perl
 ## Pombert Lab, Illinois Tech, 2021
 my $name = 'run_3DFI.pl';
-my $version = '0.5a';
-my $updated = '2022-01-22';
+my $version = '0.5b';
+my $updated = '2022-02-22';
 
 use strict;
 use warnings;
@@ -332,6 +332,7 @@ foreach my $predictor (@predictors){
 			-t $cpu \\
 			-k $ranks \\
 			-i $fasta_dir \\
+			-m $modeller \\
 			-o $rx_dir";
 	}
 
