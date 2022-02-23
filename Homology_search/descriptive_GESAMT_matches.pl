@@ -1,8 +1,8 @@
 #!/usr/bin/perl
 ## Pombert Lab 2020
-my $version = '0.7d';
+my $version = '0.7e';
 my $name = 'descriptive_GESAMT_matches.pl';
-my $updated = '2021-09-13';
+my $updated = '2022-02-22';
 
 use strict;
 use warnings;
@@ -161,7 +161,12 @@ while (my $match = shift@matches){
 					if ($rcsb){
 						print OUT "$prefix\t";
 						for (1..$#data){ print OUT "$data[$_]\t"; }
-						print OUT "$rcsb_titles{$pdb_code}{$chain}\n";
+						if ($rcsb_titles{$pdb_code}){
+							print OUT "$rcsb_titles{$pdb_code}{$chain}\n";
+						}
+						else {
+							print OUT "No PDB entry. Verify if obsolete PDB ID...\n";
+						}
 					}
 					elsif ($pfam){
 						print OUT "$prefix\t";
@@ -174,7 +179,12 @@ while (my $match = shift@matches){
 				if ($rcsb){
 					print OUT "$prefix\t";
 					for (1..$#data){ print OUT "$data[$_]\t"; }
-					print OUT "$rcsb_titles{$pdb_code}{$chain}\n";
+					if ($rcsb_titles{$pdb_code}){
+						print OUT "$rcsb_titles{$pdb_code}{$chain}\n";
+					}
+					else {
+						print OUT "No PDB entry. Verify if obsolete PDB ID...\n";
+					}
 				}
 				elsif ($pfam){
 					if(exists $pfam_titles{$file}){
