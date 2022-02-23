@@ -131,7 +131,12 @@ while (my $pb = shift@pdb){
 			binmode PDB, ":gzip(none)";
 
 			## Printing title
-			print OUT "$pdb\tTITLE\t$title\n";
+			if($title){
+				print OUT "$pdb\tTITLE\t$title\n";
+			}
+			else{
+				print "\n[W] $pdb is missing a title\n\n";
+			}
 
 			## Printing chain(s)
 			foreach my $id (sort (keys %molecules)){
@@ -160,7 +165,12 @@ while (my $pb = shift@pdb){
 				foreach my $chain (@chains){
 					if ($molecule){	print OUT "$pdb\t$chain\t$molecule\n"; }
 					## Molecules might not be defined if engineered
-					else { print OUT "$pdb\t$chain\tundefined molecule\n"; }
+					elsif($chain) { 
+						print OUT "$pdb\t$chain\tundefined molecule\n";
+					}
+					else{
+						print "\n[W] $pdb is missing a $chain\n\n";
+					}
 				}
 			}
 		}
