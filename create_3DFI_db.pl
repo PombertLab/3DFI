@@ -165,14 +165,16 @@ if ($rcsb or $all_databases){
 	my $PDB_obs = "$database/RCSB_PDB_obsolete";
 	my $GESAMT = "$database/RCSB_GESAMT";
 
-	### Downloading/updating the RCSB PDB database with rsync
+	### Downloading/updating the current RCSB PDB database with rsync
 	system "$homology_dir"."update_PDB.pl \\
 			-o $PDB \\
+			-d current \\
 			-n 15";
 
-	### Downloading/updating the RCSB PDB obsolete database with rsync
+	### Downloading/updating the obsolete RCSB PDB database with rsync
 	system "$homology_dir"."update_PDB.pl \\
 			-o $PDB_obs \\
+			-d obsolete \\
 			-n 15";
 
 	### Downloading/updating the list of titles and chains from PDB files
