@@ -1,8 +1,8 @@
 #!/usr/bin/perl
 ## Pombert Lab 2020
-my $version = '0.4';
+my $version = '0.4a';
 my $name = 'PDB_headers.pl';
-my $updated = '2021-09-21';
+my $updated = '2022-02-22';
 
 use strict;
 use warnings;
@@ -30,6 +30,7 @@ USAGE EXAMPLE	${name} \\
 OPTIONS:
 -p (--pdb)	Directory containing PDB files downloaded from RCSB PDB/PDBe (gzipped)
 -o (--output)	Output file in tsv format
+-f (--force)	Regenerate all PDB titles ## Default off
 -v (--verbose)	Prints progress every X file [Default: 1000]
 OPTIONS
 die "\n$USAGE\n" unless @ARGV;
@@ -37,10 +38,12 @@ die "\n$USAGE\n" unless @ARGV;
 ## Defining options
 my $pdb;
 my $rcsb_list;
+my $force;
 my $verbose = 1000;
 GetOptions(
 	'p|pdb=s' => \$pdb,
 	'o|output=s' => \$rcsb_list,
+	'f|force' => \$force,
 	'v|verbose=i' => \$verbose
 );
 
@@ -57,17 +60,19 @@ find(
 ## Should reduce overall computation time by skipping parsing
 my %previous_data;
 my $diamond = '>';
-if (-f $rcsb_list){
-	$diamond = '>>'; 
-	open LIST, "<", "$rcsb_list" or die "Can't read $rcsb_list: $!\n";
-	while (my $line = <LIST>){
-		chomp $line;
-		if ($line =~ /^(\w+)/){
-			my $rcsb_entry = $1;
-			$previous_data{$rcsb_entry} = 1;
+unless ($force){
+	if (-f $rcsb_list){
+		$diamond = '>>'; 
+		open LIST, "<", "$rcsb_list" or die "Can't read $rcsb_list: $!\n";
+		while (my $line = <LIST>){
+			chomp $line;
+			if ($line =~ /^(\w+)/){
+				my $rcsb_entry = $1;
+				$previous_data{$rcsb_entry} = 1;
+			}
 		}
+		close LIST;
 	}
-	close LIST;
 }
 
 ## Parsing PDB files (*.ent.gz)
@@ -144,7 +149,7 @@ while (my $pb = shift@pdb){
 				if ($molecules{$id} =~ /CHAIN: (.*?);/){
 					$chains = $1;
 				}
-				elsif ($molecules{$id} =~ /CHAIN: (.*?)/){
+				elsif ($molecules{$id} =~ /CHAIN: (.*\w)/){
 					$chains = $1;
 					## If at end of COMPND section, no semicolon to after the chain(s)
 				}
