@@ -178,7 +178,7 @@ if ($rcsb or $all_databases){
 			-n 15";
 
 	### Downloading/updating the list of titles and chains from PDB files
-	my $list_file = 'RCSB_PDB_titles.tar.gz';
+	my $list_file = 'RCSB_PDB_titles_20220223.tar.gz';
 	my $list_url = 'http://bioinformatics.one/3DFI/gesamt/'."$list_file";
 
 	aria($list_file, $list_url, $database);
