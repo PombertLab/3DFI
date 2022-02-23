@@ -160,7 +160,7 @@ while (my $pb = shift@pdb){
 				if ($molecules{$id} =~ /CHAIN: (.*?);/){
 					$chains = $1;
 				}
-				elsif ($molecules{$id} =~ /CHAIN: (.*\w)/){
+				elsif ($molecules{$id} =~ /CHAIN: (.*[0-9a-zA-Z])/){
 					$chains = $1;
 					## If at end of COMPND section, no semicolon to after the chain(s)
 				}
