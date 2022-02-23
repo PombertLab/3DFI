@@ -1,8 +1,8 @@
 #!/usr/bin/perl
 ## Pombert Lab 2020
-my $version = '0.4a';
+my $version = '0.4b';
 my $name = 'PDB_headers.pl';
-my $updated = '2022-02-22';
+my $updated = '2022-02-23';
 
 use strict;
 use warnings;
@@ -23,12 +23,12 @@ REQUIREMENTS	PDB files downloaded from RCSB PDB; e.g. pdb2zvl.ent.gz
 		PerlIO::gzip
 		
 USAGE EXAMPLE	${name} \\
-		  -p PDB/ \\
+		  -p RCSB_PDB/ RCSB_PDB_obsolete/\\
 		  -o RCSB_PDB_titles.tsv \\
 		  -v 1000
 
 OPTIONS:
--p (--pdb)	Directory containing PDB files downloaded from RCSB PDB/PDBe (gzipped)
+-p (--pdb)	Directories containing PDB files downloaded from RCSB PDB/PDBe (gzipped)
 -o (--output)	Output file in tsv format
 -f (--force)	Regenerate all PDB titles ## Default off
 -v (--verbose)	Prints progress every X file [Default: 1000]
@@ -36,12 +36,12 @@ OPTIONS
 die "\n$USAGE\n" unless @ARGV;
 
 ## Defining options
-my $pdb;
+my @pdbs;
 my $rcsb_list;
 my $force;
 my $verbose = 1000;
 GetOptions(
-	'p|pdb=s' => \$pdb,
+	'p|pdb=s@{1,}' => \@pdbs,
 	'o|output=s' => \$rcsb_list,
 	'f|force' => \$force,
 	'v|verbose=i' => \$verbose
@@ -50,11 +50,12 @@ GetOptions(
 
 ## Recursing through PDB directory
 my @pdb;
-my $dir = "$pdb";  # PDB top directory
-find( 
-	sub { push @pdb, $File::Find::name unless -d; }, 
-	$dir
-);
+for my $dir (@pdbs){
+	find( 
+		sub { push @pdb, $File::Find::name unless -d; }, 
+		$dir
+	);
+}
 
 ## Doing a first pass to see which files have been parsed previously
 ## Should reduce overall computation time by skipping parsing

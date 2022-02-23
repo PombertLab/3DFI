@@ -1,8 +1,8 @@
 #!/usr/bin/perl
 ## Pombert Lab, Illinois Tech, 2021
 my $name = 'create_3DFI_db.pl';
-my $version = '0.4d';
-my $updated = '2022-01-31';
+my $version = '0.5';
+my $updated = '2022-02-23';
 
 use strict;
 use warnings;
@@ -162,11 +162,17 @@ if ($rcsb or $all_databases){
 
 	## Subdirectories
 	my $PDB = "$database/RCSB_PDB";
+	my $PDB_obs = "$database/RCSB_PDB_obsolete";
 	my $GESAMT = "$database/RCSB_GESAMT";
 
 	### Downloading/updating the RCSB PDB database with rsync
 	system "$homology_dir"."update_PDB.pl \\
 			-o $PDB \\
+			-n 15";
+
+	### Downloading/updating the RCSB PDB obsolete database with rsync
+	system "$homology_dir"."update_PDB.pl \\
+			-o $PDB_obs \\
 			-n 15";
 
 	### Downloading/updating the list of titles and chains from PDB files
@@ -178,7 +184,7 @@ if ($rcsb or $all_databases){
 
 	# Updating
 	system "$homology_dir"."PDB_headers.pl \\
-			-p $PDB \\
+			-p $PDB $PDB_obs \\
 			-o $database/RCSB_PDB_titles.tsv \\
 			-v 1000";
 
