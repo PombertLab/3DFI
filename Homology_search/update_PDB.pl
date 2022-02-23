@@ -49,6 +49,7 @@ unless (-d $outdir){
 
 ## Checking data type
 $data = lc($data);
+my $type = $data;
 if ($data eq 'current'){ $data = 'divided'; }
 elsif ($data eq 'obsolete'){ $data = 'obsolete'; }
 else {
@@ -62,7 +63,7 @@ my $prg = "";
 if ($nice){ $prg = "nice -n $nice"; }
 
 ## Running task with adjusted niceness, if desired
-print "Downloading RCSB PDB files with rsync:\n\n";
+print "Downloading $type RCSB PDB files with rsync:\n\n";
 system "$prg \\
   rsync \\
   -rlpt \\
