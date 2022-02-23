@@ -129,7 +129,7 @@ while (my $pb = shift@pdb){
 						$molecules{$mol_id} .= $data;
 					}
 					else {
-						print "\n[W] $pdb is missing a molecule ID\n\n";
+						print STDERR "[W] $pdb is missing a molecule ID\n";
 					}
 				}
 			}
@@ -140,7 +140,7 @@ while (my $pb = shift@pdb){
 				print OUT "$pdb\tTITLE\t$title\n";
 			}
 			else{
-				print "\n[W] $pdb is missing a title\n\n";
+				print STDERR "[W] $pdb is missing a title\n";
 			}
 
 			## Printing chain(s)
@@ -178,7 +178,7 @@ while (my $pb = shift@pdb){
 					}
 				}
 				else{
-					print "\n[W] $pdb is missing a chain\n\n";
+					print STDERR "[W] $pdb is missing a chain\n";
 				}
 			}
 		}
