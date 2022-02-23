@@ -125,7 +125,12 @@ while (my $pb = shift@pdb){
 				elsif ($line =~ /^COMPND\s+(\d+)?(.*)$/){
 					my $data = $2;
 					$data =~ s/\s+$//;
-					$molecules{$mol_id} .= $data;
+					if ($mol_id){
+						$molecules{$mol_id} .= $data;
+					}
+					else {
+						print "\n[W] $pdb is missing a molecule ID\n\n";
+					}
 				}
 			}
 			binmode PDB, ":gzip(none)";
@@ -160,17 +165,20 @@ while (my $pb = shift@pdb){
 					## If at end of COMPND section, no semicolon to after the chain(s)
 				}
 
-				$chains =~ s/ //g;
-				my @chains = split (",", $chains);
-				foreach my $chain (@chains){
-					if ($molecule){	print OUT "$pdb\t$chain\t$molecule\n"; }
-					## Molecules might not be defined if engineered
-					elsif($chain) { 
-						print OUT "$pdb\t$chain\tundefined molecule\n";
+				my @chains;
+				if($chains){
+					$chains =~ s/ //g;
+					@chains = split (",", $chains);
+					foreach my $chain (@chains){
+						if ($molecule){	print OUT "$pdb\t$chain\t$molecule\n"; }
+						## Molecules might not be defined if engineered
+						else { 
+							print OUT "$pdb\t$chain\tundefined molecule\n";
+						}
 					}
-					else{
-						print "\n[W] $pdb is missing a $chain\n\n";
-					}
+				}
+				else{
+					print "\n[W] $pdb is missing a chain\n\n";
 				}
 			}
 		}
