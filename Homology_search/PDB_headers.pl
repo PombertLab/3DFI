@@ -136,7 +136,7 @@ while (my $pb = shift@pdb){
 			binmode PDB, ":gzip(none)";
 
 			## Printing title
-			if($title){
+			if (defined $title){
 				print OUT "$pdb\tTITLE\t$title\n";
 			}
 			else{
@@ -160,17 +160,17 @@ while (my $pb = shift@pdb){
 				if ($molecules{$id} =~ /CHAIN: (.*?);/){
 					$chains = $1;
 				}
-				elsif ($molecules{$id} =~ /CHAIN: (.*[0-9a-zA-Z])/){
+				elsif ($molecules{$id} =~ /CHAIN: (.*\w)/){
 					$chains = $1;
 					## If at end of COMPND section, no semicolon to after the chain(s)
 				}
 
 				my @chains;
-				if($chains){
+				if(defined $chains){
 					$chains =~ s/ //g;
 					@chains = split (",", $chains);
 					foreach my $chain (@chains){
-						if ($molecule){	print OUT "$pdb\t$chain\t$molecule\n"; }
+						if (defined $molecule){	print OUT "$pdb\t$chain\t$molecule\n"; }
 						## Molecules might not be defined if engineered
 						else { 
 							print OUT "$pdb\t$chain\tundefined molecule\n";
