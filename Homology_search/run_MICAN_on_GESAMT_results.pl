@@ -37,18 +37,18 @@ my %Folds = ("ALPHAFOLD" => "ALPHAFOLD_3D_Parsed",
 );
 
 my $tdfi;
-my $rcsb;
+my @rcsb;
 my $outdir = "MICAN_RESULTS";
 
 GetOptions(
 	'-t|--tdif=s{1}' => \$tdfi,
-	'-r|--rcsb=s{1}' => \$rcsb,
+	'-r|--rcsb=s@{1,}' => \@rcsb,
 	'-o|--outdir=s' => \$outdir,
 );
 
 my $datestring = localtime();
 open LOG, ">", "$outdir/MICAN.log";
-print LOG ("$0 \\\n-t $tdfi \\\n-r $rcsb \\\n-o $outdir\n\n");
+print LOG ("$0 \\\n-t $tdfi \\\n-r @rcsb \\\n-o $outdir\n\n");
 print LOG ("Started on $datestring\n");
 
 my $rcsb_temp_dir = "$outdir/tmp_rcsb";
@@ -78,67 +78,81 @@ while(my $line = <IN>){
 
 		my ($query,$predictor,$rcsb_code,$chain,$qscore,$rmsd,$seq_id,$nAlign,$nRes,$rcsb_file,$annotation) = split("\t",$line);
 		my ($rcsb_sub_folder) = lc($rcsb_code) =~ /\w(\w{2})\w/;
-		my $rcsb_file_location = "$rcsb/$rcsb_sub_folder/$rcsb_file";
-		
-		system "clear";
-		print("\n\tAligning $query to $rcsb_code\n");
-		my $remaining = "." x (int((($total_alignments-$alignment_counter)/$total_alignments)*100));
-		my $progress = "|" x (100-int((($total_alignments-$alignment_counter)/$total_alignments)*100));
-		my $status = "[".$progress.$remaining."]";
-		print "\n\t$status\t".($alignment_counter)."/$total_alignments\n\t";
 
-		system "cp $rcsb_file_location $rcsb_temp_dir/$rcsb_file\n";
+		## Checking in current and obsolete RCSB PDB folders
+		my $rcsb_file_location;
+		for my $rcsb_dir (@rcsb){
+			if (-f "$rcsb_dir/$rcsb_sub_folder/$rcsb_file"){
+				$rcsb_file_location = "$rcsb_dir/$rcsb_sub_folder/$rcsb_file";
+				last;
+			}
+		}
 
-		# split_PDB.pl \
-		#   -p files.pdb \
-		#   -o output_folder \
-		#   -e pdb
+		if($rcsb_file_location){
+			system "clear";
+			print("\n\tAligning $query to $rcsb_code\n");
+			my $remaining = "." x (int((($total_alignments-$alignment_counter)/$total_alignments)*100));
+			my $progress = "|" x (100-int((($total_alignments-$alignment_counter)/$total_alignments)*100));
+			my $status = "[".$progress.$remaining."]";
+			print "\n\t$status\t".($alignment_counter)."/$total_alignments\n\t";
 
-		# -p (--pdb)	PDB input file (supports gzipped files)
-		# -o (--output)	Output directory. If blank, will create one folder per PDB file based on file prefix
-		# -e (--ext)	Desired file extension [Default: pdb]
+			system "cp $rcsb_file_location $rcsb_temp_dir/$rcsb_file\n";
 
-		if(-f "$pipeline_dir/split_PDB.pl"){
-			system "$pipeline_dir/split_PDB.pl \\
-					-p $rcsb_temp_dir/$rcsb_file \\
-					-o $rcsb_temp_dir/tmp \\
-					-e pdb
-			";
+			# split_PDB.pl \
+			#   -p files.pdb \
+			#   -o output_folder \
+			#   -e pdb
+
+			# -p (--pdb)	PDB input file (supports gzipped files)
+			# -o (--output)	Output directory. If blank, will create one folder per PDB file based on file prefix
+			# -e (--ext)	Desired file extension [Default: pdb]
+
+			if(-f "$pipeline_dir/split_PDB.pl"){
+				system "$pipeline_dir/split_PDB.pl \\
+						-p $rcsb_temp_dir/$rcsb_file \\
+						-o $rcsb_temp_dir/tmp \\
+						-e pdb
+				";
+			}
+			else{
+				print STDERR "[E] Cannot find $pipeline_dir/split_PDB.pl\n";
+			}
+
+			my $temp_file = "$rcsb_temp_dir/tmp/pdb".lc($rcsb_code)."_$chain.pdb";
+			my $predicted_file_location = "$tdfi/Folding/".$Folds{$predictor}."/$query.pdb";
+
+			my $mican_result = `mican -s $predicted_file_location $temp_file -n 1`;
+			$alignment_counter++;
+			
+			system "rm -rf $rcsb_temp_dir/*";
+
+			my @data = split("\n",$mican_result);
+
+			my $grab;
+			my $rank;
+			my $sTMscore;
+			my $TMscore;
+			my $Dali_Z;
+			my $SPscore;
+			my $Length;
+			my $RMSD;
+			my $Seq_Id;
+			foreach my $line (@data){
+				chomp($line);
+				if($line =~ /Rank\s+sTMscore/){
+					$grab = 1;
+				}
+				if(($grab) && ($line =~ /^\s+(1.*)/)){
+					undef($grab);
+					($rank,$sTMscore,$TMscore,$Dali_Z,$SPscore,$Length,$RMSD,$Seq_Id) = split(/\s+/,$1);
+					print RAW ("$query\t$predictor\t$sTMscore\t$TMscore\t$Dali_Z\t$SPscore\t$Length\t$RMSD\t$Seq_Id\n");
+				}
+			}
 		}
 		else{
-			print STDERR "[E] Cannot find $pipeline_dir/split_PDB.pl\n";
+			print STDERR "Unable to find $rcsb_file\n";
 		}
 
-		my $temp_file = "$rcsb_temp_dir/tmp/pdb".lc($rcsb_code)."_$chain.pdb";
-		my $predicted_file_location = "$tdfi/Folding/".$Folds{$predictor}."/$query.pdb";
-
-		my $mican_result = `mican -s $predicted_file_location $temp_file -n 1`;
-		$alignment_counter++;
-		
-		system "rm -rf $rcsb_temp_dir/*";
-
-		my @data = split("\n",$mican_result);
-
-		my $grab;
-		my $rank;
-		my $sTMscore;
-		my $TMscore;
-		my $Dali_Z;
-		my $SPscore;
-		my $Length;
-		my $RMSD;
-		my $Seq_Id;
-		foreach my $line (@data){
-			chomp($line);
-			if($line =~ /Rank\s+sTMscore/){
-				$grab = 1;
-			}
-			if(($grab) && ($line =~ /^\s+(1.*)/)){
-				undef($grab);
-				($rank,$sTMscore,$TMscore,$Dali_Z,$SPscore,$Length,$RMSD,$Seq_Id) = split(/\s+/,$1);
-				print RAW ("$query\t$predictor\t$sTMscore\t$TMscore\t$Dali_Z\t$SPscore\t$Length\t$RMSD\t$Seq_Id\n");
-			}
-		}
 	}
 	elsif($line =~ /^### (\w+)/){
 		print RAW ("### $1\n");
