@@ -119,7 +119,7 @@ while (my $pdb = shift@pdb){
 			}
 			print OUT "COMPND   3 CHAIN: $ch;                                                            \n";
 		}
-		else{ print STDERR "Can't find DATA for $ch\n"; }
+		else{ print STDERR "Can't find DATA for $ch in $pdb\n"; }
 		while (my $line = shift @{$chains{$ch}}){ print OUT "$line\n"; }
 		close OUT;
 	}
