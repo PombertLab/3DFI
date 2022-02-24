@@ -51,6 +51,7 @@ while (my $pdb = shift@pdb){
 	my ($filename, $dir) = fileparse($pdb);
 	my ($prefix) = $filename =~ /^(\w+)/;
 
+	## Creating subdir per PDB file
 	my $subdir = "$outdir/$prefix";
 	mkdir ("$subdir",0755) or die "Can't create folder $subdir: $!\n";
 
@@ -62,16 +63,36 @@ while (my $pdb = shift@pdb){
 	my @header;
 	my $chain;
 	my %chains;
+	my $type = '';
 	
 	while (my $line = <PDB>){
+
 		chomp $line;
-		if ($line =~ /^HEADER|TITLE|SOURCE|KEYWDS|EXPDTA|REVDAT|JRNL/){ push(@header, $line); }
-		elsif ($line =~ /^ATOM\s+\d+\s+\S+\s+\w{3}\s(\S)/){
+
+		if ($line =~ /^HEADER|TITLE|SOURCE|KEYWDS|EXPDTA|REVDAT|JRNL/){
+			push (@header, $line);
+		}
+		## Check if chain is amino acids
+		elsif ($line =~ /^ATOM.{13}\w{3}\s(\w)/){
+			$type = 'aa';
 			$chain = $1;
 			push (@{$chains{$chain}}, $line);
 		}
+		## Check if chain is nucleotide or something else
+		elsif ($line =~ /^ATOM/){
+			$type = 'unknown';
+			$chain = undef;
+		}
+		## Only push if chain is amino acids
 		elsif ($line =~ /^TER/){
-			push (@{$chains{$chain}}, $line);
+			if ($type eq 'aa'){
+				if (defined $chain){
+					push (@{$chains{$chain}}, $line);
+				}
+				else {
+					print STDERR "File $pdb: $line\n";
+				}
+			}
 		}
 
 	}
