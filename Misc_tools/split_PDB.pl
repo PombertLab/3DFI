@@ -1,8 +1,8 @@
 #!/usr/bin/perl
 ## Pombert Lab 2020
-my $version = '0.3b';
+my $version = '0.3c';
 my $name = 'split_PDB.pl';
-my $updated = '2021-04-06';
+my $updated = '2022-02-24';
 
 use strict;
 use warnings;
@@ -60,12 +60,26 @@ while (my $pdb = shift@pdb){
 	if ($pdb =~ /.gz$/){ $gzip = ':gzip'; }
 	open PDB, "<$gzip", "$pdb" or die "Can't open PDB file $pdb: $!\n";
 	
-	my %chains; my $chain; my @header; my %ids; my $molecule; my $cpchain;
+	my %chains;
+	my $chain;
+	my @header;
+	my %ids;
+	my $molecule;
+	my $cpchain;
+	
 	while (my $line = <PDB>){
 		chomp $line;
 		if ($line =~ /^HEADER|TITLE|SOURCE|KEYWDS|EXPDTA|REVDAT|JRNL/){ push(@header, $line); }
 		elsif ($line =~ /^COMPND\s+\d+\s+(MOLECULE:\s.*)$/){ $molecule = $1; }
 		elsif ($line =~ /^COMPND\s+\d+\s+CHAIN:\s(.*);/){
+			my @chains = split(",", $1);
+			foreach (@chains){
+				$_ =~ s/ //g;
+				$cpchain = $_;
+				$ids{$cpchain} = $molecule;
+			}
+		}
+		elsif ($line =~ /^COMPND\s+\d+\s+CHAIN:\s(.*\w)/){
 			my @chains = split(",", $1);
 			foreach (@chains){
 				$_ =~ s/ //g;
@@ -105,7 +119,7 @@ while (my $pdb = shift@pdb){
 			}
 			print OUT "COMPND   3 CHAIN: $ch;                                                            \n";
 		}
-		else{ print "Can't find DATA for $ch\n"; }
+		else{ print STDERR "Can't find DATA for $ch\n"; }
 		while (my $line = shift @{$chains{$ch}}){ print OUT "$line\n"; }
 		close OUT;
 	}
