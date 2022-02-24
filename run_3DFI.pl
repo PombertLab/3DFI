@@ -199,12 +199,12 @@ my %predictor_homes = (
 foreach my $pred (@predictors){
 	$pred = lc($pred);
 	if (!exists $predictor_homes{$pred}){
-		print "\n[E] 3D structure predictor $pred not recognized. Exiting...\n\n";
+		print STDERR "\n[E] 3D structure predictor $pred not recognized. Exiting...\n\n";
 		exit;
 	}
 	else {
 		unless (exists $ENV{"$predictor_homes{$pred}"}){ 
-			print "\n[E] Environment variable \$$predictor_homes{$pred} cannot be found. Exiting...\n\n";
+			print STDERR "\n[E] Environment variable \$$predictor_homes{$pred} cannot be found. Exiting...\n\n";
 			exit;
 		}
 	}
@@ -218,7 +218,7 @@ foreach my $pred (@predictors){
 		my $check_modeller = `echo \$(command -v $modeller)`;
 		chomp $check_modeller;
 		unless ($check_modeller =~ /$modeller/){
-			print "\n[E] Cannot find MODELLER version: $modeller in your \$PATH. Please check if MODELLER is installed.\n\n";
+			print STDERR "\n[E] Cannot find MODELLER version: $modeller in your \$PATH. Please check if MODELLER is installed.\n\n";
 			exit;
 		}
 	}
@@ -229,14 +229,14 @@ unless ($tdo){
 	my $gesamt_check = `echo \$(command -v gesamt)`;
 	chomp $gesamt_check;
 	if ($gesamt_check eq ''){ 
-		print "\n[E]: Cannot find gesamt. Please install GESAMT in your \$PATH. Exiting..\n\n";
+		print STDERR "\n[E]: Cannot find gesamt. Please install GESAMT in your \$PATH. Exiting..\n\n";
 		exit;
 	}
 
 	my $chimerax_check = `echo \$(command -v chimerax)`;
 	chomp $chimerax_check;
 	if ($chimerax_check eq ''){ 
-		print "\n[E]: Cannot find chimerax. Please install ChimeraX in your \$PATH. Exiting..\n\n";
+		print STDERR "\n[E]: Cannot find chimerax. Please install ChimeraX in your \$PATH. Exiting..\n\n";
 		exit;
 	}
 }
@@ -410,7 +410,7 @@ foreach my $predictor (@predictors){
 			-s";
 	}
 	else {
-		print "\n[W] 3D structure predictor $predictor not recognized. Skipping...\n";
+		print STDERR "\n[W] 3D structure predictor $predictor not recognized. Skipping...\n";
 	}
 	sleep (5);
 }
