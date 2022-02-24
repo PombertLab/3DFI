@@ -80,12 +80,12 @@ while(my $line = <IN>){
 		my ($rcsb_sub_folder) = lc($rcsb_code) =~ /\w(\w{2})\w/;
 		my $rcsb_file_location = "$rcsb/$rcsb_sub_folder/$rcsb_file";
 		
-		# system "clear";
+		system "clear";
 		print("\n\tAligning $query to $rcsb_code\n");
-		# my $remaining = "." x (int((($total_alignments-$alignment_counter)/$total_alignments)*100));
-		# my $progress = "|" x (100-int((($total_alignments-$alignment_counter)/$total_alignments)*100));
-		# my $status = "[".$progress.$remaining."]";
-		# print "\n\t$status\t".($alignment_counter)."/$total_alignments\n\t";
+		my $remaining = "." x (int((($total_alignments-$alignment_counter)/$total_alignments)*100));
+		my $progress = "|" x (100-int((($total_alignments-$alignment_counter)/$total_alignments)*100));
+		my $status = "[".$progress.$remaining."]";
+		print "\n\t$status\t".($alignment_counter)."/$total_alignments\n\t";
 
 		system "cp $rcsb_file_location $rcsb_temp_dir/$rcsb_file\n";
 
@@ -106,7 +106,7 @@ while(my $line = <IN>){
 			";
 		}
 		else{
-			print "[E] Cannot find $pipeline_dir/split_PDB.pl\n";
+			print STDERR "[E] Cannot find $pipeline_dir/split_PDB.pl\n";
 		}
 
 		my $temp_file = "$rcsb_temp_dir/tmp/pdb".lc($rcsb_code)."_$chain.pdb";
