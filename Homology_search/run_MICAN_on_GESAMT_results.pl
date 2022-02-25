@@ -68,7 +68,7 @@ close IN;
 
 open IN, "<", "$tdfi/Homology/GESAMT/All_GESAMT_matches_per_protein.tsv" or die "Unable to open file $tdfi/Homology/GESAMT/All_GESAMT_matches_per_protein.tsv: $!\n";
 open RAW, ">", "$outdir/MICAN_raw.tsv";
-print RAW ("### Query\tPredictor\tsTMscore\tTMscore\tDali_Z\tSPscore\tLength\tRMSD\tSeq_Id\n");
+print RAW ("### Query\tPredictor\tRCSB Code\tChain\tsTMscore\tTMscore\tDali_Z\tSPscore\tLength\tRMSD\tSeq_Id\n");
 
 my $alignment_counter = 0;
 while(my $line = <IN>){
@@ -145,7 +145,7 @@ while(my $line = <IN>){
 				if(($grab) && ($line =~ /^\s+(1.*)/)){
 					undef($grab);
 					($rank,$sTMscore,$TMscore,$Dali_Z,$SPscore,$Length,$RMSD,$Seq_Id) = split(/\s+/,$1);
-					print RAW ("$query\t$predictor\t$sTMscore\t$TMscore\t$Dali_Z\t$SPscore\t$Length\t$RMSD\t$Seq_Id\n");
+					print RAW ("$query\t$predictor\t$rcsb_code\t$chain\t$sTMscore\t$TMscore\t$Dali_Z\t$SPscore\t$Length\t$RMSD\t$Seq_Id\n");
 				}
 			}
 		}
