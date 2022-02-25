@@ -36,7 +36,7 @@ if ($outfile){
 	my ($filename,$path) = fileparse($outfile);
 	if (defined $path){
 		unless(-d $path){
-		make_path($path,{mode=>0755});
+			make_path($path,{mode=>0755});
 		}
 	}
 	open OUTFILE, ">", $outfile or die "Can't create $outfile: $!\n";
@@ -50,7 +50,6 @@ while (my $adir = shift@adir){
 	while (my $dname = readdir(ADIR)) {
 		if (-d "$adir/$dname"){
 			unless (($dname eq '.') or ($dname eq '..')){
-				# print "$dname\n";
 				## Checking if .json file is in AlphaFold subdir
 				my $json = "$adir/$dname/ranking_debug.json";
 				if (-e $json){
@@ -77,7 +76,6 @@ while (my $adir = shift@adir){
 								$af_results{$dname}{$mnum}{'plDDT'} = $plDDTs{$model};
 								$af_results{$dname}{$mnum}{'ranked'} = "ranked_$rank.pdb";
 								$af_results{$dname}{$mnum}{'unranked'} = "unrelaxed_$model.pdb";
-								# print "$dname:\t${dname}-m$mnum.pdb\t$plDDTs{$model}\tranked_$rank.pdb\tunrelaxed_$model.pdb\n";
 								$rank++;
 							}
 						}
