@@ -110,7 +110,7 @@ while(my $line = <IN>){
 			if(-f "$pipeline_dir/split_PDB.pl"){
 				system "$pipeline_dir/split_PDB.pl \\
 						-p $rcsb_temp_dir/$rcsb_file \\
-						-o $rcsb_temp_dir/tmp \\
+						-o $rcsb_temp_dir/tmp/ \\
 						-e pdb
 				";
 			}
@@ -118,7 +118,7 @@ while(my $line = <IN>){
 				print STDERR "[E] Cannot find $pipeline_dir/split_PDB.pl\n";
 			}
 
-			my $temp_file = "$rcsb_temp_dir/tmp/pdb".lc($rcsb_code)."_$chain.pdb";
+			my $temp_file = "$rcsb_temp_dir/tmp/pdb".lc($rcsb_code)."/pdb".lc($rcsb_code)."_$chain.pdb";
 			my $predicted_file_location = "$tdfi/Folding/".$Folds{$predictor}."/$query.pdb";
 
 			my $mican_result = `mican -s $predicted_file_location $temp_file -n 1`;
