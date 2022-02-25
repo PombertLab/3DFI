@@ -2,8 +2,8 @@
 ## Pombert Lab 2022
 
 my $name = "run_MICAN_on_GESAMT_results.pl";
-my $version = "0.1";
-my $updated = "2022-02-22";
+my $version = "0.1a";
+my $updated = "2022-02-25";
 
 use strict;
 use warnings;
@@ -57,7 +57,7 @@ unless(-d $outdir){
 	make_path($rcsb_temp_dir,{mode=>0755});
 }
 
-open IN, "<", "$tdfi/Homology/GESAMT/All_GESAMT_per_protein.tsv" or die "Unable to open file $tdfi/Homology/GESAMT/All_GESAMT_per_protein.tsv: $!\n";
+open IN, "<", "$tdfi/Homology/GESAMT/All_GESAMT_matches_per_protein.tsv" or die "Unable to open file $tdfi/Homology/GESAMT/All_GESAMT_matches_per_protein.tsv: $!\n";
 my $total_alignments;
 while(my $line = <IN>){
 	unless(($line =~ /^###/) || ($line eq "")){
@@ -66,7 +66,7 @@ while(my $line = <IN>){
 }
 close IN;
 
-open IN, "<", "$tdfi/Homology/GESAMT/All_GESAMT_per_protein.tsv" or die "Unable to open file $tdfi/Homology/GESAMT/All_GESAMT_per_protein.tsv: $!\n";
+open IN, "<", "$tdfi/Homology/GESAMT/All_GESAMT_matches_per_protein.tsv" or die "Unable to open file $tdfi/Homology/GESAMT/All_GESAMT_matches_per_protein.tsv: $!\n";
 open RAW, ">", "$outdir/MICAN_raw.tsv";
 print RAW ("### Query\tPredictor\tsTMscore\tTMscore\tDali_Z\tSPscore\tLength\tRMSD\tSeq_Id\n");
 
