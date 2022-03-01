@@ -46,16 +46,16 @@ GetOptions(
 	'-o|--outdir=s' => \$outdir,
 );
 
-my $datestring = localtime();
-open LOG, ">", "$outdir/MICAN.log";
-print LOG ("$0 \\\n-t $tdfi \\\n-r @rcsb \\\n-o $outdir\n\n");
-print LOG ("Started on $datestring\n");
-
 my $rcsb_temp_dir = "$outdir/tmp_rcsb";
 
 unless(-d $outdir){
 	make_path($rcsb_temp_dir,{mode=>0755});
 }
+
+my $datestring = localtime();
+open LOG, ">", "$outdir/MICAN.log" or die("Unable to create file $outdir/MICAN.log: $!\n");
+print LOG ("$0 \\\n-t $tdfi \\\n-r @rcsb \\\n-o $outdir\n\n");
+print LOG ("Started on $datestring\n");
 
 open IN, "<", "$tdfi/Homology/GESAMT/All_GESAMT_matches_per_protein.tsv" or die "Unable to open file $tdfi/Homology/GESAMT/All_GESAMT_matches_per_protein.tsv: $!\n";
 my $total_alignments;
