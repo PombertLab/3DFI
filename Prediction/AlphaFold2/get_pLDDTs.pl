@@ -1,8 +1,8 @@
 #!/usr/bin/perl
 ## Pombert Lab, 2022
-my $name = 'get_plDDTs.pl';
-my $version = '0.1';
-my $updated = '2022-02-25';
+my $name = 'get_pLDDTs.pl';
+my $version = '0.1a';
+my $updated = '2022-03-02';
 
 use strict;
 use warnings;
