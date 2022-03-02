@@ -13,7 +13,7 @@ use Getopt::Long qw(GetOptions);
 my $usage = <<"USAGE";
 NAME		${name}
 VERSION		${version}
-SYNOPSIS	Generates a tab-delimited table of plDDTs scores for each AlphaFold model
+SYNOPSIS	Generates a tab-delimited table of pLDDTs scores for each AlphaFold model
 		from the ranking_debug.json files.
 
 COMMAND		${name} -a AlphaFold_results/ -o AlphaFold_summary.tsv
