@@ -1,8 +1,8 @@
 #!/usr/bin/perl
 ## Pombert Lab 2022
 
-my $name = "run_MICAN_on_GESAMT_results.pl";
-my $version = "0.1b";
+my $name = "run_SPalign_on_GESAMT_results.pl";
+my $version = "0.1a";
 my $updated = "2022-03-09";
 
 use strict;
@@ -16,7 +16,7 @@ my $usage = <<"EXIT";
 NAME		${name}
 VERSION		${version}
 UPDATED		${updated}
-SYNOPSIS	The purpose of this script is to to calculate the Template Model (TM) score by running the MICAN structural alignment tool,
+SYNOPSIS	The purpose of this script is to to calculate the GDT score by running the SP-align structural alignment tool,
 		an indicator of the strength a predicted protein model shares with the expiremental model it is attempting to represent.
 
 USAGE
@@ -24,7 +24,7 @@ USAGE
 OPTION
 -t (--tdfi)		3DFI output folder
 -r (--rcsb)		Path to RCSB PDB structures
--o (--outdir)		Output directory (Default: MICAN_RESULTS)
+-o (--outdir)		Output directory (Default: SPalign_RESULTS)
 EXIT
 
 die("\n$usage\n") unless(@ARGV);
@@ -38,7 +38,7 @@ my %Folds = ("ALPHAFOLD" => "ALPHAFOLD_3D_Parsed",
 
 my $tdfi;
 my @rcsb;
-my $outdir = "MICAN_RESULTS";
+my $outdir = "SPalign_RESULTS";
 
 GetOptions(
 	'-t|--tdif=s{1}' => \$tdfi,
@@ -53,7 +53,7 @@ unless(-d $outdir){
 }
 
 my $datestring = localtime();
-open LOG, ">", "$outdir/MICAN.log" or die("Unable to create file $outdir/MICAN.log: $!\n");
+open LOG, ">", "$outdir/SPalign.log" or die("Unable to create file $outdir/SPalign.log: $!\n");
 print LOG ("$0 \\\n-t $tdfi \\\n-r @rcsb \\\n-o $outdir\n\n");
 print LOG ("Started on $datestring\n");
 
@@ -67,8 +67,8 @@ while(my $line = <IN>){
 close IN;
 
 open IN, "<", "$tdfi/Homology/GESAMT/All_GESAMT_matches_per_protein.tsv" or die "Unable to open file $tdfi/Homology/GESAMT/All_GESAMT_matches_per_protein.tsv: $!\n";
-open RAW, ">", "$outdir/MICAN_raw.tsv";
-print RAW ("### Query\tPredictor\tRCSB Code\tChain\tsTMscore\tTMscore\tDali_Z\tSPscore\tLength\tRMSD\tSeq_Id\n");
+open RAW, ">", "$outdir/SPalign_raw.tsv";
+print RAW ("### Query\tPredictor\tRCSB Code\tChain\tRMSD\tnAlign\tGDT\n");
 
 my $alignment_counter = 0;
 while(my $line = <IN>){
@@ -98,15 +98,6 @@ while(my $line = <IN>){
 
 			system "cp $rcsb_file_location $rcsb_temp_dir/$rcsb_file\n";
 
-			# split_PDB.pl \
-			#   -p files.pdb \
-			#   -o output_folder \
-			#   -e pdb
-
-			# -p (--pdb)	PDB input file (supports gzipped files)
-			# -o (--output)	Output directory. If blank, will create one folder per PDB file based on file prefix
-			# -e (--ext)	Desired file extension [Default: pdb]
-
 			if(-f "$pipeline_dir/split_PDB.pl"){
 				system "$pipeline_dir/split_PDB.pl \\
 						-p $rcsb_temp_dir/$rcsb_file \\
@@ -121,31 +112,24 @@ while(my $line = <IN>){
 			my $temp_file = "$rcsb_temp_dir/tmp/pdb".lc($rcsb_code)."/pdb".lc($rcsb_code)."_$chain.pdb";
 			my $predicted_file_location = "$tdfi/Folding/".$Folds{$predictor}."/$query.pdb";
 
-			my $mican_result = `mican -s $predicted_file_location $temp_file -n 1`;
+			my $SPalign_result = `SP-align $predicted_file_location $temp_file`;
 			$alignment_counter++;
 			
 			system "rm -rf $rcsb_temp_dir/*";
 
-			my @data = split("\n",$mican_result);
+			my @data = split("\n",$SPalign_result);
 
-			my $grab;
-			my $rank;
-			my $sTMscore;
-			my $TMscore;
-			my $Dali_Z;
-			my $SPscore;
-			my $Length;
 			my $RMSD;
-			my $Seq_Id;
+			my $nAlign;
+			my $GDT;
+			my $TMscore;
 			foreach my $line (@data){
 				chomp($line);
-				if($line =~ /Rank\s+sTMscore/){
-					$grab = 1;
-				}
-				if(($grab) && ($line =~ /^\s+(1.*)/)){
-					undef($grab);
-					($rank,$sTMscore,$TMscore,$Dali_Z,$SPscore,$Length,$RMSD,$Seq_Id) = split(/\s+/,$1);
-					print RAW ("$query\t$predictor\t$rcsb_code\t$chain\t$sTMscore\t$TMscore\t$Dali_Z\t$SPscore\t$Length\t$RMSD\t$Seq_Id\n");
+				if($line =~ /GDT/){
+					my ($RMSD_seg,$GDT_seg,$TMscore_seg) = split(";",$line);
+					($RMSD,$nAlign) = $RMSD_seg =~ /^RMSD\/Nali= (\S+) \/ (\d+)/;
+					($GDT) = $GDT_seg =~ /^GDT= (\S+)/;
+					print RAW ("$query\t$predictor\t$rcsb_code\t$chain\t$RMSD\t$nAlign\t$GDT\n");
 				}
 			}
 		}
