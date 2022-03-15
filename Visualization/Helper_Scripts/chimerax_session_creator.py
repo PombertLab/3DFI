@@ -6,8 +6,8 @@ import re
 import os
 
 name = 'chimerax_session_creator.py'
-version = '0.2.0'
-updated = '2021-09-02'
+version = '0.3'
+updated = '2022-02-23'
 
 usage = f'''
 NAME		{name}
@@ -16,7 +16,8 @@ UPDATED		{updated}
 
 SYNOPSIS	This script is used to align a reference .pdb to a predicted .pdb,
 		changes the predicted .pdb color, hides all atoms, shows only matched
-		chains, and saves the result as a ChimeraX session (.cxs)
+		chains, and saves the result as a ChimeraX session, .cxs file. This version
+		is tested and functional as of ChimeraX 1.3.1.
 
 COMMAND		{name} \\
 			-p ...preference \\
@@ -66,8 +67,9 @@ run(session,"hide atoms")
 run(session,"hide ribbons")
 
 match = run(session,f"match #{model_pred_name} to #{model_rcsb_name}/{chain}")
-chain_pred_rcsb = (match[0][0].unique_chain_ids)[0]
-chain_rcsb = (match[0][1].unique_chain_ids)[0]
+
+chain_pred_rcsb = re.search("\#\d+\/([0-9a-zA-Z])",str(match[0]["final match atoms"][0])).group(1)
+chain_rcsb = re.search("\#\d+\/([0-9a-zA-Z])",str(match[0]["final ref atoms"][0])).group(1)
 
 ## Color reference structure a diferrent color
 run(session,f"color #{model_rcsb_name}/{chain_rcsb} #00FFFF ribbons")

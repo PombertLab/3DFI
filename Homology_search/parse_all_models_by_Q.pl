@@ -1,8 +1,8 @@
 #!/usr/bin/perl
 ## Pombert Lab, Illinois Tech, 2021
 my $name = 'parse_all_models_by_Q.pl';
-my $version = '0.1a';
-my $updated = '2021-09-13';
+my $version = '0.1b';
+my $updated = '2022-02-25';
 
 use strict;
 use warnings;
@@ -60,6 +60,7 @@ while (my $file = shift@matches){
 	while (my $line = <IN>){
 		chomp $line;
 		if ($line =~ /^#/){ next; }
+		elsif ($line eq ''){ next; }
 		else {
 			my @data = split ("\t", $line);
 			my $protein;

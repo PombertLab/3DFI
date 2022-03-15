@@ -1,8 +1,8 @@
 #!/usr/bin/perl
 ## Pombert Lab, Illinois Tech, 2021
 my $name = 'setup_3DFI.pl';
-my $version = '0.5d';
-my $updated = '2021-01-29';
+my $version = '0.6';
+my $updated = '2021-03-15';
 
 use strict;
 use warnings;
@@ -133,13 +133,21 @@ my $abs_path_db = abs_path($database);
 
 my $root_3D = "$abs_path_3DFI".'/3D';
 unless (-d $root_3D){
-	mkdir ($root_3D,0755) or die "Can't create $root_3D: $!\n";
+	make_path ($root_3D,{mode => 0755}) or die "Can't create $root_3D: $!\n";
 }
 
 my $alphafold_home = "$root_3D".'/'.'alphafold';
 my $pip_location = "$root_3D/alphafold/python/";
 my $raptorx_home = "$root_3D".'/'.'RaptorX';
 my $rosettafold_home = "$root_3D".'/'.'RoseTTAFold';
+
+######################################################
+# Creating default install location for homology tools
+
+my $root_homology = $abs_path_3DFI."/Homology_Tools";
+unless (-d $root_homology){
+	make_path ($root_homology,{mode => 0755}) or die "Can't create $root_homology: $!\n";
+}
 
 ######################################################
 # Checking configuration file entries
@@ -376,6 +384,17 @@ foreach my $predictor (@predictors){
 }
 
 ######################################################
+# Installing MICAN
+
+print "\nDownloading MICAN [1.25 Mb] with wget\n";
+my $mican_url = "http://landscape.tbp.cse.nagoya-u.ac.jp/MICAN/Download/bin/mican_linux_64";
+system "wget \\
+	-P $root_homology \\
+	$mican_url";
+system "mv $root_homology/mican_linux_64 $root_homology/mican";
+system "chmod +x $root_homology/mican";
+
+######################################################
 # tasks completed
 exit;
 
@@ -405,6 +424,7 @@ sub set_main {
 	print $fh "export RAPTORX_HOME=$raptorx_home\n";
 	print $fh "export ROSETTAFOLD_HOME=$rosettafold_home\n";
 	print $fh "export ALPHAFOLD_HOME=$alphafold_home\n";
+	print $fh "export HOMOLOGY_HOME=$root_homology\n";
 	print $fh "export PYTHONPATH=\$PYTHONPATH:$pip_location\n"; ## Check if this breaks python...
 
 }

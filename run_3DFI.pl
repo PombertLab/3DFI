@@ -1,8 +1,8 @@
 #!/usr/bin/perl
 ## Pombert Lab, Illinois Tech, 2021
 my $name = 'run_3DFI.pl';
-my $version = '0.5b';
-my $updated = '2022-02-22';
+my $version = '0.6';
+my $updated = '2022-03-15';
 
 use strict;
 use warnings;
@@ -32,6 +32,7 @@ GENERAL OPTIONS:
 -p (--pred)		Structure predictor(s): alphafold, rosettafold, and/or raptorx
 -c (--cpu)		# of CPUs to use [Default: 10]
 -3do (--3D_only)	3D folding only; no structural homology search(es) / structural alignment(s)
+-m (--mican)	Perform alignment scoring (TM-score) with MICAN
 -v (--viz)		Turn on visualization once the structural homology searches are completed
 USAGE
 die "\n$usage\n" unless @ARGV;
@@ -68,6 +69,7 @@ my $outdir = 'Results_3DFI';
 my @predictors;
 my $cpu = 10;
 my $tdo;
+my $mican;
 
 ## Advanced
 # FASTA
@@ -102,6 +104,7 @@ GetOptions(
 	'p|pred=s@{1,}' => \@predictors,
 	'c|cpu=i' => \$cpu,
 	'3do|3D_only)' => \$tdo,
+	'm|mican' => \$mican,
 	
 	## Advanced
 	# FASTA
@@ -199,12 +202,12 @@ my %predictor_homes = (
 foreach my $pred (@predictors){
 	$pred = lc($pred);
 	if (!exists $predictor_homes{$pred}){
-		print "\n[E] 3D structure predictor $pred not recognized. Exiting...\n\n";
+		print STDERR "\n[E] 3D structure predictor $pred not recognized. Exiting...\n\n";
 		exit;
 	}
 	else {
 		unless (exists $ENV{"$predictor_homes{$pred}"}){ 
-			print "\n[E] Environment variable \$$predictor_homes{$pred} cannot be found. Exiting...\n\n";
+			print STDERR "\n[E] Environment variable \$$predictor_homes{$pred} cannot be found. Exiting...\n\n";
 			exit;
 		}
 	}
@@ -218,7 +221,7 @@ foreach my $pred (@predictors){
 		my $check_modeller = `echo \$(command -v $modeller)`;
 		chomp $check_modeller;
 		unless ($check_modeller =~ /$modeller/){
-			print "\n[E] Cannot find MODELLER version: $modeller in your \$PATH. Please check if MODELLER is installed.\n\n";
+			print STDERR "\n[E] Cannot find MODELLER version: $modeller in your \$PATH. Please check if MODELLER is installed.\n\n";
 			exit;
 		}
 	}
@@ -229,14 +232,14 @@ unless ($tdo){
 	my $gesamt_check = `echo \$(command -v gesamt)`;
 	chomp $gesamt_check;
 	if ($gesamt_check eq ''){ 
-		print "\n[E]: Cannot find gesamt. Please install GESAMT in your \$PATH. Exiting..\n\n";
+		print STDERR "\n[E]: Cannot find gesamt. Please install GESAMT in your \$PATH. Exiting..\n\n";
 		exit;
 	}
 
 	my $chimerax_check = `echo \$(command -v chimerax)`;
 	chomp $chimerax_check;
 	if ($chimerax_check eq ''){ 
-		print "\n[E]: Cannot find chimerax. Please install ChimeraX in your \$PATH. Exiting..\n\n";
+		print STDERR "\n[E]: Cannot find chimerax. Please install ChimeraX in your \$PATH. Exiting..\n\n";
 		exit;
 	}
 }
@@ -410,7 +413,7 @@ foreach my $predictor (@predictors){
 			-s";
 	}
 	else {
-		print "\n[W] 3D structure predictor $predictor not recognized. Skipping...\n";
+		print STDERR "\n[W] 3D structure predictor $predictor not recognized. Skipping...\n";
 	}
 	sleep (5);
 }
@@ -547,6 +550,24 @@ print "\n# $time: Working on $predictor predictions\n";
 }
 
 ##### End of ChimeraX structural alignments
+
+######################################################################
+## Alignment with MICAN
+
+$time = localtime;
+print "\n".'###############################################################################################';
+print "\n# $time: Performing aligments between queries and best matches with MICAN\n";
+sleep (2);
+
+if ($mican){
+	system "$homology_scripts_home"."run_MICAN_on_GESAMT_results.pl \\
+			  -t $outdir \\
+			  -r $database/RCSB_PDB $database/RCSB_PDB_obsolete \\
+			  -o $hm_dir/MICAN_RESULTS
+	";
+}
+
+##### End of MICAN alignments
 
 ######################################################################
 ## Visualization with ChimeraX
