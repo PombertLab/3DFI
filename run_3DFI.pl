@@ -561,9 +561,9 @@ sleep (2);
 
 if ($mican){
 	system "$homology_scripts_home"."run_MICAN_on_GESAMT_results.pl \\
-			  -t $outdir \\
-			  -r $database/RCSB_PDB $database/RCSB_PDB_obsolete \\
-			  -o $hm_dir/MICAN_RESULTS
+		-t $outdir \\
+		-r $database/RCSB_PDB $database/RCSB_PDB_obsolete \\
+		-o $hm_dir/MICAN_RESULTS
 	";
 }
 
