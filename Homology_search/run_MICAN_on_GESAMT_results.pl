@@ -2,8 +2,8 @@
 ## Pombert Lab 2022
 
 my $name = "run_MICAN_on_GESAMT_results.pl";
-my $version = "0.1b";
-my $updated = "2022-03-09";
+my $version = "0.2";
+my $updated = "2022-03-15";
 
 use strict;
 use warnings;
@@ -52,6 +52,18 @@ unless(-d $outdir){
 	make_path($rcsb_temp_dir,{mode=>0755});
 }
 
+my %resume;
+if(-f "$outdir/MICAN_raw.tsv"){
+	open RAW, "<", "$outdir/MICAN_raw.tsv";
+	while (my $line = <RAW>){
+		chomp($line);
+		if($line =~ /\w+/){
+			my ($locus,$predictor,$rcsb_code,$rcsb_chain) = split("\t",$line);
+			$resume{$locus}{$predictor}{$rcsb_code}{$rcsb_chain} = $line;
+		}
+	}
+}
+
 my $datestring = localtime();
 open LOG, ">", "$outdir/MICAN.log" or die("Unable to create file $outdir/MICAN.log: $!\n");
 print LOG ("$0 \\\n-t $tdfi \\\n-r @rcsb \\\n-o $outdir\n\n");
@@ -78,6 +90,12 @@ while(my $line = <IN>){
 
 		my ($query,$predictor,$rcsb_code,$chain,$qscore,$rmsd,$seq_id,$nAlign,$nRes,$rcsb_file,$annotation) = split("\t",$line);
 		my ($rcsb_sub_folder) = lc($rcsb_code) =~ /\w(\w{2})\w/;
+
+		## Checking to see if this calculation has been performed previously
+		if($resume{$query}{$predictor}{$rcsb_code}{$chain}){
+			print($resume{$query}{$predictor}{$rcsb_code}{$chain}."\n");
+			next;
+		}
 
 		## Checking in current and obsolete RCSB PDB folders
 		my $rcsb_file_location;
