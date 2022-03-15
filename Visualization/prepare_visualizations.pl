@@ -1,8 +1,8 @@
 #!/usr/bin/perl
 ## Pombert Lab, Illinois Tech, 2021
 my $name = "prepare_visualizations.pl";
-my $version = "0.4.1";
-my $updated = "2021-09-27";
+my $version = "0.5";
+my $updated = "2022-03-15";
 
 use strict;
 use warnings;
@@ -20,7 +20,7 @@ SYNOPSIS	The purpose of this script is to take predicted .pdb files and create v
 
 USAGE	${name} \\
 		-g GESAMT.RCSB.matches \\
-		-r /media/FatCat/Databases/RCSB/PDB \\
+		-r /media/FatCat/Databases/RCSB/PDB /media/FatCat/Databases/RCSB/PDB_obsolete \\
 		-p Pred_PDB \\
 		-k 
 
@@ -36,7 +36,7 @@ die "\n\n$usage\n\n" unless @ARGV;
 
 my $match_file;
 my $pdb;
-my $rcsb;
+my @rcsb;
 my $keep;
 my $outdir = "./3D_Visualizations";
 my $log_file;
@@ -44,7 +44,7 @@ my $log_file;
 GetOptions(
 	"g|gesamt=s" => \$match_file,
 	"p|pdb=s" => \$pdb,
-	"r|rcsb=s" => \$rcsb,
+	"r|rcsb=s@{1,}" => \@rcsb,
 	"k|keep" => \$keep,
 	"o|out=s" => \$outdir,
 	"l|log=s" => \$log_file,
@@ -94,7 +94,7 @@ closedir PRED;
 
 ## Link RCSB PDB files to their file locations
 my %db;
-if ($rcsb){
+foreach my $rcsb (@rcsb){
 	## Recurse through the RCSB PDB database
 	opendir (EXT,$rcsb) or die "\n[ERROR]\tCan't open $rcsb: $!\n";
 	while (my $dir = readdir(EXT)){
@@ -186,6 +186,6 @@ foreach my $locus (sort(keys(%sessions))){
 ## Subroutines
 sub Check_Mand_Args{
 	die "\n[ERROR]\tGESAMT descriptive match file not provided\n\n$usage\n\n" unless $match_file;
-	die "\n[WARNING]\tRCSB PDB directory not provided, no comparison visualizations will be made" unless $rcsb;
+	die "\n[WARNING]\tRCSB PDB directory(s) not provided, no visualizations will be made" unless @rcsb;
 	die "\n[ERROR]\tPredicted PDB directory not provided\n\n$usage\n\n" unless $pdb;
 }
