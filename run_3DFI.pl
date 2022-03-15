@@ -1,8 +1,8 @@
 #!/usr/bin/perl
 ## Pombert Lab, Illinois Tech, 2021
 my $name = 'run_3DFI.pl';
-my $version = '0.5b';
-my $updated = '2022-02-22';
+my $version = '0.6';
+my $updated = '2022-03-15';
 
 use strict;
 use warnings;
@@ -32,6 +32,7 @@ GENERAL OPTIONS:
 -p (--pred)		Structure predictor(s): alphafold, rosettafold, and/or raptorx
 -c (--cpu)		# of CPUs to use [Default: 10]
 -3do (--3D_only)	3D folding only; no structural homology search(es) / structural alignment(s)
+-m (--mican)	Perform alignment scoring (TM-score) with MICAN
 -v (--viz)		Turn on visualization once the structural homology searches are completed
 USAGE
 die "\n$usage\n" unless @ARGV;
@@ -68,6 +69,7 @@ my $outdir = 'Results_3DFI';
 my @predictors;
 my $cpu = 10;
 my $tdo;
+my $mican;
 
 ## Advanced
 # FASTA
@@ -102,6 +104,7 @@ GetOptions(
 	'p|pred=s@{1,}' => \@predictors,
 	'c|cpu=i' => \$cpu,
 	'3do|3D_only)' => \$tdo,
+	'm|mican' => \$mican,
 	
 	## Advanced
 	# FASTA
@@ -547,6 +550,24 @@ print "\n# $time: Working on $predictor predictions\n";
 }
 
 ##### End of ChimeraX structural alignments
+
+######################################################################
+## Alignment with MICAN
+
+$time = localtime;
+print "\n".'###############################################################################################';
+print "\n# $time: Performing aligments between queries and best matches with MICAN\n";
+sleep (2);
+
+if ($mican){
+	system "$homology_scripts_home"."run_MICAN_on_GESAMT_results.pl \\
+			  -t $outdir \\
+			  -r $database/RCSB_PDB $database/RCSB_PDB_obsolete \\
+			  -o $hm_dir/MICAN_RESULTS
+	";
+}
+
+##### End of MICAN alignments
 
 ######################################################################
 ## Visualization with ChimeraX
