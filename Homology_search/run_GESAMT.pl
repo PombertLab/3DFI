@@ -8,6 +8,7 @@ use strict;
 use warnings;
 use File::Find;
 use File::Basename;
+use File::Path qw(make_path);
 use POSIX 'strftime';
 use Getopt::Long qw(GetOptions);
 
@@ -100,7 +101,7 @@ if (!defined $update and !defined $make and !defined $query){
 
 ## Creating/updating GESAMT archive
 unless (-d $arch){ 
-	mkdir ($arch, 0755) or die "Can't create folder $arch: $!\n";
+	make_path ($arch, {mode => 0755}) or die "Can't create folder $arch: $!\n";
 }
 
 if ($update){
@@ -118,7 +119,7 @@ elsif ($make){
 
 ## Running GESAMT queries/Skipping previously done searches
 unless (-d $outdir){ 
-	mkdir ($outdir, 0755) or die "Can't create folder $outdir: $!\n";
+	make_path ($outdir, {mode => 0755}) or die "Can't create folder $outdir: $!\n";
 }
 
 my @gsm;
