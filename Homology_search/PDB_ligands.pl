@@ -58,23 +58,52 @@ open LIG, "<:gzip", $ligands or die "Can't open $ligands: $!\n";
 print "\nParsing $ligands...\n\n";
 
 my %chem_dic;
-my $chem_id;
-my $chem_name;
 
+my %data;
+my $data_name;
+my $flag = 0;
 while (my $line = <LIG>){
 	chomp $line;
-	if ($line =~ /^_chem_comp.id\s+(\S+)/){
-		$chem_id = $1
+	if ($line =~ /^data_(\S+)/){
+		$data_name = $1;
+		$flag = 1;
 	}
-	elsif ($line =~ /^_chem_comp.name\s+(.*)$/){
-		$chem_name = $1;
-		$chem_name =~ s/\s+$//;
-		$chem_name =~ s/\"$//;
-		$chem_name =~ s/^\"//;
-		$chem_dic{$chem_id} = $chem_name;
-		#print "$chem_id\t$chem_name\n";
+	elsif ($line =~ /^#/){
+		next;
 	}
-} 
+	elsif ($line =~ /^_chem_comp\.(\w+)/){
+		$data{$data_name} .= $line;
+	}
+	elsif ($line =~ /^loop_/){
+		$flag = 0;
+	}
+	elsif ($flag == 1){
+		$data{$data_name} .= $line;
+	}
+}
+
+for my $key (sort (keys %data)){
+	my @columns = split('_chem_comp.', $data{$key});
+	my $id;
+	my $product_name; 
+	foreach my $line (@columns){
+		if ($line =~ /^id\s+(\S+)/){
+			$id = $1;
+		}
+		if ($line =~ /^name/){
+
+			$product_name = $line;
+			$product_name =~ s/^name\s+//;
+			$product_name =~ s/^\;//;
+			$product_name =~ s/\;$//;
+			$product_name =~ s/^\"//;
+			$product_name =~ s/\"\s*$//;
+
+			$chem_dic{$id} = $product_name;
+		}
+	}
+}
+
 binmode LIG, ":gzip(none)";
 
 ## Recursing through PDB directory
