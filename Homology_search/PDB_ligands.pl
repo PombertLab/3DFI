@@ -1,6 +1,6 @@
 #!/usr/bin/perl
 ## Pombert Lab 2022
-my $version = '0.1';
+my $version = '0.1a';
 my $name = 'PDB_ligands.pl';
 my $updated = '2022-04-12';
 
@@ -59,6 +59,7 @@ print "\nParsing $ligands...\n\n";
 
 my %chem_dic;
 
+# some of the data is multiline, concatenating the data accordingly
 my %data;
 my $data_name;
 my $flag = 0;
@@ -82,6 +83,7 @@ while (my $line = <LIG>){
 	}
 }
 
+# splitting the data per line and removing extra characters
 for my $key (sort (keys %data)){
 	my @columns = split('_chem_comp.', $data{$key});
 	my $id;
