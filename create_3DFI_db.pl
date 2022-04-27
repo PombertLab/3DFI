@@ -15,13 +15,15 @@ my $usage = <<"OPTIONS";
 NAME		${name}
 VERSION		${version}
 UPDATED		${updated}
-SYNOPSIS	Downloads 3DFI databases and creates Foldseek and/or GESAMT databases
-		from the RCSB PDB files.
+SYNOPSIS	Downloads 3DFI databases and creates a Foldseek from the RCSB PDB files.
+		Can also create or update a GESAMT database.
 
 REQUIREMENTS	Rsync - https://rsync.samba.org/
 		Aria2 - https://aria2.github.io/
-		Foldeek - https://github.com/steineggerlab/foldseek
-		GESAMT (from the CCP4 packages) - https://www.ccp4.ac.uk/
+		Foldseek - https://github.com/steineggerlab/foldseek
+
+OPTIONAL	GESAMT (from the CCP4 package) - https://www.ccp4.ac.uk/
+		## To create/update a GESAMT database
 
 EXAMPLE		${name} --all
 
@@ -46,7 +48,7 @@ OPTIONS:
 		downloading a pre-built version
 --update_gesamt	Update an existing GESAMT archive made with --make_gesamt
 
-### Download size / disk usage
+### Approximate download size / disk usage
 # TOTAL				669 Gb / 3.2 Tb
 # RSCB PDB			39 Gb / 42 Gb inflated
 # BFD (AlphaFold/RoseTTAFold)	272 Gb / 1.8 Tb inflated
