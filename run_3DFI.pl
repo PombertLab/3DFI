@@ -44,7 +44,7 @@ ADVANCED OPTIONS:
 --win_size		Size of the the sliding window [Default: 250 (aa)]
 --win_overlap		Sliding window overlap [Default: 100 (aa)]
 
-## 3D Folding options
+## 3D Folding
 -n (--nogpu)		ALPHAFOLD/ROSETTAFOLD: Turn off GPU acceleration / use CPU only
 -g (--gpu_dev)		ALPHAFOLD: list of GPU devices to use: e.g. all; 0,1; 0,1,2,3 [Default: all]
 -m (--maxdate)		ALPHAFOLD: --max_template_date option (YYYY-MM-DD) [Default: current date]
@@ -54,15 +54,18 @@ ADVANCED OPTIONS:
 -k (--ranks)		RAPTORX: # Number of top ranks to model [Default: 5]
 --modeller		RAPTORX: Modeller version [Default: mod10.1]
 
-## Structural homology / alignment
--a (--align)	Alignment tool: foldseek or gesamt [Default: foldseek]
--d (--db)		3DFI Foldseek/GESAMT databases location [Default: \$TDFI_DB]
+## Structural homology searches
+-a (--align)		3D alignment search tool: foldseek or gesamt [Default: foldseek]
+--fskdb			foldseek database to query [Default: \$TDFI_DB/FOLDSEEK/rcsb]
+--ftype			Foldseek alignment type [Default: 2];
+			  0: 3Di Gotoh-Smith-Waterman 
+			  1: TMalign 
+			  2: 3Di+AA Gotoh-Smith-Waterman
 -q (--qscore)		Mininum quality score to keep [Default: 200]
+			# Recommended: 3Di+AA => 200; TMalign => 50; GESAMT => 0.1
 -b (--best)		Keep the best match(es) only (top X hits) [Default: 5]
+-d (--db)		3DFI Foldseek/GESAMT databases location [Default: \$TDFI_DB]
 --query			Models to query per protein and predictor: all or best [Default: all]
-
-##### --fskdb		foldseek database to query [Default: \$TDFI_DB/FOLDSEEK/rcsb]
-
 OPTIONS
 
 #####  Defining options
@@ -93,6 +96,8 @@ my $modeller = 'mod10.1';
 
 # Structural homology / alignment
 my $aligner = 'foldseek';
+my $fskdb;
+my $ftype = 2;
 my $database;
 my $qscore = 0.3;
 my $best = 5;
@@ -129,6 +134,8 @@ GetOptions(
 	
 	# Structural homology
 	'a|aligner=s' => \$aligner,
+	'fskdb=s' => \$fskdb,
+	'ftype=i' => \$ftype,
 	'd|db=s' => \$database,
 	'q|qscore=s' => \$qscore,
 	'b|best=i' => \$best,
@@ -178,8 +185,12 @@ unless ($tdo){
 	}
 
 	if ($aligner eq 'foldseek'){
-		unless (-f "$database/FOLDSEEK/rcsb"){ 
-			print "Missing database. To be implemented\n";
+		my $foldseek_db = "$database/FOLDSEEK/rcsb";
+		if ($fskdb){
+			$foldseek_db = $fskdb;
+		}
+		unless (-f "$foldseek_db"){ 
+			print "Foldseek database $foldseek_db not found.\n";
 			print "Exiting\n\n"; 
 			exit;
 		}
@@ -489,6 +500,9 @@ if ($aligner eq 'foldseek'){
 		## Running Foldseek
 		my $date = strftime('%Y-%m-%d', localtime);
 		my $foldseek_db = "$database/FOLDSEEK/rcsb";
+		if ($fskdb){
+			$foldseek_db = $fskdb;
+		}
 		my $log_dir = "$hm_dir/LOGS";
 		unless (-d $log_dir){ mkdir ($log_dir, 0755) or die "Can't create $log_dir: $!\n"; }
 
@@ -507,7 +521,7 @@ if ($aligner eq 'foldseek'){
 			-input $input_pdbdir/$pdb_to_query \\
 			-outdir $FSK_outdir \\
 			-log $log_dir/Foldseek_${predictor}_${date}.log \\
-			-atype 2 \\
+			-atype $ftype \\
 			-mseq 300 \\
 			-verbosity 3 \\
 			-gzip";
