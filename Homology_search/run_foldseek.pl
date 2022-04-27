@@ -40,7 +40,7 @@ OPTIONS:
 -q (--query)	Query a Foldseek database
 -o (--outdir)	Output directory [Default: ./]
 -i (--input)	PDF files to query
--a (--align)	Alignment type [Default: 2]:
+-a (--atype)	Alignment type [Default: 2]:
 		  0: 3Di Gotoh-Smith-Waterman 
 		  1: TMalign 
 		  2: 3Di+AA Gotoh-Smith-Waterman
@@ -78,7 +78,7 @@ GetOptions(
 	'p|pdb=s' => \$pdb,
 	'q|query' => \$query,
 	'o|outdir=s' => \$outdir,
-	'a|align=i' => \$atype,
+	'a|atype=i' => \$atype,
 	'm|mseq=i' => \$mseqs,
 	'i|input=s@{1,}' => \@input,
 	'z|gzip' => \$gnuzip
