@@ -1,8 +1,8 @@
 #!/usr/bin/perl
 ## Pombert Lab, Illinois Tech, 2021
 my $name = 'run_3DFI.pl';
-my $version = '0.7 alpha';
-my $updated = '2022-04-26';
+my $version = '0.7 alpha 2';
+my $updated = '2022-04-27';
 
 use strict;
 use warnings;
@@ -524,22 +524,24 @@ if ($aligner eq 'foldseek'){
 			-o $fsk_dir/${predictor}_FOLDSEEK_per_model.matches \\
 			-n";
 		
-		## Parse descriptive matches per protein and Q-score; single predictor
-		# print "\n# $time: Getting match descriptions per protein and Q-score; single predictor\n";
-		# system "$homology_scripts_home"."parse_all_models_by_Q.pl \\
-		# 	-m $gt_dir/${predictor}_GESAMT_per_model.matches \\
-		# 	-o $gt_dir/${predictor}_GESAMT_per_protein.matches \\
-		# 	-x 50";
+		## Parse descriptive matches per protein and quality score; single predictor
+		print "\n# $time: Getting match descriptions per protein and quality score; single predictor\n";
+		system "$homology_scripts_home"."parse_all_models_by_Q.pl \\
+			-a foldseek \\
+			-m $gt_dir/${predictor}_FOLDSEEK_per_model.matches \\
+			-o $gt_dir/${predictor}_FOLDSEEK_per_protein.matches \\
+			-x 50";
 	}
 
-	## Parse again by Q-score accross all predictors
-	# print "\n# $time: Getting match descriptions per protein and Q-score; all predictors\n";
-	# system "$homology_scripts_home"."parse_all_models_by_Q.pl \\
-	# 		-m $gt_dir/*_GESAMT_per_model.matches \\
-	# 		-o $gt_dir/All_GESAMT_matches_per_protein.tsv \\
-	# 		-x 50";
-
+	## Parse again by quality score accross all predictors
+	print "\n# $time: Getting match descriptions per protein and quality score; all predictors\n";
+	system "$homology_scripts_home"."parse_all_models_by_Q.pl \\
+			-a foldseek \\
+			-m $gt_dir/*_FOLDSEEK_per_model.matches \\
+			-o $gt_dir/All_FOLDSEEK_matches_per_protein.tsv \\
+			-x 50";
 }
+
 ##### GESAMT
 elsif ($aligner eq 'gesamt'){
 
@@ -603,6 +605,7 @@ elsif ($aligner eq 'gesamt'){
 		## Parse descriptive matches per protein and Q-score; single predictor
 		print "\n# $time: Getting match descriptions per protein and Q-score; single predictor\n";
 		system "$homology_scripts_home"."parse_all_models_by_Q.pl \\
+			-a gesamt \\
 			-m $gt_dir/${predictor}_GESAMT_per_model.matches \\
 			-o $gt_dir/${predictor}_GESAMT_per_protein.matches \\
 			-x 50";
@@ -611,6 +614,7 @@ elsif ($aligner eq 'gesamt'){
 	## Parse again by Q-score accross all predictors
 	print "\n# $time: Getting match descriptions per protein and Q-score; all predictors\n";
 	system "$homology_scripts_home"."parse_all_models_by_Q.pl \\
+			-a gesamt \\
 			-m $gt_dir/*_GESAMT_per_model.matches \\
 			-o $gt_dir/All_GESAMT_matches_per_protein.tsv \\
 			-x 50";
@@ -633,7 +637,7 @@ my $visualization_scripts_home = "$home_3DFI".'/Visualization/';
 
 foreach my $predictor (@predictors){
 
-print "\n# $time: Working on $predictor predictions\n";
+	print "\n# $time: Working on $predictor predictions\n";
 	$predictor = uc($predictor);
 	my $PDB_dir = "$outdir/Folding/${predictor}_3D";
 
@@ -650,8 +654,17 @@ print "\n# $time: Working on $predictor predictions\n";
 		$PDB_dir .= '_Parsed';
 	}
 
+	## Checking structural homology tool
+	my $hm_tool;
+	if ($aligner eq 'gesamt'){
+		$hm_tool = 'GESAMT';
+	}
+	elsif ($aligner eq 'foldseek'){
+		$hm_tool = 'FOLDSEEK';
+	}
+
 	system "$visualization_scripts_home"."prepare_visualizations.pl \\
-		-g $gt_dir/${predictor}_GESAMT_per_model.matches \\
+		-g $gt_dir/${predictor}_${hm_tool}_per_model.matches \\
 		-p $PDB_dir/ \\
 		-r $database/RCSB_PDB \\
 		-o $vz_dir/$predictor \\
