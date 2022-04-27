@@ -516,7 +516,8 @@ if ($aligner eq 'foldseek'){
 		$time = localtime;
 		
 		print "\n# $time: Getting match descriptions from $FSK_outdir\n";
-		system "$homology_scripts_home"."descriptive_foldseek_matches.pl \\
+		system "$homology_scripts_home"."descriptive_matches.pl \\
+			-a foldseek \\
 			-r $database/RCSB_PDB_titles.tsv \\
 			-m $FSK_outdir/*.fseek.gz \\
 			-q $qscore \\
@@ -528,8 +529,8 @@ if ($aligner eq 'foldseek'){
 		print "\n# $time: Getting match descriptions per protein and quality score; single predictor\n";
 		system "$homology_scripts_home"."parse_all_models_by_Q.pl \\
 			-a foldseek \\
-			-m $gt_dir/${predictor}_FOLDSEEK_per_model.matches \\
-			-o $gt_dir/${predictor}_FOLDSEEK_per_protein.matches \\
+			-m $fsk_dir/${predictor}_FOLDSEEK_per_model.matches \\
+			-o $fsk_dir/${predictor}_FOLDSEEK_per_protein.matches \\
 			-x 50";
 	}
 
@@ -537,8 +538,8 @@ if ($aligner eq 'foldseek'){
 	print "\n# $time: Getting match descriptions per protein and quality score; all predictors\n";
 	system "$homology_scripts_home"."parse_all_models_by_Q.pl \\
 			-a foldseek \\
-			-m $gt_dir/*_FOLDSEEK_per_model.matches \\
-			-o $gt_dir/All_FOLDSEEK_matches_per_protein.tsv \\
+			-m $fsk_dir/*_FOLDSEEK_per_model.matches \\
+			-o $fsk_dir/All_FOLDSEEK_matches_per_protein.tsv \\
 			-x 50";
 }
 
@@ -593,12 +594,12 @@ elsif ($aligner eq 'gesamt'){
 		$time = localtime;
 		
 		print "\n# $time: Getting match descriptions from $GSMT_outdir\n";
-		system "$homology_scripts_home"."descriptive_GESAMT_matches.pl \\
+		system "$homology_scripts_home"."descriptive_matches.pl \\
+			-a gesamt \\
 			-r $database/RCSB_PDB_titles.tsv \\
 			-m $GSMT_outdir/*.gesamt.gz \\
 			-q $qscore \\
 			-b $best \\
-			-l $log_dir/GESAMT_${predictor}_${date}_descriptive_matches.err \\
 			-o $gt_dir/${predictor}_GESAMT_per_model.matches \\
 			-n";
 		
