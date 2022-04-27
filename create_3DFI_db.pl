@@ -1,8 +1,8 @@
 #!/usr/bin/perl
 ## Pombert Lab, Illinois Tech, 2021
 my $name = 'create_3DFI_db.pl';
-my $version = '0.5';
-my $updated = '2022-02-23';
+my $version = '0.5a';
+my $updated = '2022-04-27';
 
 use strict;
 use warnings;
@@ -15,20 +15,23 @@ my $usage = <<"OPTIONS";
 NAME		${name}
 VERSION		${version}
 UPDATED		${updated}
-SYNOPSIS	Downloads 3DFI databases and creates a GESAMT archive from the RCSB PDB files.
+SYNOPSIS	Downloads 3DFI databases and creates Foldseek and/or GESAMT databases
+		from the RCSB PDB files.
 
 REQUIREMENTS	Rsync - https://rsync.samba.org/
 		Aria2 - https://aria2.github.io/
+		Foldeek - https://github.com/steineggerlab/foldseek
 		GESAMT (from the CCP4 packages) - https://www.ccp4.ac.uk/
 
 EXAMPLE		${name} --all
 
 OPTIONS:
--a (--all)	Download all databases: RCSB, ALPHAFOLD, ROSETTAFOLD, RAPTORX
+-a (--all)	Download/create all databases: RCSB, ALPHAFOLD, ROSETTAFOLD, RAPTORX, Foldseek, GESAMT
 -d (--db)	Target 3DFI database location [Default: \$TDFI_DB]
+-c (--cpu)	Number of CPUs to create/update the Foldseek/GESAMT databases [Default: 10]
 
-# Download specific databases:
---rcsb		RCSB PDB/GESAMT
+# Download/create specific databases:
+--rcsb		RCSB PDB + Foldseek + GESAMT
 --alpha		AlphaFold2
 --raptorx	RaptorX
 --rosetta	RoseTTAFold
@@ -42,7 +45,6 @@ OPTIONS:
 --make_gesamt	Create a GESAMT archive from the RCSB PDB files instead of 
 		downloading a pre-built version
 --update_gesamt	Update an existing GESAMT archive made with --make_gesamt
--c (--cpu)	Number of CPUs to create/update the GESAMT archive [Default: 10]
 
 ### Download size / disk usage
 # TOTAL				669 Gb / 3.2 Tb
@@ -189,6 +191,18 @@ if ($rcsb or $all_databases){
 			-p $PDB $PDB_obs \\
 			-o $database/RCSB_PDB_titles.tsv \\
 			-v 1000";
+
+	## Creating a foldseek database
+	my $fskdir = "$database/FOLDSEEK";
+	unless (-d $fskdir){
+		mkdir ($fskdir, 0755) or die "Can't create $fskdir: $!\n";
+	}
+	system "run_foldseek.pl \\
+			-create \\
+			-db $fskdir/rcsb \\
+			-pdb $PDB \\
+			-threads $cpu \\
+			-log $fskdir/foldseek.log";
 
 	### Downloading GESAMT or creating one
 	# Create a new GESAMT archive from the RCSB PDB files. Can take a few hours...
