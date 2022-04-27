@@ -24,7 +24,7 @@ SYNOPSIS	Run foldseek searches against PDB structures
 REQUIREMENTS	Foldseek - https://github.com/steineggerlab/foldseek
 
 CREATE DB	${name} -create -db /media/Data_2/FSEEK/rcsb -pdb /media/Data_2/PDB/
-QUERY DB	${name} -query -db /media/Data_2/FSEEK/rcsb -dbname fseek -input *.pdb -o ./ -z
+QUERY DB	${name} -query -db /media/Data_2/FSEEK/rcsb -input *.pdb -o ./ -z
 
 OPTIONS:
 -d (--db)	Foldseek database to create or query
