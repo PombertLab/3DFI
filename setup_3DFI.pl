@@ -1,8 +1,8 @@
 #!/usr/bin/perl
 ## Pombert Lab, Illinois Tech, 2021
 my $name = 'setup_3DFI.pl';
-my $version = '0.6';
-my $updated = '2021-03-15';
+my $version = '0.7';
+my $updated = '2021-04-27';
 
 use strict;
 use warnings;
@@ -15,8 +15,9 @@ my $usage = <<"OPTIONS";
 NAME		${name}
 VERSION		${version}
 UPDATED		${updated}
-SYNOPSIS	Installs AlphaFold, Raptorx and/or RoseTTAfold and adds the 3DFI
-		environment variables to the specified configuration file
+SYNOPSIS	Installs AlphaFold, Raptorx and/or RoseTTAfold, foldseek, and mican
+		and adds the 3DFI environment variables to the specified configuration
+		file
 
 EXAMPLE		${name} \\
 		  -c ~/.bashrc \\
@@ -140,14 +141,6 @@ my $alphafold_home = "$root_3D".'/'.'alphafold';
 my $pip_location = "$root_3D/alphafold/python/";
 my $raptorx_home = "$root_3D".'/'.'RaptorX';
 my $rosettafold_home = "$root_3D".'/'.'RoseTTAFold';
-
-######################################################
-# Creating default install location for homology tools
-
-my $root_homology = $abs_path_3DFI."/Homology_Tools";
-unless (-d $root_homology){
-	make_path ($root_homology,{mode => 0755}) or die "Can't create $root_homology: $!\n";
-}
 
 ######################################################
 # Checking configuration file entries
@@ -384,15 +377,31 @@ foreach my $predictor (@predictors){
 }
 
 ######################################################
+# Installing Foldseek
+print "\nDownloading Foldseek [28 Mb] with wget\n";
+my $foldseek_url = "https://mmseqs.com/foldseek/foldseek-linux-avx2.tar.gz";
+
+system "wget \\
+	-P $root_3D/ \\
+	$foldseek_url";
+system "tar \\
+	-zxvf $root_3D/foldseek-linux-avx2.tar.gz \\
+	-C $root_3D/";
+system "mv $root_3D/foldseek/bin/foldseek $root_3D/";
+system "rm -R $root_3D/foldseek/";
+system "chmod +x $root_3D/foldseek";
+
+
+######################################################
 # Installing MICAN
 
 print "\nDownloading MICAN [1.25 Mb] with wget\n";
 my $mican_url = "http://landscape.tbp.cse.nagoya-u.ac.jp/MICAN/Download/bin/mican_linux_64";
 system "wget \\
-	-P $root_homology \\
+	-P $root_3D \\
 	$mican_url";
-system "mv $root_homology/mican_linux_64 $root_homology/mican";
-system "chmod +x $root_homology/mican";
+system "mv $root_3D/mican_linux_64 $root_3D/mican";
+system "chmod +x $root_3D/mican";
 
 ######################################################
 # tasks completed
@@ -424,7 +433,6 @@ sub set_main {
 	print $fh "export RAPTORX_HOME=$raptorx_home\n";
 	print $fh "export ROSETTAFOLD_HOME=$rosettafold_home\n";
 	print $fh "export ALPHAFOLD_HOME=$alphafold_home\n";
-	print $fh "export HOMOLOGY_HOME=$root_homology\n";
 	print $fh "export PYTHONPATH=\$PYTHONPATH:$pip_location\n"; ## Check if this breaks python...
 
 }
