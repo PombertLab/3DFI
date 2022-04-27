@@ -21,7 +21,7 @@ SYNOPSIS	Adds descriptive information from PDB headers to the foldseek matches;
 EXAMPLE		${name} \
 		  -r /media/Data_2/PDB/PDB_titles.tsv \
 		  -m *.fseek.gz \
-		  -q 0.3 \
+		  -q 200 \
 		  -b 5 \
 		  -o foldseek.matches 
 
@@ -31,7 +31,6 @@ OPTIONS:
 -q (--quality)	Quality score cut-off [Default: 200]
 -b (--best)	Keep the best match(es) only (top X hits)
 -o (--output)	Output name [Default: foldseek.matches]
--l (--log)	Error log file [Default: descriptive_matches.err]
 -n (--nobar)	Turn off the progress bar
 -x (--regex)	Regex to parse filenames: word (\\w+) or nonspace (\\S+) [Default: nonspace]
 OPTIONS
@@ -43,7 +42,6 @@ my @matches;
 my $qthreshold = 200;
 my $best;
 my $output = 'foldseek.matches';
-my $log = 'descriptive_matches.err';
 my $nobar;
 my $regex = 'nonspace';
 GetOptions(
@@ -52,15 +50,11 @@ GetOptions(
 	'q|quality=s' => \$qthreshold,
 	'b|best=i' => \$best,
 	'o|output=s' => \$output,
-	'l|log=s' => \$log,
 	'n|nobar' => \$nobar,
 	'x|regex=s' => \$regex
 );
 
-# open LOG, ">", "$log" or die "Can't create log file $log: $!\n";
-
 my %rcsb_titles;
-my %pfam_titles;
 if ($rcsb){
 	## Creating a database of RSCB stuctures and their descriptions; PDB 4-letter code => description
 	open DB, "<", "$rcsb" or die "Can't open tab-delimited file $rcsb: $!\n";
