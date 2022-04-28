@@ -264,11 +264,21 @@ foreach my $pred (@predictors){
 }
 
 unless ($tdo){
-	my $gesamt_check = `echo \$(command -v gesamt)`;
-	chomp $gesamt_check;
-	if ($gesamt_check eq ''){ 
-		print STDERR "\n[E]: Cannot find gesamt. Please install GESAMT in your \$PATH. Exiting..\n\n";
-		exit;
+	if ($aligner eq 'gesamt'){
+		my $gesamt_check = `echo \$(command -v gesamt)`;
+		chomp $gesamt_check;
+		if ($gesamt_check eq ''){ 
+			print STDERR "\n[E]: Cannot find gesamt. Please install GESAMT in your \$PATH. Exiting..\n\n";
+			exit;
+		}
+	}
+	elsif ($aligner eq 'foldseek'){
+		my $fseek_check = `echo \$(command -v foldseek)`;
+		chomp $fseek_check;
+		if ($fseek_check eq ''){ 
+			print STDERR "\n[E]: Cannot find foldseek. Please install Foldseek in your \$PATH. Exiting..\n\n";
+			exit;
+		}
 	}
 
 	my $chimerax_check = `echo \$(command -v chimerax)`;
@@ -515,7 +525,7 @@ if ($aligner eq 'foldseek'){
 		if ($query eq 'best'){ $pdb_to_query = '*-m1.pdb'; }
 
 		system "$homology_scripts_home"."run_foldseek.pl \\
-			-cpu $cpu \\
+			-threads $cpu \\
 			-query \\
 			-db $foldseek_db \\
 			-input $input_pdbdir/$pdb_to_query \\
