@@ -1,8 +1,8 @@
 #!/usr/bin/perl
 ## Pombert Lab, Illinois Tech, 2021
 my $name = "run_visualizations.pl";
-my $version = "0.2.2";
-my $updated = "2021-09-27";
+my $version = "0.2.3";
+my $updated = "2022-04-27";
 
 use strict;
 use warnings;
@@ -10,22 +10,28 @@ use Getopt::Long qw(GetOptions);
 use File::Basename;
 
 my $usage = << "EXIT";
-NAME        ${name}
-VERSION     ${version}
-UPDATED     ${updated}
-SYNOPSIS    The purpose of this script it to visualize the predicted protein structures and their aligned homologs
+NAME		${name}
+VERSION		${version}
+UPDATED		${updated}
+SYNOPSIS	Visualize predicted protein structures and their aligned homologs
+		with ChimeraX
 
-USAGE       ${name} -r Results_3DFI
+USAGE	${name} \\
+		-a gesamt \\
+		-r Results_3DFI
 
 OPTIONS
--r (--results)  Results directory specified in run_3DFI.pl
+-a (--align)	3D alignment tool: gesamt or foldseek [Default: gesamt]
+-r (--results)	Results directory specified in run_3DFI.pl
 EXIT
 
-die("\n$usage\n") unless(@ARGV);
+die "\n$usage\n" unless @ARGV;
 
 my $in_dir;
+my $aligner = 'gesamt';
 GetOptions(
-    "r|results=s" => \$in_dir,
+    'r|results=s' => \$in_dir,
+	'a|align=s' => \$aligner
 );
 
 ########################################################################################################################
@@ -52,7 +58,8 @@ close PRED_LOCI;
 # Parsing results from GESAMT match file                                                                               #
 ########################################################################################################################
 
-my $result_file = "$in_dir/Homology/GESAMT/All_GESAMT_matches_per_protein.tsv";
+$aligner = uc($aligner);
+my $result_file = "$in_dir/Homology/GESAMT/All_${aligner}_matches_per_protein.tsv";
 my $script = $0;
 my ($file,$vis_dir) = fileparse($script);
 $vis_dir .= "/Visualization/Helper_Scripts/";

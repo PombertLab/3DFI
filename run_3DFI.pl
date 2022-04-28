@@ -695,12 +695,12 @@ foreach my $predictor (@predictors){
 ######################################################################
 ## Alignment with MICAN
 
-$time = localtime;
-print "\n".'###############################################################################################';
-print "\n# $time: Performing aligments between queries and best matches with MICAN\n";
-sleep (2);
-
 if ($mican){
+	$time = localtime;
+	print "\n".'###############################################################################################';
+	print "\n# $time: Performing aligments between queries and best matches with MICAN\n";
+	sleep (2);
+
 	system "$homology_scripts_home"."run_MICAN_on_GESAMT_results.pl \\
 		-t $outdir \\
 		-r $database/RCSB_PDB $database/RCSB_PDB_obsolete \\
@@ -716,7 +716,7 @@ if ($visualization){
 	print "\n".'##########################################################################';
 	print "\n# $time: Launching visualization script\n";
 	sleep (5);
-	system "$home_3DFI".'/'."run_visualizations.pl -r $outdir";
+	system "$home_3DFI".'/'."run_visualizations.pl -a $aligner -r $outdir";
 }
 
 ## End of visualization
