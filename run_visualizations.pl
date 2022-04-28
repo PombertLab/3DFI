@@ -279,8 +279,22 @@ WHILE: while(0==0){
 		my @selected_data = @{$match_info[$selected_locus]};
 		my ($model) = $selected_data[0] =~ /(\S+)/;
 		my $predictor = $selected_data[1];
-		my $match_id = lc($selected_data[2]);
-		my $match_chain = $selected_data[3];
+		my $match_id;
+		my $match_chain;
+		if ($aligner eq 'gesamt'){
+			$match_id = lc($selected_data[2]);
+			$match_chain = $selected_data[3];
+		}
+		elsif ($aligner eq 'foldseek'){
+			if ($selected_data[2] =~ /^pdb(\w{4}).ent.gz_(\S+)$/){
+					$match_id = $1;
+					$match_chain = $2;
+			}
+			elsif ($selected_data[2] =~ /^pdb(\w{4}).ent.gz$/){
+				$match_id = $1;
+				$match_chain = 'A';
+			}
+		}
 		my $outfile = "${predictor}/${model}/${model}_${match_id}_${match_chain}";
 		print "\nFILE = $outfile\n";
 		exit;
