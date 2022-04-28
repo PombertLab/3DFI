@@ -174,7 +174,7 @@ if ($query){
 	}
 
 	## Delete tmp directory
-	system "rm -R $outdir/tmp";
+	if (-d "$outdir/tmp"){ system "rm -R $outdir/tmp"; }
 }
 
 my $end = localtime();
