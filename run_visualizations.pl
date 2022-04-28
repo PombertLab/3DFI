@@ -187,7 +187,9 @@ WHILE: while(0==0){
 					$match_id = $1;
 					$match_chain = 'A';
 				}
-				$q_score = $match[-1];
+				$match_id = sprintf("%11s",$match_id);
+				$match_chain = sprintf(" => %-10s",$match_chain);
+				$q_score = sprintf("   %-6.3f",$match[-1]);
 			}
 
 			my $title = sprintf("%-15s",$match[-1]);
