@@ -65,7 +65,7 @@ if (-f "$outdir/$outfile"){
 	open MICAN, "<", "$outdir/$outfile";
 	while (my $line = <MICAN>){
 		chomp($line);
-		if($line =~ /\w+/){
+		if ($line =~ /^\w+/){
 			my ($locus,$predictor,$rcsb_code,$rcsb_chain) = split("\t",$line);
 			$resume{$locus}{$predictor}{$rcsb_code}{$rcsb_chain} = $line;
 		}
@@ -208,7 +208,7 @@ while (my $line = <IN>){
 	elsif ($line =~ /^### (\w+)/){
 		print MICAN "### $1\n";
 	}
-	else{
+	else {
 		print MICAN "\n";
 	}
 }
