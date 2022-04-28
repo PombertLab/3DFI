@@ -147,7 +147,7 @@ if ($query){
 
 		unless (exists $results{$pdb}){
 
-			print "\nRunning foldseek on $file...\n";
+			print "\n  Running foldseek on $file...\n";
 
 			system "foldseek \\
 			  easy-search \\
@@ -169,7 +169,7 @@ if ($query){
 
 		## Searches can take a while, best to skip if done previously
 		else { 
-			print "Skipping PDB file: $pdb => Foldseek result found in output directory $outdir\n";
+			print "  Skipping PDB file: $pdb => Foldseek result found in output directory $outdir\n";
 		}
 	}
 

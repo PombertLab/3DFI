@@ -113,7 +113,7 @@ while (my $match = shift@matches){
 		print OUT '### '."$prefix"."\n";
 	}
 
-	if ($nobar) { print "Getting descriptive matches from $match\n"; }
+	if ($nobar) { print "  Getting descriptive matches from $match\n"; }
 
 	my $hit_number = 0;
 	while (my $line = <MA>){
