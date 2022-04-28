@@ -1,8 +1,8 @@
 #!/usr/bin/perl
 ## Pombert Lab, Illinois Tech, 2021
 my $name = 'setup_3DFI.pl';
-my $version = '0.6';
-my $updated = '2021-03-15';
+my $version = '0.7';
+my $updated = '2021-04-27';
 
 use strict;
 use warnings;
@@ -15,8 +15,11 @@ my $usage = <<"OPTIONS";
 NAME		${name}
 VERSION		${version}
 UPDATED		${updated}
-SYNOPSIS	Installs AlphaFold, Raptorx and/or RoseTTAfold and adds the 3DFI
-		environment variables to the specified configuration file
+SYNOPSIS	Installs AlphaFold, Raptorx and/or RoseTTAfold, foldseek, and mican
+		and adds the 3DFI environment variables to the specified configuration
+		file
+
+REQUIREMENTS	Aria2 - https://aria2.github.io/
 
 EXAMPLE		${name} \\
 		  -c ~/.bashrc \\
@@ -51,6 +54,7 @@ my @predictors;
 my $pyrosetta;
 my $docker_image = 'alphafold_3dfi';
 my $rebuild_docker;
+my $aria_connections = 10;
 GetOptions(
 	'c|config=s' => \$config_file,
 	'w|write=s' => \$write,
@@ -59,8 +63,20 @@ GetOptions(
 	'i|install=s@{1,}' => \@predictors,
 	'pyr|pyrosetta=s' => \$pyrosetta,
 	'name|docker_image=s' => \$docker_image,
-	'rebuild' => \$rebuild_docker
+	'rebuild' => \$rebuild_docker,
+	'nconnect=i' => \$aria_connections
 );
+
+################################################
+# Checking for aria2
+my $aria2 = `echo \$(command -v aria2c)`;
+chomp $aria2;
+if ($aria2 eq ''){
+	print "[E] aria2c not found in the \$PATH. Please check if aria2 is installed\n";
+	print "[E] To install aria2 on Fedora, type: sudo dnf install aria2\n";
+	print "Exiting...\n";
+	exit;
+}
 
 ######################################################
 # Checking for config file & database
@@ -140,14 +156,6 @@ my $alphafold_home = "$root_3D".'/'.'alphafold';
 my $pip_location = "$root_3D/alphafold/python/";
 my $raptorx_home = "$root_3D".'/'.'RaptorX';
 my $rosettafold_home = "$root_3D".'/'.'RoseTTAFold';
-
-######################################################
-# Creating default install location for homology tools
-
-my $root_homology = $abs_path_3DFI."/Homology_Tools";
-unless (-d $root_homology){
-	make_path ($root_homology,{mode => 0755}) or die "Can't create $root_homology: $!\n";
-}
 
 ######################################################
 # Checking configuration file entries
@@ -384,19 +392,40 @@ foreach my $predictor (@predictors){
 }
 
 ######################################################
+# Installing Foldseek
+
+print "\nDownloading Foldseek [28 Mb] with wget\n";
+
+my $fseek_file = 'foldseek-linux-avx2.tar.gz';
+my $fseek_url = 'https://mmseqs.com/foldseek/'.$fseek_file;
+
+aria($fseek_file, $fseek_url, $root_3D);
+
+system "tar -zxvf $root_3D/foldseek-linux-avx2.tar.gz -C $root_3D/";
+system "mv $root_3D/foldseek $root_3D/tmp";
+system "mv $root_3D/tmp/bin/foldseek $root_3D/";
+system "chmod +x $root_3D/foldseek";
+system "rm -R $root_3D/tmp/";
+
+chdir "$root_dir";
+
+
+######################################################
 # Installing MICAN
 
 print "\nDownloading MICAN [1.25 Mb] with wget\n";
-my $mican_url = "http://landscape.tbp.cse.nagoya-u.ac.jp/MICAN/Download/bin/mican_linux_64";
-system "wget \\
-	-P $root_homology \\
-	$mican_url";
-system "mv $root_homology/mican_linux_64 $root_homology/mican";
-system "chmod +x $root_homology/mican";
+my $mican_file = 'mican_linux_64';
+my $mican_url = 'http://landscape.tbp.cse.nagoya-u.ac.jp/MICAN/Download/bin/'.$mican_file;
+
+aria($mican_file, $mican_url, $root_3D);
+system "mv $root_3D/mican_linux_64 $root_3D/mican";
+system "chmod +x $root_3D/mican";
+
 
 ######################################################
 # tasks completed
 exit;
+
 
 ######################################################
 # subroutines
@@ -424,7 +453,6 @@ sub set_main {
 	print $fh "export RAPTORX_HOME=$raptorx_home\n";
 	print $fh "export ROSETTAFOLD_HOME=$rosettafold_home\n";
 	print $fh "export ALPHAFOLD_HOME=$alphafold_home\n";
-	print $fh "export HOMOLOGY_HOME=$root_homology\n";
 	print $fh "export PYTHONPATH=\$PYTHONPATH:$pip_location\n"; ## Check if this breaks python...
 
 }
@@ -435,6 +463,7 @@ sub set_path {
 	print $fh "\n"."$bar"."\n";
 	print $fh '# 3DFI PATH variables'."\n";
 	print $fh "PATH=\$PATH:$abs_path_3DFI\n";
+	print $fh "PATH=\$PATH:$abs_path_3DFI/3D\n";
 	print $fh "PATH=\$PATH:$abs_path_3DFI/Prediction/RaptorX\n";
 	print $fh "PATH=\$PATH:$abs_path_3DFI/Prediction/AlphaFold2\n";
 	print $fh "PATH=\$PATH:$abs_path_3DFI/Prediction/RoseTTAFold\n";
@@ -442,4 +471,36 @@ sub set_path {
 	print $fh "PATH=\$PATH:$abs_path_3DFI/Visualization\n";
 	print $fh "PATH=\$PATH:$abs_path_3DFI/Misc_tools\n";
 	print $fh "\nexport PATH\n\n";
+}
+
+sub aria { ## using aria2 to download files
+	
+	my ($file, $url, $outdir) = @_;
+	my $aria = "$outdir/$file".'.aria2';
+	my $ltime = localtime;
+
+	## Checking for partial aria2 download => resume
+	if (-f "$aria"){
+		print "\n# $ltime: Resuming download of $file with aria2\n";
+		system "aria2c \\
+			-x$aria_connections \\
+			$url \\
+			--dir=$outdir";
+	}
+	## Checking if file exists without an .aria2 progess file => skip download
+	elsif (-f "$outdir/$file"){
+		print "\n# $ltime:\n";
+		print "Found $file in $outdir but no .aria2 download progress file\n";
+		print "Assuming that the aria2 download of $file is complete\n";
+		print "Skipping downloading and moving to next step...\n";
+	}
+	## Else => download
+	else {
+		print "\n# $ltime: Downloading $file with aria2\n";
+		system "aria2c \\
+			-x$aria_connections \\
+			$url \\
+			--dir=$outdir";	
+	}
+
 }

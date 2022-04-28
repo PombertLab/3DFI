@@ -1,8 +1,8 @@
 #!/usr/bin/perl
 ## Pombert Lab 2020
-my $version = '0.7e';
-my $name = 'descriptive_GESAMT_matches.pl';
-my $updated = '2022-02-22';
+my $version = '0.8';
+my $name = 'descriptive_matches.pl';
+my $updated = '2022-04-27';
 
 use strict;
 use warnings;
@@ -15,55 +15,50 @@ my $USAGE = <<"OPTIONS";
 NAME		${name}
 VERSION		${version}
 UPDATED		${updated}
-SYNOPSIS	Adds descriptive information from PDB headers to the gesamt matches;
-		Parses results by Q-scores, and concatenates the output into a single file
+SYNOPSIS	Adds descriptive information from PDB headers to the foldseek/gesamt matches;
+		Parses results by quality scores, and concatenates the output into a single file
 
-EXAMPLE		${name} \
-		  -r /media/Data_2/PDB/PDB_titles.tsv \
-		  -m *.gesamt.gz \
-		  -q 0.3 \
-		  -b 5 \
-		  -o GESAMT.matches 
+EXAMPLE		${name} \\
+		  -a gesamt \\
+		  -r /media/Data_2/PDB/PDB_titles.tsv \\
+		  -m *.gesamt.gz \\
+		  -q 0.3 \\
+		  -b 5 \\
+		  -o GESAMT.matches
 
 OPTIONS:
+-a (--align)	Structural alignment tool used: foldseek or gesamt [Default: gesamt]
 -r (--rcsb)	Tab-delimited list of RCSB structures and their titles ## see PDB_headers.pl 
--p (--pfam)	Tab-delimited list of PFAM structures and their titles (http://ftp.ebi.ac.uk/pub/databases/Pfam/current_release/Pfam-A.clans.tsv.gz)
--m (--matches)	Results from GESAMT searches ## Supports GZIPPEd files; see run_GESAMT.pl
--q (--qscore)	Q-score cut-off [Default: 0.3]
+-m (--matches)	Results from homology searches ## Supports GZIPPEd files; see run_GESAMT.pl/run_foldseek.pl
+-q (--qscore)	Quality score cut-off [Default: 0.3]
 -b (--best)	Keep the best match(es) only (top X hits)
 -o (--output)	Output name [Default: Gesamt.matches]
--l (--log)	Error log file [Default: descriptive_matches.err]
 -n (--nobar)	Turn off the progress bar
 -x (--regex)	Regex to parse filenames: word (\\w+) or nonspace (\\S+) [Default: nonspace]
 OPTIONS
 die "\n$USAGE\n" unless @ARGV;
 
 ## Defining options
+my $aligner = 'gesamt';
 my $rcsb;
-my $pfam;
 my @matches;
 my $qthreshold = 0.3;
 my $best;
 my $output = 'GESAMT.matches';
-my $log = 'descriptive_matches.err';
 my $nobar;
 my $regex = 'nonspace';
 GetOptions(
+	'a|align=s' => \$aligner,
 	'r|rcsb=s' => \$rcsb,
-	'p|pfam=s' => \$pfam,
 	'm|matches=s@{1,}' => \@matches,
 	'q|qscore=s' => \$qthreshold,
 	'b|best=i' => \$best,
 	'o|output=s' => \$output,
-	'l|log=s' => \$log,
 	'n|nobar' => \$nobar,
 	'x|regex=s' => \$regex
 );
 
-open LOG, ">", "$log" or die "Can't create log file $log: $!\n";
-
 my %rcsb_titles;
-my %pfam_titles;
 if ($rcsb){
 	## Creating a database of RSCB stuctures and their descriptions; PDB 4-letter code => description
 	open DB, "<", "$rcsb" or die "Can't open tab-delimited file $rcsb: $!\n";
@@ -76,17 +71,8 @@ if ($rcsb){
 		$rcsb_titles{$pdb_locus}{$chain_or_title} = $description;
 	}
 }
-elsif ($pfam){
-	## Creating a database of PFAM structures and their descriptions; PFAM 5-number code => description
-	open DB, "<", "$pfam" or die "Can't open tab-delimited file $pfam: $!\n";
-	while (my $line = <DB>){
-		chomp $line;
-		my @data = split("\t",$line);
-		$pfam_titles{$data[0]} = $data[4];
-	}
-}
 
-## Iterating through Gesamt matches
+## Iterating through foldseek/Gesamt matches
 open OUT, ">", "$output" or die "Can't create output file $output: $!\n";
 my $total_matches = scalar(@matches);
 while (my $match = shift@matches){
@@ -96,7 +82,14 @@ while (my $match = shift@matches){
 	if ($regex eq 'word'){ $rgx = '\w+'; }
 
 	my ($basename, $path) = fileparse($match);
-	my ($prefix, $mode) = $basename =~ /^($rgx).*\.(normal|high).gesamt(.gz)?$/;
+	my $prefix;
+	my $mode;
+	if ($aligner eq 'gesamt'){
+		($prefix, $mode) = $basename =~ /^($rgx).*\.(normal|high).gesamt(.gz)?$/;
+	}
+	elsif ($aligner eq 'foldseek'){
+		($prefix) = $basename =~ /^($rgx).*\.fseek(.gz)?$/;
+	}
 
 	unless ($nobar) { ## Progress bar
 		system "clear";
@@ -107,51 +100,58 @@ while (my $match = shift@matches){
 		print "\n\t$status\t".($total_matches-scalar(@matches))."/$total_matches\n";
 	}
 
-	## Working on GESAMT file
+	## Working on foldseek / GESAMT file
 	my $gzip = '';
 	if ($match =~ /.gz$/){ $gzip = ':gzip'; }
 	open MA, "<$gzip", "$match" or die "Can't read file $match: $!\n";
-	print OUT '### '."$prefix"."; Query mode = $mode\n";
 
-	if ($nobar) { print "Getting descriptive matches from $match\n"; }
+	## Header per protein
+	if ($aligner eq 'gesamt'){
+		print OUT '### '."$prefix"."; Query mode = $mode\n";
+	}
+	elsif ($aligner eq 'foldseek'){
+		print OUT '### '."$prefix"."\n";
+	}
 
+	if ($nobar) { print "  Getting descriptive matches from $match\n"; }
+
+	my $hit_number = 0;
 	while (my $line = <MA>){
+
 		chomp $line;
 
 		## Skipping comments
 		if ($line =~ /^#/){ next; }
+		else { $hit_number++; }
 
 		## Working on matches
 		my @data = split(/\s+/, $line);
 
-		## Data columns for GESAMT files are:
-		# Hit number
-		# PDB code
-		# Chain ID
-		# Q-score
-		# RMSD
-		# Sequence identity
-		# Number of aligned residues
-		# Number of residues
-		# File
-
-		my $hit_number = $data[1];
 		my $pdb_code;
 		my $chain;
 		my $qscore;
-		my $file;
 
-		## Accounting for variation between data structures between RCSB and PFAM matches
-		if ($rcsb){
+		if ($aligner eq 'gesamt'){
+			# Data columns for GESAMT files are:
+			# Hit number, PDB code, Chain ID, Q-score, RMSD, Sequence identity,
+			# number of aligned residues, number of residues, file
 			$pdb_code = lc($data[2]);
 			$chain = $data[3];
 			$qscore = $data[4];
 		}
-		elsif ($pfam){
-			$chain = $data[2];
-			$qscore = $data[3];
-			$file = $data[8];
-			$file =~ s/.pdb//;
+		elsif ($aligner eq 'foldseek'){
+			## Data columns for foldseek files are:
+			# query, target, fident, alnlen, mismatch, gapopen, qstart, qend,
+			# tstart, tend, evalue, bits
+			if ($data[1] =~ /^pdb(\w{4}).ent.gz_(\S+)$/){
+				$pdb_code = $1;
+				$chain = $2;
+			}
+			elsif ($data[1] =~ /^pdb(\w{4}).ent.gz$/){
+				$pdb_code = $1;
+				$chain = 'A';
+			}
+			$qscore = $data[-1];
 		}
 
 		## Printing information
@@ -168,11 +168,6 @@ while (my $match = shift@matches){
 							print OUT "No PDB entry. Verify if obsolete PDB ID...\n";
 						}
 					}
-					elsif ($pfam){
-						print OUT "$prefix\t";
-						for (1..$#data){ print OUT "$data[$_]\t"; }
-						print OUT "$pfam_titles{$file}\n";
-					}
 				}
 			}
 			else {
@@ -184,16 +179,6 @@ while (my $match = shift@matches){
 					}
 					else {
 						print OUT "No PDB entry. Verify if obsolete PDB ID...\n";
-					}
-				}
-				elsif ($pfam){
-					if(exists $pfam_titles{$file}){
-						print OUT "$prefix\t";
-						for (1..$#data){ print OUT "$data[$_]\t"; }
-						print OUT "\t$pfam_titles{$file}\n";
-					}
-					else {
-						print LOG "\nFile $file.pdb has no match in PFAM clan file\n\n";
 					}
 				}
 			}

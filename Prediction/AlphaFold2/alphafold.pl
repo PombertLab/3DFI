@@ -128,7 +128,7 @@ while (my $fasta = shift @fasta){
 
 	## Checking if protein structures are already present in 3DFI output dir
 	if (-f "$outdir/$prefix/ranked_0.pdb"){
-		print "AlphaFold predicted structure (ranked_0.pdb) found for $basename. Skipping folding...\n";
+		print "  AlphaFold predicted structure (ranked_0.pdb) found for $basename. Skipping folding...\n";
 		next;
 	}
 	else {

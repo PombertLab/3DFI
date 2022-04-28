@@ -1,8 +1,8 @@
 #!/usr/bin/perl
 ## Pombert Lab, Illinois Tech, 2021
 my $name = 'run_3DFI.pl';
-my $version = '0.6';
-my $updated = '2022-03-15';
+my $version = '0.7 alpha 2';
+my $updated = '2022-04-27';
 
 use strict;
 use warnings;
@@ -32,8 +32,9 @@ GENERAL OPTIONS:
 -p (--pred)		Structure predictor(s): alphafold, rosettafold, and/or raptorx
 -c (--cpu)		# of CPUs to use [Default: 10]
 -3do (--3D_only)	3D folding only; no structural homology search(es) / structural alignment(s)
--m (--mican)		Perform alignment scoring (TM-score) with MICAN
+-a (--align)		3D alignment/homology search tool: foldseek or gesamt [Default: foldseek]
 -v (--viz)		Turn on visualization once the structural homology searches are completed
+--mican		Perform alignment scoring (TM-score) with MICAN
 USAGE
 die "\n$usage\n" unless @ARGV;
 
@@ -44,7 +45,7 @@ ADVANCED OPTIONS:
 --win_size		Size of the the sliding window [Default: 250 (aa)]
 --win_overlap		Sliding window overlap [Default: 100 (aa)]
 
-## 3D Folding options
+## 3D Folding
 -n (--nogpu)		ALPHAFOLD/ROSETTAFOLD: Turn off GPU acceleration / use CPU only
 -g (--gpu_dev)		ALPHAFOLD: list of GPU devices to use: e.g. all; 0,1; 0,1,2,3 [Default: all]
 -m (--maxdate)		ALPHAFOLD: --max_template_date option (YYYY-MM-DD) [Default: current date]
@@ -54,10 +55,16 @@ ADVANCED OPTIONS:
 -k (--ranks)		RAPTORX: # Number of top ranks to model [Default: 5]
 --modeller		RAPTORX: Modeller version [Default: mod10.1]
 
-## Structural homology / alignment
--d (--db)		3DFI database location containing the RCSB PDB files / GESAMT archive [Default: \$TDFI_DB]
--q (--qscore)		Mininum Q-score to keep [Default: 0.3]
+## Structural alignment/homology searches
+--fskdb			foldseek database to query [Default: \$TDFI_DB/FOLDSEEK/rcsb]
+--ftype			Foldseek alignment type [Default: 2];
+			  0: 3Di Gotoh-Smith-Waterman 
+			  1: TMalign 
+			  2: 3Di+AA Gotoh-Smith-Waterman
+-q (--qscore)		Mininum quality score to keep [Default: 200]
+			# Recommended: 3Di+AA => 200; TMalign => 50; GESAMT => 0.1
 -b (--best)		Keep the best match(es) only (top X hits) [Default: 5]
+-d (--db)		3DFI Foldseek/GESAMT databases location [Default: \$TDFI_DB]
 --query			Models to query per protein and predictor: all or best [Default: all]
 OPTIONS
 
@@ -88,6 +95,9 @@ my $ranks = 5;
 my $modeller = 'mod10.1';
 
 # Structural homology / alignment
+my $aligner = 'foldseek';
+my $fskdb;
+my $ftype = 2;
 my $database;
 my $qscore = 0.3;
 my $best = 5;
@@ -103,8 +113,8 @@ GetOptions(
 	'o|out=s' => \$outdir,
 	'p|pred=s@{1,}' => \@predictors,
 	'c|cpu=i' => \$cpu,
-	'3do|3D_only)' => \$tdo,
-	'm|mican' => \$mican,
+	'3do|3D_only' => \$tdo,
+	'mican' => \$mican,
 	
 	## Advanced
 	# FASTA
@@ -122,7 +132,10 @@ GetOptions(
 	'k|ranks=i' => \$ranks,
 	'modeller=s' => \$modeller,
 	
-	# Structural homology 
+	# Structural homology
+	'a|aligner=s' => \$aligner,
+	'fskdb=s' => \$fskdb,
+	'ftype=i' => \$ftype,
 	'd|db=s' => \$database,
 	'q|qscore=s' => \$qscore,
 	'b|best=i' => \$best,
@@ -161,31 +174,53 @@ unless ($tdo){
 		}
 	}
 
-	### Check if GESAMT archive exists in $DB_3DFI or --db location
-	unless (-f "$database/RCSB_GESAMT/gesamt.archive.seq.000.pack"){ 
-		print "\nNo GESAMT archive found in $database\n\n";
-		print "Downloading the RCSB PDB data files ([36Gb] as of 2021-09-01) will take time.\n";
-		print "Creating a GESAMT archive from these files (~180k entries) will also take a few hours.\n\n";
-		print "Do you want to perform this task now? (y/n)\n";
-		my $answer;
-		ANSWER: {
-			$answer = <STDIN>;
-			chomp $answer;
-			$answer = lc ($answer);
-			if (($answer eq 'y') or ($answer eq 'yes')){
-				print "\nDownloading data from RCSB PDB and creating a GESAMT archive. This will take time...\n";
-				sleep(2);
-				system "create_3DFI_db.pl \\
-					-c $cpu \\
-					-o $database";
-			}
-			elsif (($answer eq 'n') or ($answer eq 'no')){
-				print "\nExiting as requested...\n\n";
-				exit;
-			}
-			else {
-				print "\nUnrecognized answer: $answer. Please try again...\n\n";
-				goto ANSWER;
+	### Check if Foldseek/GESAMT dbs exist in $DB_3DFI or --db location
+	my %align_tools = ( 'foldseek' => undef, 'gesamt' => undef );
+	$aligner = lc($aligner);
+
+	unless (exists $align_tools{$aligner}){
+		print "Unrecognized alignment tool $aligner. Please use foldseek or gesamt\n";
+		print "Exiting now...\n";
+		exit;
+	}
+
+	if ($aligner eq 'foldseek'){
+		my $foldseek_db = "$database/FOLDSEEK/rcsb";
+		if ($fskdb){
+			$foldseek_db = $fskdb;
+		}
+		unless (-f "$foldseek_db"){ 
+			print "Foldseek database $foldseek_db not found.\n";
+			print "Exiting\n\n"; 
+			exit;
+		}
+	}
+	elsif ($aligner eq 'gesamt'){
+		unless (-f "$database/RCSB_GESAMT/gesamt.archive.seq.000.pack"){ 
+			print "\nNo GESAMT archive found in $database\n\n";
+			print "Downloading the RCSB PDB data files ([36Gb] as of 2021-09-01) will take time.\n";
+			print "Creating a GESAMT archive from these files (~180k entries) will also take a few hours.\n\n";
+			print "Do you want to perform this task now? (y/n)\n";
+			my $answer;
+			ANSWER: {
+				$answer = <STDIN>;
+				chomp $answer;
+				$answer = lc ($answer);
+				if (($answer eq 'y') or ($answer eq 'yes')){
+					print "\nDownloading data from RCSB PDB and creating a GESAMT archive. This will take time...\n";
+					sleep(2);
+					system "create_3DFI_db.pl \\
+						-c $cpu \\
+						-o $database";
+				}
+				elsif (($answer eq 'n') or ($answer eq 'no')){
+					print "\nExiting as requested...\n\n";
+					exit;
+				}
+				else {
+					print "\nUnrecognized answer: $answer. Please try again...\n\n";
+					goto ANSWER;
+				}
 			}
 		}
 	}
@@ -229,11 +264,21 @@ foreach my $pred (@predictors){
 }
 
 unless ($tdo){
-	my $gesamt_check = `echo \$(command -v gesamt)`;
-	chomp $gesamt_check;
-	if ($gesamt_check eq ''){ 
-		print STDERR "\n[E]: Cannot find gesamt. Please install GESAMT in your \$PATH. Exiting..\n\n";
-		exit;
+	if ($aligner eq 'gesamt'){
+		my $gesamt_check = `echo \$(command -v gesamt)`;
+		chomp $gesamt_check;
+		if ($gesamt_check eq ''){ 
+			print STDERR "\n[E]: Cannot find gesamt. Please install GESAMT in your \$PATH. Exiting..\n\n";
+			exit;
+		}
+	}
+	elsif ($aligner eq 'foldseek'){
+		my $fseek_check = `echo \$(command -v foldseek)`;
+		chomp $fseek_check;
+		if ($fseek_check eq ''){ 
+			print STDERR "\n[E]: Cannot find foldseek. Please install Foldseek in your \$PATH. Exiting..\n\n";
+			exit;
+		}
 	}
 
 	my $chimerax_check = `echo \$(command -v chimerax)`;
@@ -435,78 +480,171 @@ print "\n# $time: Running structural homology searches\n";
 
 my $homology_scripts_home = "$home_3DFI".'/Homology_search/';
 
+my $fsk_dir = "$hm_dir/FOLDSEEK";
 my $gt_dir = "$hm_dir/GESAMT";
-unless (-d $gt_dir) { mkdir ($gt_dir, 0755) or die "Can't create $gt_dir: $!\n"; }
 
-foreach my $predictor (@predictors){
+##### Foldseek
+if ($aligner eq 'foldseek'){
 
-	$predictor = uc($predictor);
-	my $GSMT_outdir = "$gt_dir/$predictor";
+	unless (-d $fsk_dir) { mkdir ($fsk_dir, 0755) or die "Can't create $fsk_dir: $!\n"; }
 
-	## Input folders containing predicted PDB files
-	my $input_pdbdir = "$fd_dir/${predictor}_3D";
+	## Pseudocode
+	foreach my $predictor (@predictors){
 
-	if ($predictor eq 'ALPHAFOLD'){
-		$input_pdbdir .= '_Parsed';
+		$predictor = uc($predictor);
+		my $FSK_outdir = "$fsk_dir/$predictor";
+
+		## Input folders containing predicted PDB files
+		my $input_pdbdir = "$fd_dir/${predictor}_3D";
+
+		if ($predictor eq 'ALPHAFOLD'){
+			$input_pdbdir .= '_Parsed';
+		}
+		elsif ($predictor eq 'RAPTORX'){
+			$input_pdbdir .= '/PDB';
+		}
+		elsif ($predictor eq 'ROSETTAFOLD'){
+			$input_pdbdir .= '_Parsed';
+		}
+
+		## Running Foldseek
+		my $date = strftime('%Y-%m-%d', localtime);
+		my $foldseek_db = "$database/FOLDSEEK/rcsb";
+		if ($fskdb){
+			$foldseek_db = $fskdb;
+		}
+		my $log_dir = "$hm_dir/LOGS";
+		unless (-d $log_dir){ mkdir ($log_dir, 0755) or die "Can't create $log_dir: $!\n"; }
+
+		$time = localtime;
+		print "\n# $time: Running structural homology searches with foldseek on $input_pdbdir\n";
+		
+		## Query all (default) or only the best model per predictor?
+		my $pdb_to_query = '*.pdb';
+		$query = lc($query);
+		if ($query eq 'best'){ $pdb_to_query = '*-m1.pdb'; }
+
+		system "$homology_scripts_home"."run_foldseek.pl \\
+			-threads $cpu \\
+			-query \\
+			-db $foldseek_db \\
+			-input $input_pdbdir/$pdb_to_query \\
+			-outdir $FSK_outdir \\
+			-log $log_dir/Foldseek_${predictor}_${date}.log \\
+			-atype $ftype \\
+			-mseq 300 \\
+			-verbosity 3 \\
+			-gzip";
+		
+		## Adding descriptive information to GESAMT matches
+		$time = localtime;
+		
+		print "\n# $time: Getting match descriptions from $FSK_outdir\n";
+		system "$homology_scripts_home"."descriptive_matches.pl \\
+			-a foldseek \\
+			-r $database/RCSB_PDB_titles.tsv \\
+			-m $FSK_outdir/*.fseek.gz \\
+			-q $qscore \\
+			-b $best \\
+			-o $fsk_dir/${predictor}_FOLDSEEK_per_model.matches \\
+			-n";
+		
+		## Parse descriptive matches per protein and quality score; single predictor
+		print "\n# $time: Getting match descriptions per protein and quality score; single predictor\n";
+		system "$homology_scripts_home"."parse_all_models_by_Q.pl \\
+			-a foldseek \\
+			-m $fsk_dir/${predictor}_FOLDSEEK_per_model.matches \\
+			-o $fsk_dir/${predictor}_FOLDSEEK_per_protein.matches \\
+			-x 50";
 	}
-	elsif  ($predictor eq 'RAPTORX'){
-		$input_pdbdir .= '/PDB';
-	}
-	elsif  ($predictor eq 'ROSETTAFOLD'){
-		$input_pdbdir .= '_Parsed';
-	}
 
-	## Running GESAMT
-	my $date = strftime('%Y-%m-%d', localtime);
-	my $gesamt_archive = "$database/RCSB_GESAMT";
-	my $log_dir = "$hm_dir/LOGS";
-	unless (-d $log_dir){ mkdir ($log_dir, 0755) or die "Can't create $log_dir: $!\n"; }
-
-	$time = localtime;
-	print "\n# $time: Running structural homology searches with GESAMT on $input_pdbdir\n";
-	
-	## Query all (default) or only the best model per predictor?
-	my $pdb_to_query = '*.pdb';
-	$query = lc($query);
-	if ($query eq 'best'){ $pdb_to_query = '*-m1.pdb'; }
-
-	system "$homology_scripts_home"."run_GESAMT.pl \\
-		-cpu $cpu \\
-		-query \\
-		-arch $gesamt_archive \\
-		-input $input_pdbdir/$pdb_to_query \\
-		-o $GSMT_outdir \\
-		-l $log_dir/GESAMT_${predictor}_${date}.log \\
-		-mode normal \\
-		-z";
-	
-	## Adding descriptive information to GESAMT matches
-	$time = localtime;
-	
-	print "\n# $time: Getting match descriptions from $GSMT_outdir\n";
-	system "$homology_scripts_home"."descriptive_GESAMT_matches.pl \\
-		-r $database/RCSB_PDB_titles.tsv \\
-		-m $GSMT_outdir/*.gesamt.gz \\
-		-q $qscore \\
-		-b $best \\
-		-l $log_dir/GESAMT_${predictor}_${date}_descriptive_matches.err \\
-		-o $gt_dir/${predictor}_GESAMT_per_model.matches \\
-		-n";
-	
-	## Parse descriptive matches per protein and Q-score; single predictor
-	print "\n# $time: Getting match descriptions per protein and Q-score; single predictor\n";
+	## Parse again by quality score accross all predictors
+	print "\n# $time: Getting match descriptions per protein and quality score; all predictors\n";
 	system "$homology_scripts_home"."parse_all_models_by_Q.pl \\
-		-m $gt_dir/${predictor}_GESAMT_per_model.matches \\
-		-o $gt_dir/${predictor}_GESAMT_per_protein.matches \\
-		-x 50";
+			-a foldseek \\
+			-m $fsk_dir/*_FOLDSEEK_per_model.matches \\
+			-o $fsk_dir/All_FOLDSEEK_matches_per_protein.tsv \\
+			-x 50";
 }
 
-## Parse again by Q-score accross all predictors
-print "\n# $time: Getting match descriptions per protein and Q-score; all predictors\n";
-system "$homology_scripts_home"."parse_all_models_by_Q.pl \\
-		-m $gt_dir/*_GESAMT_per_model.matches \\
-		-o $gt_dir/All_GESAMT_matches_per_protein.tsv \\
-		-x 50";
+##### GESAMT
+elsif ($aligner eq 'gesamt'){
+
+	unless (-d $gt_dir) { mkdir ($gt_dir, 0755) or die "Can't create $gt_dir: $!\n"; }
+
+	foreach my $predictor (@predictors){
+
+		$predictor = uc($predictor);
+		my $GSMT_outdir = "$gt_dir/$predictor";
+
+		## Input folders containing predicted PDB files
+		my $input_pdbdir = "$fd_dir/${predictor}_3D";
+
+		if ($predictor eq 'ALPHAFOLD'){
+			$input_pdbdir .= '_Parsed';
+		}
+		elsif ($predictor eq 'RAPTORX'){
+			$input_pdbdir .= '/PDB';
+		}
+		elsif ($predictor eq 'ROSETTAFOLD'){
+			$input_pdbdir .= '_Parsed';
+		}
+
+		## Running GESAMT
+		my $date = strftime('%Y-%m-%d', localtime);
+		my $gesamt_archive = "$database/RCSB_GESAMT";
+		my $log_dir = "$hm_dir/LOGS";
+		unless (-d $log_dir){ mkdir ($log_dir, 0755) or die "Can't create $log_dir: $!\n"; }
+
+		$time = localtime;
+		print "\n# $time: Running structural homology searches with GESAMT on $input_pdbdir\n";
+		
+		## Query all (default) or only the best model per predictor?
+		my $pdb_to_query = '*.pdb';
+		$query = lc($query);
+		if ($query eq 'best'){ $pdb_to_query = '*-m1.pdb'; }
+
+		system "$homology_scripts_home"."run_GESAMT.pl \\
+			-cpu $cpu \\
+			-query \\
+			-arch $gesamt_archive \\
+			-input $input_pdbdir/$pdb_to_query \\
+			-o $GSMT_outdir \\
+			-l $log_dir/GESAMT_${predictor}_${date}.log \\
+			-mode normal \\
+			-z";
+		
+		## Adding descriptive information to GESAMT matches
+		$time = localtime;
+		
+		print "\n# $time: Getting match descriptions from $GSMT_outdir\n";
+		system "$homology_scripts_home"."descriptive_matches.pl \\
+			-a gesamt \\
+			-r $database/RCSB_PDB_titles.tsv \\
+			-m $GSMT_outdir/*.gesamt.gz \\
+			-q $qscore \\
+			-b $best \\
+			-o $gt_dir/${predictor}_GESAMT_per_model.matches \\
+			-n";
+		
+		## Parse descriptive matches per protein and Q-score; single predictor
+		print "\n# $time: Getting match descriptions per protein and Q-score; single predictor\n";
+		system "$homology_scripts_home"."parse_all_models_by_Q.pl \\
+			-a gesamt \\
+			-m $gt_dir/${predictor}_GESAMT_per_model.matches \\
+			-o $gt_dir/${predictor}_GESAMT_per_protein.matches \\
+			-x 50";
+	}
+
+	## Parse again by Q-score accross all predictors
+	print "\n# $time: Getting match descriptions per protein and Q-score; all predictors\n";
+	system "$homology_scripts_home"."parse_all_models_by_Q.pl \\
+			-a gesamt \\
+			-m $gt_dir/*_GESAMT_per_model.matches \\
+			-o $gt_dir/All_GESAMT_matches_per_protein.tsv \\
+			-x 50";
+
+}
 
 ##### End of structural homology searches
 
@@ -517,32 +655,45 @@ system "$homology_scripts_home"."parse_all_models_by_Q.pl \\
 
 $time = localtime;
 print "\n".'###############################################################################################';
-print "\n# $time: Performing aligments between queries and best matches with ChimeraX\n";
+print "\n# $time: Performing alignments between queries and best matches with ChimeraX\n";
 sleep (2);
 
 my $visualization_scripts_home = "$home_3DFI".'/Visualization/';
 
 foreach my $predictor (@predictors){
 
-print "\n# $time: Working on $predictor predictions\n";
+	print "\n# $time: Working on $predictor predictions\n";
 	$predictor = uc($predictor);
 	my $PDB_dir = "$outdir/Folding/${predictor}_3D";
 
 	if ($predictor eq 'ALPHAFOLD'){
 		$PDB_dir .= '_Parsed';
 	}
-	elsif  ($predictor eq 'RAPTORX'){
+	elsif ($predictor eq 'RAPTORX'){
 		$PDB_dir .= '/PDB';
 	}
-	elsif  ($predictor eq 'TRROSETTA'){
-		$PDB_dir .= '';
-	}
-	elsif  ($predictor eq 'ROSETTAFOLD'){
+	elsif ($predictor eq 'ROSETTAFOLD'){
 		$PDB_dir .= '_Parsed';
 	}
 
+	## Checking structural homology tool
+	my $hm_tool;
+	my $hm_tool_dir;
+	my $atool;
+	if ($aligner eq 'gesamt'){
+		$hm_tool = 'GESAMT';
+		$atool = lc($hm_tool);
+		$hm_tool_dir = $gt_dir;
+	}
+	elsif ($aligner eq 'foldseek'){
+		$hm_tool = 'FOLDSEEK';
+		$atool = lc($hm_tool);
+		$hm_tool_dir = $fsk_dir;
+	}
+
 	system "$visualization_scripts_home"."prepare_visualizations.pl \\
-		-g $gt_dir/${predictor}_GESAMT_per_model.matches \\
+		-a $atool \\
+		-m $hm_tool_dir/${predictor}_${hm_tool}_per_model.matches \\
 		-p $PDB_dir/ \\
 		-r $database/RCSB_PDB \\
 		-o $vz_dir/$predictor \\
@@ -554,16 +705,19 @@ print "\n# $time: Working on $predictor predictions\n";
 ######################################################################
 ## Alignment with MICAN
 
-$time = localtime;
-print "\n".'###############################################################################################';
-print "\n# $time: Performing aligments between queries and best matches with MICAN\n";
-sleep (2);
-
 if ($mican){
-	system "$homology_scripts_home"."run_MICAN_on_GESAMT_results.pl \\
+	$time = localtime;
+	print "\n".'###############################################################################################';
+	print "\n# $time: Performing alignments between queries and best matches with MICAN\n";
+	sleep (2);
+
+	system "$homology_scripts_home"."run_MICAN_on_homology_results.pl \\
+		-a $aligner \\
 		-t $outdir \\
 		-r $database/RCSB_PDB $database/RCSB_PDB_obsolete \\
-		-o $hm_dir/MICAN_RESULTS
+		-outdir $hm_dir/MICAN \\
+		-outfile MICAN.tsv \\
+		-nobar
 	";
 }
 
@@ -575,7 +729,7 @@ if ($visualization){
 	print "\n".'##########################################################################';
 	print "\n# $time: Launching visualization script\n";
 	sleep (5);
-	system "$home_3DFI".'/'."run_visualizations.pl -r $outdir";
+	system "$home_3DFI".'/'."run_visualizations.pl -a $aligner -r $outdir";
 }
 
 ## End of visualization
