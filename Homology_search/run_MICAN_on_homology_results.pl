@@ -153,7 +153,7 @@ while (my $line = <IN>){
 				print "\n\t$status\t".($alignment_counter)."/$total_alignments\n\t";
 			}
 			else {
-				print "\tAligning $query to $rcsb_code with MICAN\n";
+				print "   Aligning $query to $rcsb_code with MICAN\n";
 			}
 
 			system "cp $rcsb_file_location $rcsb_temp_dir/$rcsb_file\n";
