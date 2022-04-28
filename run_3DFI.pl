@@ -669,16 +669,20 @@ foreach my $predictor (@predictors){
 	## Checking structural homology tool
 	my $hm_tool;
 	my $hm_tool_dir;
+	my $atool;
 	if ($aligner eq 'gesamt'){
 		$hm_tool = 'GESAMT';
+		$atool = lc($hm_tool);
 		$hm_tool_dir = $gt_dir;
 	}
 	elsif ($aligner eq 'foldseek'){
 		$hm_tool = 'FOLDSEEK';
+		$atool = lc($hm_tool);
 		$hm_tool_dir = $fsk_dir;
 	}
 
 	system "$visualization_scripts_home"."prepare_visualizations.pl \\
+		-a $atool \\
 		-m $hm_tool_dir/${predictor}_${hm_tool}_per_model.matches \\
 		-p $PDB_dir/ \\
 		-r $database/RCSB_PDB \\
