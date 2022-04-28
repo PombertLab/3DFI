@@ -32,8 +32,8 @@ GENERAL OPTIONS:
 -p (--pred)		Structure predictor(s): alphafold, rosettafold, and/or raptorx
 -c (--cpu)		# of CPUs to use [Default: 10]
 -3do (--3D_only)	3D folding only; no structural homology search(es) / structural alignment(s)
--m (--mican)		Perform alignment scoring (TM-score) with MICAN
 -v (--viz)		Turn on visualization once the structural homology searches are completed
+--mican		Perform alignment scoring (TM-score) with MICAN
 USAGE
 die "\n$usage\n" unless @ARGV;
 
@@ -113,8 +113,8 @@ GetOptions(
 	'o|out=s' => \$outdir,
 	'p|pred=s@{1,}' => \@predictors,
 	'c|cpu=i' => \$cpu,
-	'3do|3D_only)' => \$tdo,
-	'm|mican' => \$mican,
+	'3do|3D_only' => \$tdo,
+	'mican' => \$mican,
 	
 	## Advanced
 	# FASTA
