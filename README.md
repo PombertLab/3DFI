@@ -29,8 +29,8 @@ The 3DFI pipeline automates protein structure predictions, structural homology s
 	* [Structural homology searches](#Structural-homology-searches)
 		* [Downloading PDB files from RCSB](#downloading-PDB-files-from-RCSB)
 		* [Creating a list of PDB titles](#creating-a-list-of-PDB-titles)
-		* [Creating, updating or querying a Foldseek database](#creating,-updating-or-querying-a-Foldseek-database)
-		* [Creating, updating or querying a GESAMT database](#creating,-updating-or-querying-a-GESAMT-database)
+		* [Creating or querying a Foldseek database](#creating-or-querying-a-Foldseek-database)
+		* [Creating or querying a GESAMT database](#creating-or-querying-a-GESAMT-database)
 		* [Parsing the output of homology searches](#Parsing-the-output-of-homology-searches)
 	* [Structural alignment and visualization](#Structural-alignment-and-visualization)
 		* [About alignment and visualization](#About-alignment-and-visualization)
@@ -1001,7 +1001,7 @@ The list created should look like this:
 5tzw	D	CGMP-DEPENDENT 3',5'-CYCLIC PHOSPHODIESTERASE
 ```
 
-##### Creating, updating or querying a Foldseek database
+##### Creating or querying a Foldseek database
 A foldseek-formatted database is required to perform structural homology searches with [Foldseek](https://github.com/PombertLab/3DFI/tree/foldseek). The foldseek database can be created automatically with [create_3DFI_db.pl](https://github.com/PombertLab/3DFI/blob/master/create_3DFI_db.pl). The database can also be created manually with [run_foldseek.pl](https://github.com/PombertLab/3DFI/master/foldseek/Homology_search/run_foldseek.pl).
 
 ```Bash
@@ -1050,7 +1050,7 @@ run_foldseek.pl \
 ```
 </details>
 
-##### Creating, updating or querying a GESAMT database
+##### Creating or querying a GESAMT database
 Before performing structural homology searches with GESAMT (from the [CCP4](https://www.ccp4.ac.uk/) package), we should first create an archive to speed up the searches. We can also update the archive later as sequences are added (for example after the RCSB PDB files are updated with rsync). GESAMT archives can be created/updated with [run_GESAMT.pl](https://github.com/PombertLab/3DFI/blob/master/Homology_search/run_GESAMT.pl):
 
 ```Bash
