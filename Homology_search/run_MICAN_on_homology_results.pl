@@ -111,7 +111,7 @@ while (my $line = <IN>){
 		$predictor = $columns[1];
 		if ($aligner eq 'gesamt'){
 			$rcsb_code = $columns[2];
-			$chain  = $columns[3];
+			$chain = $columns[3];
 			$rcsb_file = $columns[9];
 		}
 		elsif ($aligner eq 'foldseek'){
@@ -146,14 +146,14 @@ while (my $line = <IN>){
 		if ($rcsb_file_location){
 			unless ($nobar){
 				system "clear";
-				print "\n\tAligning $query to $rcsb_code with MICAN\n";
+				print "\n\tAligning $query to $rcsb_code chain $chain with MICAN\n";
 				my $remaining = "." x (int((($total_alignments-$alignment_counter)/$total_alignments)*100));
 				my $progress = "|" x (100-int((($total_alignments-$alignment_counter)/$total_alignments)*100));
 				my $status = "[".$progress.$remaining."]";
 				print "\n\t$status\t".($alignment_counter)."/$total_alignments\n\t";
 			}
 			else {
-				print "   Aligning $query to $rcsb_code with MICAN\n";
+				print "  Aligning $query to $rcsb_code chain $chain with MICAN\n";
 			}
 
 			system "cp $rcsb_file_location $rcsb_temp_dir/$rcsb_file\n";
