@@ -1704,4 +1704,6 @@ This work was supported in part by the National Institute of Allergy and Infecti
 9) [Accurate prediction of protein structures and interactions using a three-track neural network](https://pubmed.ncbi.nlm.nih.gov/34282049/). **Baek M,** ***et al.*** Science. 2021 Jul 15; eabj8754. Online ahead of print. PMID: 34282049 DOI: 10.1126/science.abj8754
 
 10) [A local superposition-free score for comparing protein structures and models using distance difference tests](https://pubmed.ncbi.nlm.nih.gov/23986568/). **Mariani V, Biasini M, Barbato A, Schwede T**. Bioinformatics. 2013 Nov 1;29(21):2722-8.  PMID: 23986568 PMCID: PMC3799472 DOI: 10.1093/bioinformatics/btt473.
+
+11) [Foldseek: fast and accurate protein structure search](https://www.biorxiv.org/content/10.1101/2022.02.07.479398). **van Kempen M, Kim S, Tumescheit C, Mirdita M, Söding J, Steinegger M**  bioRxiv 2022. DOI:10.1101/2022.02.07.479398
 </details>
