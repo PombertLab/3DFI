@@ -645,7 +645,7 @@ elsif ($aligner eq 'gesamt'){
 
 $time = localtime;
 print "\n".'###############################################################################################';
-print "\n# $time: Performing aligments between queries and best matches with ChimeraX\n";
+print "\n# $time: Performing alignments between queries and best matches with ChimeraX\n";
 sleep (2);
 
 my $visualization_scripts_home = "$home_3DFI".'/Visualization/';
@@ -659,27 +659,27 @@ foreach my $predictor (@predictors){
 	if ($predictor eq 'ALPHAFOLD'){
 		$PDB_dir .= '_Parsed';
 	}
-	elsif  ($predictor eq 'RAPTORX'){
+	elsif ($predictor eq 'RAPTORX'){
 		$PDB_dir .= '/PDB';
 	}
-	elsif  ($predictor eq 'TRROSETTA'){
-		$PDB_dir .= '';
-	}
-	elsif  ($predictor eq 'ROSETTAFOLD'){
+	elsif ($predictor eq 'ROSETTAFOLD'){
 		$PDB_dir .= '_Parsed';
 	}
 
 	## Checking structural homology tool
 	my $hm_tool;
+	my $hm_tool_dir;
 	if ($aligner eq 'gesamt'){
 		$hm_tool = 'GESAMT';
+		$hm_tool_dir = $gt_dir;
 	}
 	elsif ($aligner eq 'foldseek'){
 		$hm_tool = 'FOLDSEEK';
+		$hm_tool_dir = $fsk_dir;
 	}
 
 	system "$visualization_scripts_home"."prepare_visualizations.pl \\
-		-g $gt_dir/${predictor}_${hm_tool}_per_model.matches \\
+		-m $hm_tool_dir/${predictor}_${hm_tool}_per_model.matches \\
 		-p $PDB_dir/ \\
 		-r $database/RCSB_PDB \\
 		-o $vz_dir/$predictor \\
