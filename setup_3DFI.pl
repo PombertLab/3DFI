@@ -384,10 +384,12 @@ my $foldseek_url = "https://mmseqs.com/foldseek/foldseek-linux-avx2.tar.gz";
 system "wget \\
 	-P $root_3D/ \\
 	$foldseek_url";
-system "tar -zxvf $root_3D/foldseek-linux-avx2.tar.gz -C $root_3D/";
-system "mv $root_3D/foldseek/bin/foldseek $root_3D/";
-system "chmod +x $root_3D/foldseek";
-system "rm -R $root_3D/foldseek/";
+
+chdir "$root_3D";
+system "tar -zxvf foldseek-linux-avx2.tar.gz";
+system "mv ./foldseek/bin/foldseek ./";
+system "chmod +x ./foldseek";
+system "rm -R ./foldseek/";
 chdir "$root_dir";
 
 
