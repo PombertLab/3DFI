@@ -283,6 +283,7 @@ WHILE: while(0==0){
 		my $match_chain = $selected_data[3];
 		my $outfile = "${predictor}/${model}/${model}_${match_id}_${match_chain}";
 		print "\nFILE = $outfile\n";
+		exit;
 		system "chimerax 2>/dev/null $in_dir/Visualization/$outfile.cxs $vis_dir/restore_chimerax_session.py &";
 	}
 	# Selected to view a predicted PDB model
