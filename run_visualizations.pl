@@ -156,7 +156,7 @@ WHILE: while(0==0){
 	}
 	print "\n\t### $locus has ".scalar(@match_info)." matches. ### \n\n\t\t- Currently in $status[0] match mode \n\t\t- Viewing $status[1]\n\n";
 	print "\t|$separater|\n";
-	print "\t Selection    Score     Predicted Structure     PDB-File => Chain     Structural Homolog Description\n";
+	print "\t Selection   Score     Predicted Structure      PDB-File => Chain     Structural Homolog Description\n";
 	print "\t|$separater|\n";
 	my $printed_counter = 0;
 	foreach my $match (@match_info){
