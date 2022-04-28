@@ -71,10 +71,10 @@ my %results;
 my %predictors;
 while (my $line = <RESULTS>){
 	chomp($line);
-	if($line =~ /^### (\S+?);/){
+	if ($line =~ /^### (\S+?);/){
 		$locus = $1;
 	}
-	elsif($line =~ /^\S/){
+	elsif ($line =~ /^\S/){
 		my @data = split("\t",$line);
 		push(@{$results{$locus}},\@data);
 		$predictors{uc($data[1])} = 1;
@@ -113,16 +113,16 @@ WHILE: while(0==0){
 	my %viewable_models;
 	opendir(VIS,"$in_dir/Visualization");
 	foreach my $obj (readdir(VIS)){
-		unless($obj =~ /^\./){
-			if(-e "$in_dir/Visualization/$obj"){
-				if($viewable_predictors{$obj}){
+		unless ($obj =~ /^\./){
+			if (-e "$in_dir/Visualization/$obj"){
+				if ($viewable_predictors{$obj}){
 					opendir(MOD,"$in_dir/Visualization/$obj");
 					foreach my $mods (readdir(MOD)){
-						unless($mods =~ /^\./){
-							if($mods =~ /$locus/){
+						unless ($mods =~ /^\./){
+							if ($mods =~ /$locus/){
 								opendir(PDB,"$in_dir/Visualization/$obj/$mods");
 								foreach my $pdb (readdir(PDB)){
-									if($pdb =~ /\.pdb$/){
+									if ($pdb =~ /\.pdb$/){
 										$viewable_models{$obj}{$pdb} = "$in_dir/Visualization/$obj/$mods/$pdb";
 									}
 								}
@@ -136,12 +136,12 @@ WHILE: while(0==0){
 
 	my @match_info;
 
-	if($results{$locus}){
+	if ($results{$locus}){
 		@match_info = @{$results{$locus}};
 	}
-	elsif($matches_only){
+	elsif ($matches_only){
 		$locus_counter++;
-		if($locus_counter > scalar(@loci) - 1){
+		if ($locus_counter > scalar(@loci) - 1){
 			$locus_counter = 0;
 		}
 		next;
@@ -151,18 +151,18 @@ WHILE: while(0==0){
 	# Printout results                                                                                                 #
 	####################################################################################################################
 
-	if($warning_statement){
-		print("\n\t[W]  $warning_statement\n");
+	if ($warning_statement){
+		print "\n\t[W]  $warning_statement\n";
 	}
-	print("\n\t### $locus has ".scalar(@match_info)." matches. ### \n\n\t\t- Currently in $status[0] match mode \n\t\t- Viewing $status[1]\n\n");
-	print("\t|$separater|\n");
-	print("\t Selection  Q-Score     Predicted Structure     PDB-File => Chain     Structural Homolog Description\n");
-	print("\t|$separater|\n");
+	print "\n\t### $locus has ".scalar(@match_info)." matches. ### \n\n\t\t- Currently in $status[0] match mode \n\t\t- Viewing $status[1]\n\n";
+	print "\t|$separater|\n";
+	print "\t Selection    Score     Predicted Structure     PDB-File => Chain     Structural Homolog Description\n";
+	print "\t|$separater|\n";
 	my $printed_counter = 0;
 	foreach my $match (@match_info){
-		unless($printed_counter > 4 && $best_only){
+		unless ($printed_counter > 4 && $best_only){
 			my @match = @{$match};
-			unless($viewable_predictors{$match[1]}){
+			unless ($viewable_predictors{$match[1]}){
 				next;
 			}
 			## Gathering data for result printout
@@ -189,7 +189,7 @@ WHILE: while(0==0){
 				}
 				$match_id = sprintf("%11s",$match_id);
 				$match_chain = sprintf(" => %-10s",$match_chain);
-				$q_score = sprintf("   %-6.3f",$match[-2]);
+				$q_score = sprintf("   %-6",$match[-2]);
 			}
 
 			my $title = sprintf("%-15s",$match[-1]);
@@ -205,7 +205,7 @@ WHILE: while(0==0){
 			$printed_counter++;
 		}
 	}
-	print("\t|$separater|\n");
+	print "\t|$separater|\n";
 
 	####################################################################################################################
 	# Option printouts                                                                                                 #
@@ -274,7 +274,7 @@ WHILE: while(0==0){
 	undef $warning_statement;
 
 	# Selected to view a CXS file
-	if($printed_counter > 0 && $selection =~ /(\d+)/ && $selection < $printed_counter - 1){
+	if ($printed_counter > 0 && $selection =~ /(\d+)/ && $selection < $printed_counter - 1){
 		my $selected_locus = $1 - 1;
 		my @selected_data = @{$match_info[$selected_locus]};
 		my ($model) = $selected_data[0] =~ /(\S+)/;
@@ -285,7 +285,7 @@ WHILE: while(0==0){
 		system "chimerax 2>/dev/null $in_dir/Visualization/$outfile.cxs $vis_dir/restore_chimerax_session.py &";
 	}
 	# Selected to view a predicted PDB model
-	elsif($selection eq "M"){
+	elsif ($selection eq "M"){
 		print "\n\n\t\tWhich of the following predictors would you like to see viewable structural predictions for?\n\n";
 		foreach my $predictor (sort(keys(%viewable_models))){
 			if ($viewable_models{$predictor}){
@@ -295,7 +295,7 @@ WHILE: while(0==0){
 		print "\n\t\tSelection: ";
 		chomp (my $selected_predictor = <STDIN>);
 		print "\n\n\t\t\tWhich of the following models would you like to visualize?\n\n";
-		if($viewable_models{$selected_predictor}){
+		if ($viewable_models{$selected_predictor}){
 			foreach my $models (sort(keys(%{$viewable_models{$selected_predictor}}))){
 				print "\t\t\t\t$models\n";
 			}
