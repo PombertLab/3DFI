@@ -59,7 +59,7 @@ close PRED_LOCI;
 ########################################################################################################################
 
 $aligner = uc($aligner);
-my $result_file = "$in_dir/Homology/GESAMT/All_${aligner}_matches_per_protein.tsv";
+my $result_file = "$in_dir/Homology/$aligner/All_${aligner}_matches_per_protein.tsv";
 my $script = $0;
 my ($file,$vis_dir) = fileparse($script);
 $vis_dir .= "/Visualization/Helper_Scripts/";
