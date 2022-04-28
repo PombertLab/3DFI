@@ -30,7 +30,7 @@ OPTIONS:
 -a (--align)	Structural alignment tool used: foldseek or gesamt [Default: gesamt]
 -r (--rcsb)	Tab-delimited list of RCSB structures and their titles ## see PDB_headers.pl 
 -m (--matches)	Results from homology searches ## Supports GZIPPEd files; see run_GESAMT.pl/run_foldseek.pl
--q (--qscore)	Qaulity score cut-off [Default: 0.3]
+-q (--qscore)	Quality score cut-off [Default: 0.3]
 -b (--best)	Keep the best match(es) only (top X hits)
 -o (--output)	Output name [Default: Gesamt.matches]
 -n (--nobar)	Turn off the progress bar

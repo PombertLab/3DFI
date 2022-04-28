@@ -1,6 +1,6 @@
 <p align="left"><img src="https://github.com/PombertLab/3DFI/blob/master/Images/Logo.png" alt="3DFI - Three-dimensional function inference" width="800"></p>
 
-The 3DFI pipeline automates protein structure predictions, structural homology searches and alignments with putative structural homologs at the genome scale. Protein structures predicted in PDB format are searched against a local copy of the [RSCB PDB](https://www.rcsb.org/) database with GESAMT (General Efficient Structural Alignment of Macromolecular Targets) from the [CCP4](https://www.ccp4.ac.uk/) package. Known PDB structures can also be searched against sets of predicted structures to identify potential structural homologs in predicted datasets. These structural homologs are then aligned for visual inspection with [ChimeraX](https://www.rbvi.ucsf.edu/chimerax/download.html).
+The 3DFI pipeline automates protein structure predictions, structural homology searches and alignments with putative structural homologs at the genome scale. Protein structures predicted in PDB format are searched against a local copy of the [RSCB PDB](https://www.rcsb.org/) database with [Foldseek](https://github.com/steineggerlab/foldseek) or GESAMT (General Efficient Structural Alignment of Macromolecular Targets) from the [CCP4](https://www.ccp4.ac.uk/) package. Known PDB structures can also be searched against sets of predicted structures to identify potential structural homologs in predicted datasets. These structural homologs are then aligned for visual inspection with [ChimeraX](https://www.rbvi.ucsf.edu/chimerax/download.html).
 
 <a href="https://zenodo.org/badge/latestdoi/279375246"><p align="right"><img src="https://zenodo.org/badge/279375246.svg" alt="DOI"></a>
 
@@ -29,9 +29,9 @@ The 3DFI pipeline automates protein structure predictions, structural homology s
 	* [Structural homology searches](#Structural-homology-searches)
 		* [Downloading PDB files from RCSB](#downloading-PDB-files-from-RCSB)
 		* [Creating a list of PDB titles](#creating-a-list-of-PDB-titles)
-		* [Creating or updating a GESAMT database](#creating-or-updating-a-GESAMT-database)
-		* [Structural homology searches with GESAMT](#structural-homology-searches-with-GESAMT)
-		* [Parsing the output of GESAMT searches](#Parsing-the-output-of-GESAMT-searches)
+		* [Creating, updating or querying a Foldseek database](#creating,-updating-or-querying-a-Foldseek-database)
+		* [Creating, updating or querying a GESAMT database](#creating,-updating-or-querying-a-GESAMT-database)
+		* [Parsing the output of homology searches](#Parsing-the-output-of-homology-searches)
 	* [Structural alignment and visualization](#Structural-alignment-and-visualization)
 		* [About alignment and visualization](#About-alignment-and-visualization)
 		* [Aligning protein structures and inspecting alignments with ChimeraX](#Aligning-protein-structures-and-inspecting-alignments-with-ChimeraX)
@@ -59,7 +59,7 @@ Inferring the function of proteins using computational approaches usually involv
 Because structure often confers function in biology, structural homologs often share similar functions, even if the building blocks are not the same (*i.e.* a wheel made of wood or steel is still a wheel regardless of its composition). Using this approach, we might be able to infer putative functions for proteins that share little to no similarity at the sequence level with known proteins, assuming that a structural match can be found.
 
 ###### What is needed for structure-based homology searches?
-To perform structure-based predictions we need 3D structures — either determined experimentally or predicted computationally — that we can query against other structures, such as those from the [RCSB PDB](https://www.rcsb.org/). We also need tools that can search for homology at the structural level. Several tools are now available to predict protein structures, many of which are implemented as web servers for ease of use. A listing can be found at [CAMEO](https://www.cameo3d.org/), a website that evaluates their accuracy and reliability. Fewer tools are available to perform searches at the 3D levels (*e.g.* SSM and GESAMT). SSM is implemented in [PDBeFold](https://www.ebi.ac.uk/msd-srv/ssm/) while GESAMT is part of the [CCP4](https://www.ccp4.ac.uk/) package.
+To perform structure-based predictions we need 3D structures — either determined experimentally or predicted computationally — that we can query against other structures, such as those from the [RCSB PDB](https://www.rcsb.org/). We also need tools that can search for homology at the structural level. Several tools are now available to predict protein structures, many of which are implemented as web servers for ease of use. A listing can be found at [CAMEO](https://www.cameo3d.org/), a website that evaluates their accuracy and reliability. Fewer tools are available to perform searches at the 3D levels (*e.g.* Foldseek, GESAMT, SSM). [Foldseek](https://github.com/steineggerlab/foldseek) is available as a standalone program, GESAMT is distributed as part of the [CCP4](https://www.ccp4.ac.uk/) package, and SSM is implemented in [PDBeFold](https://www.ebi.ac.uk/msd-srv/ssm/).
 
 ###### Why this pipeline?
 Although predicting the structure of a protein and searching for structural homologs can be done online, for example by using [SWISS-MODEL](https://swissmodel.expasy.org/) and [PDBeFold](https://www.ebi.ac.uk/msd-srv/ssm/), genomes often code for thousands of proteins and applying this approach on a genome scale using web portals would be time consuming and error prone. We implemented the 3DFI pipeline to enable the use of structure-based homology searches at a genome-wide level from the command line.
@@ -98,6 +98,7 @@ The 3DFI pipeline requires the following software to perform protein structure p
 	- [RaptorX](http://raptorx.uchicago.edu/) (Template-based)
 		- Requires [MODELLER](https://salilab.org/modeller/)
 3. A structural homology search tool:
+	- [Foldseek](https://github.com/steineggerlab/foldseek) 
 	- GESAMT via [CCP4](https://www.ccp4.ac.uk/)
 4. An alignment/visualization tool:
 	- [ChimeraX](https://www.cgl.ucsf.edu/chimerax/download.html) 1.3+
@@ -127,8 +128,12 @@ MODELLER=modeller-10.1-1.x86_64.rpm
 sudo env KEY_MODELLER=$LICENSE rpm -Uvh $MODELLER
 ```
 
-##### The CCP4 package
-The [CCP4](https://www.ccp4.ac.uk/) package can be installed by following the prompts from its graphical user interface. The gesamt program required by 3DFI will be located inside the bin subdirectory, which should be added to the **$PATH** environment variable.
+##### Structural homology tools
+##### Foldseek
+Foldseek is installed automatically with [setup_3DFI.pl](https://github.com/PombertLab/3DFI/blob/master/setup_3DFI.pl). It can also be installed from the [Foldseek](https://github.com/steineggerlab/foldseek) Github page.
+
+##### GESAMT
+GESAMT is distributed with the [CCP4](https://www.ccp4.ac.uk/) package, which can be installed by following the prompts from its graphical user interface. The gesamt program required by 3DFI will be located inside the bin subdirectory, which should be added to the **$PATH** environment variable.
 
 ```Bash
 export CCP4=/opt/xtal/CCP4/ccp4-7.1/bin/
@@ -161,7 +166,7 @@ git clone https://github.com/PombertLab/3DFI.git
 ```
 
 ##### Initial setup
-The [setup_3DFI.pl](https://github.com/PombertLab/3DFI/blob/master/setup_3DFI.pl) script can be used to install AlphaFold, RaptorX and/or RoseTTAFold and to set up the 3DFI environment variables. The script can also add the 3DFI installation folder and it subdirectories to the **\$PATH** environment variable (if desired) from the interactive prompts. 
+The [setup_3DFI.pl](https://github.com/PombertLab/3DFI/blob/master/setup_3DFI.pl) script can be used to install AlphaFold, RaptorX and/or RoseTTAFold, install [Foldseek](https://github.com/steineggerlab/foldseek), and to set up the 3DFI environment variables. The script can also add the 3DFI installation folder and it subdirectories to the **\$PATH** environment variable (if desired) from the interactive prompts. 
 
 - When run, the 3DFI pipeline will search for the following environment variables (**\$ALPHAFOLD_HOME**, **\$ROSETTAFOLD_HOME** and/or **\$RAPTORX_HOME**) depending on the requested protein structure predictor(s).
 
@@ -216,6 +221,7 @@ export ALPHAFOLD_HOME=/opt/3DFI/3D/alphafold
 
 ### 3DFI PATH variables
 PATH=$PATH:/opt/3DFI
+PATH=$PATH:/opt/3DFI/3D
 PATH=$PATH:/opt/3DFI/Prediction/RaptorX
 PATH=$PATH:/opt/3DFI/Prediction/AlphaFold2
 PATH=$PATH:/opt/3DFI/Prediction/RoseTTAFold
@@ -239,11 +245,12 @@ cd $TDFI_HOME
   <summary>Options for create_3DFI_db.pl are:</summary>
 
 ```
--a (--all)	Download all databases: RCSB, ALPHAFOLD, ROSETTAFOLD, RAPTORX
--d (--db)	Target 3DFI database location [Default: $TDFI_DB]
+-a (--all)	Download/create all databases: RCSB, ALPHAFOLD, ROSETTAFOLD, RAPTORX, Foldseek, GESAMT
+-d (--db)	Target 3DFI database location [Default: \$TDFI_DB]
+-c (--cpu)	Number of CPUs to create/update the Foldseek/GESAMT databases [Default: 10]
 
-# Download specific databases:
---rcsb		RCSB PDB/GESAMT
+# Download/create specific databases:
+--rcsb		RCSB PDB + Foldseek + GESAMT
 --alpha		AlphaFold2
 --raptorx	RaptorX
 --rosetta	RoseTTAFold
@@ -255,17 +262,16 @@ cd $TDFI_HOME
 
 # GESAMT options
 --make_gesamt	Create a GESAMT archive from the RCSB PDB files instead of 
-		downloading a pre-built version
---update_gesamt	Update an existing GESAMT archive
--c (--cpu)	Number of CPUs to create/update the GESAMT archive [Default: 10]
+				downloading a pre-built version
+--update_gesamt	Update an existing GESAMT archive made with --make_gesamt
 
-### Download size / disk usage
-# TOTAL				669 Gb / 3.2 Tb
-# RSCB PDB			39 Gb / 42 Gb inflated
+### Approximate download size / disk usage
+# TOTAL							669 Gb / 3.2 Tb
+# RSCB PDB						39 Gb / 42 Gb inflated
 # BFD (AlphaFold/RoseTTAFold)	272 Gb / 1.8 Tb inflated
-# AlphaFold (minus BFD)		176 Gb / 0.6 Tb inflated
-# RoseTTAFold (minus BFD)	146 Gb / 849 Gb inflated
-# RaptorX			37 Gb / 76 Gb inflated
+# AlphaFold (minus BFD)			176 Gb / 0.6 Tb inflated
+# RoseTTAFold (minus BFD)		146 Gb / 849 Gb inflated
+# RaptorX						37 Gb / 76 Gb inflated
 ```
 </details>
 
@@ -278,9 +284,11 @@ ls -l $TDFI_DB
 total 2758236
 drwxr-xr-x     2 jpombert jpombert       4096 Sep 22 08:38 ALPHAFOLD
 drwxr-xr-x     2 jpombert jpombert       4096 Sep 22 08:38 BFD
+drwxr-xr-x     3 jpombert jpombert       4096 Apr 28 12:40 FOLDSEEK
 drwxr-xr-x.    9 jpombert jpombert       4096 Jul 12 15:52 RAPTORX
 drwxr-xr-x     2 jpombert jpombert      49152 Sep 21 15:33 RCSB_GESAMT
 drwxr-xr-x. 1062 jpombert jpombert      20480 Jul  4  2020 RCSB_PDB
+drwxr-xr-x   903 jpombert jpombert      20480 Apr 22 08:52 RCSB_PDB_obsolete
 -rw-r--r--     1 jpombert jpombert   36715353 Sep 21 08:50 RCSB_PDB_titles.tsv
 drwxr-xr-x     5 jpombert jpombert       4096 Sep 22 08:48 ROSETTAFOLD
 ```
@@ -308,7 +316,8 @@ run_3DFI.pl \
   -f *.fasta \
   -o $OUTPUT \
   -p alphafold rosettafold raptorx \
-  -c 16
+  -c 16 \
+  -a foldseek
 ```
 
 <details open>
@@ -321,7 +330,9 @@ run_3DFI.pl \
 -p (--pred)		Structure predictor(s): alphafold, rosettafold, and/or raptorx
 -c (--cpu)		# of CPUs to use [Default: 10]
 -3do (--3D_only)	3D folding only; no structural homology search(es) / structural alignment(s)
+-a (--align)		3D alignment/homology search tool: foldseek or gesamt [Default: foldseek]
 -v (--viz)		Turn on visualization once the structural homology searches are completed
+--mican		Perform alignment scoring (TM-score) with MICAN
 ```
 </details>
 
@@ -348,10 +359,16 @@ run_3DFI.pl \
 -k (--ranks)		RAPTORX: \# Number of top ranks to model [Default: 5]
 --modeller		RAPTORX: Modeller version [Default: mod10.1]
 
-## Structural homology / alignment
--d (--db)		3DFI database location containing the RCSB PDB files / GESAMT archive [Default: \$TDFI_DB]
--q (--qscore)		Mininum Q-score to keep [Default: 0.3]
+## Structural alignment/homology searches
+--fskdb			foldseek database to query [Default: \$TDFI_DB/FOLDSEEK/rcsb]
+--ftype			Foldseek alignment type [Default: 2];
+			  0: 3Di Gotoh-Smith-Waterman 
+			  1: TMalign 
+			  2: 3Di+AA Gotoh-Smith-Waterman
+-q (--qscore)		Mininum quality score to keep [Default: 200]
+			# Recommended: 3Di+AA => 200; TMalign => 50; GESAMT => 0.1
 -b (--best)		Keep the best match(es) only (top X hits) [Default: 5]
+-d (--db)		3DFI Foldseek/GESAMT databases location [Default: \$TDFI_DB]
 --query			Models to query per protein and predictor: all or best [Default: all]
 ```
 </details>
@@ -377,10 +394,11 @@ run_3DFI.pl \
   -f $TDFI_HOME/Examples/FASTA/*.fasta \
   -o $RESULTS \
   -c 16 \
-  -p alphafold rosettafold raptorx
+  -p alphafold rosettafold raptorx \
+  -a gesamt
 ```
 
-In the above example, structural homology searches will be performed automatically against the databases located in **$TDFI_DB**. On our AMD Ryzen 5950X/NVIDIA RTX A6000 workstation (equipped with an NVME SSD), the process from start to finish took 1 hour 45 minutes *vs.* 4 hours 25 minutes on our Intel Xeon E5-2640/NVIDIA GTX 1070 workstation (equipped with a standard 7200 RPM hard drive). In contrast, running the pipeline on the same machines using AlphaFold as the only protein structure predictor took 51 minutes *vs.* 1 hour 59 minutes. 
+In the above example, structural homology searches will be performed automatically with GESAMT against the databases located in **$TDFI_DB**. On our AMD Ryzen 5950X/NVIDIA RTX A6000 workstation (equipped with an NVME SSD), the process from start to finish took 1 hour 45 minutes *vs.* 4 hours 25 minutes on our Intel Xeon E5-2640/NVIDIA GTX 1070 workstation (equipped with a standard 7200 RPM hard drive). In contrast, running the pipeline on the same machines using AlphaFold as the only protein structure predictor took 51 minutes *vs.* 1 hour 59 minutes. We recommend using [Foldseek](https://github.com/PombertLab/3DFI/tree/foldseek) instead of GESAMT to speed up the overall computation time (Foldseek is really fast).
 
 <details>
   <summary> Click here to show/hide details about the contents of the 3DFI output folder.</summary>
@@ -417,6 +435,7 @@ drwxr-xr-x. 1 jpombert jpombert 102 Sep 15 14:43 ROSETTAFOLD_3D_Parsed
 
 RESULTS/Homology:
 total 0
+drwxr-xr-x. 1 jpombert jpombert 542 Apr 27 16:27 FOLDSEEK
 drwxr-xr-x. 1 jpombert jpombert 542 Sep 15 16:27 GESAMT
 drwxr-xr-x. 1 jpombert jpombert 492 Sep 15 16:27 LOGS
 
@@ -508,7 +527,7 @@ In the above, AlphaFold ranks the models predicted from best (0) to worst (4); t
 \
 The overall process of performing protein structure predictions, runnning structural homology searches, and aligning predicted structures to possible matches can take a very long time on large datasets. If long computation times are expected, we suggest running the visualization step independently after completion of the run_3DFI.pl tasks. The visualization of the alignments is not automatic and requires manual curation. This step is not computationally intensive and can be performed on machines with modest specifications.
 
-Structural homologs found with 3DFI will be summarized in the [All_GESAMT_matches_per_protein.tsv](https://github.com/PombertLab/3DFI/blob/master/Examples/Results_3DFI/Homology/GESAMT/All_GESAMT_matches_per_protein.tsv) file located in the Homology/GESAMT subdirectory. This file ranks matches by decreasing Q-scores (a measure of structural similarity ranging from 0 to 1). For brevity, only the best match to a unique RCSB PDB + chain entry is listed.
+Structural homologs found with GESAMT will be summarized in [All_GESAMT_matches_per_protein.tsv](https://github.com/PombertLab/3DFI/blob/master/Examples/Results_3DFI/Homology/GESAMT/All_GESAMT_matches_per_protein.tsv) located in Homology/GESAMT. This file ranks matches by decreasing Q-scores (a measure of structural similarity ranging from 0 to 1). Structural homologs found with Foldseek will be summarized in All_FOLDSEEK_matches_per_protein.tsv located in Homology/FOLDSEEK. For brevity, only the best match to a unique RCSB PDB + chain entry is listed.
 
 Structural alignments can be visualized with [run_visualizations.pl](https://github.com/PombertLab/3DFI/blob/master/run_visualizations.pl) on the output of [run_3DFI.pl](https://github.com/PombertLab/3DFI/blob/master/run_3DFI.pl):
 ```Bash
@@ -523,7 +542,7 @@ The output should result in something similar to the following:
   - Viewing only proteins with matches
 
 |=============================================================================================================================|
-  Selection  Q-Score     Predicted Structure     PDB-File => Chain     Structural Homolog Description
+  Selection   Score       Predicted Structure    PDB-File => Chain     Structural Homolog Description
 |=============================================================================================================================|
       1       0.822       RAPTORX => Model 4         3KDF => B         REPLICATION PROTEIN A 32 KDA SUBUNIT
       2       0.785       RAPTORX => Model 4         1QUQ => A         PROTEIN (REPLICATION PROTEIN A 32 KD SUBUNIT)
@@ -563,7 +582,7 @@ By default, only the top 5 matches are shown for the given protein. Selecting [A
   - Viewing only proteins with matches
 
 |=============================================================================================================================|
-  Selection  Q-Score     Predicted Structure     PDB-File => Chain     Structural Homolog Description
+  Selection   Score       Predicted Structure    PDB-File => Chain     Structural Homolog Description
 |=============================================================================================================================|
       1       0.822       RAPTORX => Model 4         3KDF => B         REPLICATION PROTEIN A 32 KDA SUBUNIT
       2       0.785       RAPTORX => Model 4         1QUQ => A         PROTEIN (REPLICATION PROTEIN A 32 KD SUBUNIT)
@@ -982,7 +1001,56 @@ The list created should look like this:
 5tzw	D	CGMP-DEPENDENT 3',5'-CYCLIC PHOSPHODIESTERASE
 ```
 
-##### Creating or updating a GESAMT database
+##### Creating, updating or querying a Foldseek database
+A foldseek-formatted database is required to perform structural homology searches with [Foldseek](https://github.com/PombertLab/3DFI/tree/foldseek). The foldseek database can be created automatically with [create_3DFI_db.pl](https://github.com/PombertLab/3DFI/blob/master/create_3DFI_db.pl). The database can also be created manually with [run_foldseek.pl]().
+
+```Bash
+## Creating environment variables pointing to our GESAMT archive:
+export TDFI_DB=/media/FatCat/databases/3DFI
+export FSEEK_DB=$TDFI_DB/FOLDSEEK/
+
+## To create a FOLDSEEK database
+run_foldseek.pl \
+   -create \
+   -db $FSEEK_DB/rcsb \
+   -pdb $RCSB_PDB
+
+## To query a FOLDSEEK database
+run_foldseek.pl \
+   -query \
+   -db $FSEEK_DB/rcsb \
+   -input *.pdb \
+   -o FOLDSEEK \
+   -z
+```
+
+<details open>
+  <summary>Options for run_foldseek.pl are:</summary>
+
+```
+-d (--db)	Foldseek database to create or query
+-t (--threads)	CPU threads [Default: 12]
+-v (--verbosity)	Verbosity: 0: quiet, 1: +errors, 2: +warnings, 3: +info [Default: 3]
+-l (--log)	Log file [Default: foldseek.log]
+
+## Creating a Foldseek database
+-c (--create)	Create a foldseek database
+-p (--pdb)	Folder containing the PDB files for the database
+
+## Querying a Foldseek database
+-q (--query)	Query a Foldseek database
+-o (--outdir)	Output directory [Default: ./]
+-i (--input)	PDF files to query
+-a (--atype)	Alignment type [Default: 2]:
+		  0: 3Di Gotoh-Smith-Waterman 
+		  1: TMalign 
+		  2: 3Di+AA Gotoh-Smith-Waterman
+-m (--mseq)	Amount of prefilter sequences handed to the alignment [Default: 300]
+-z (--gzip)	Compress output files [Default: off]
+```
+</details>
+
+##### Creating, updating or querying a GESAMT database
 Before performing structural homology searches with GESAMT (from the [CCP4](https://www.ccp4.ac.uk/) package), we should first create an archive to speed up the searches. We can also update the archive later as sequences are added (for example after the RCSB PDB files are updated with rsync). GESAMT archives can be created/updated with [run_GESAMT.pl](https://github.com/PombertLab/3DFI/blob/master/Homology_search/run_GESAMT.pl):
 
 ```Bash
@@ -1017,7 +1085,6 @@ run_GESAMT.pl \
 ```
 </details>
 
-##### Structural homology searches with GESAMT
 Structural homology searches with GESAMT can also be performed with [run_GESAMT.pl](https://github.com/PombertLab/3DFI/blob/master/Homology_search/run_GESAMT.pl):
 
 ```Bash
@@ -1060,11 +1127,12 @@ Results of GESAMT homology searches will be found in the \*.gesamt files generat
      4   1PLR   A     0.5551   1.9919   0.1302    215    258   pdb1plr.ent.gz
 ```
 
-##### Parsing the output of GESAMT searches
-To add definitions/products to the PDB matches found with GESAMT, we can use the list generated by [PDB_headers.pl](https://github.com/PombertLab/3DFI/blob/master/Homology_search/PDB_headers.pl) together with [descriptive_GESAMT_matches.pl](https://github.com/PombertLab/3DFI/blob/master/Homology_search/descriptive_GESAMT_matches.pl):
+##### Parsing the output of structural homology searches
+To add definitions/products to the PDB matches found with Foldseek or GESAMT, we can use the list generated by [PDB_headers.pl](https://github.com/PombertLab/3DFI/blob/master/Homology_search/PDB_headers.pl) together with [descriptive_matches.pl](https://github.com/PombertLab/3DFI/blob/master/Homology_search/descriptive_matches.pl):
 
 ```Bash
-descriptive_GESAMT_matches.pl \
+descriptive_matches.pl \
+   -a gesamt \
    -r $TDFI_DB/RCSB_PDB_titles.tsv \
    -m $GSMT/*.gesamt.gz \
    -q 0.3 \
@@ -1073,16 +1141,15 @@ descriptive_GESAMT_matches.pl \
 ```
 
 <details open>
-  <summary>Options for descriptive_GESAMT_matches.pl are:</summary>
+  <summary>Options for descriptive_matches.pl are:</summary>
 
 ```
+-a (--align)	Structural alignment tool used: foldseek or gesamt [Default: gesamt]
 -r (--rcsb)	Tab-delimited list of RCSB structures and their titles ## see PDB_headers.pl 
--p (--pfam)	Tab-delimited list of PFAM structures and their titles (http://ftp.ebi.ac.uk/pub/databases/Pfam/current_release/Pfam-A.clans.tsv.gz)
 -m (--matches)	Results from GESAMT searches ## Supports GZIPPEd files; see run_GESAMT.pl
--q (--qscore)	Q-score cut-off [Default: 0.3]
+-q (--qscore)	Quality score cut-off [Default: 0.3]
 -b (--best)	Keep the best match(es) only (top X hits)
 -o (--output)	Output name [Default: Gesamt.matches]
--l (--log)	Error log file [Default: descriptive_matches.err]
 -n (--nobar)	Turn off the progress bar
 -x (--regex)	Regex to parse filenames: word (\w+) or nonspace (\S+) [Default: nonspace]
 ```
@@ -1110,11 +1177,12 @@ ECU03_1140-m3	4	4GNX	B	0.6503	1.6531	0.1182	110	122	pdb4gnx.ent.gz	PUTATIVE UNCH
 ECU03_1140-m3	5	3KDF	B	0.6496	1.7729	0.1545	110	118	pdb3kdf.ent.gz	REPLICATION PROTEIN A 32 KDA SUBUNIT
 ```
 
-##### Parsing the output of descriptive_GESAMT_matches.pl per protein accross all models, from best Q-score to worst
+##### Parsing the output of descriptive_matches.pl per protein accross all models, from best Q-score to worst
 Structural matches obtained from all protein stucture predictors can be parsed with [parse_all_models_by_Q.pl](https://github.com/PombertLab/3DFI/blob/master/Homology_search/parse_all_models_by_Q.pl). To summarize these matches with parse_all_models_by_Q.pl:
 
 ```Bash
 parse_all_models_by_Q.pl \
+  -a gesamt \
   -m *_GESAMT_per_model.matches \
   -o All_GESAMT_matches_per_protein.tsv
 ```
@@ -1123,7 +1191,8 @@ parse_all_models_by_Q.pl \
   <summary>Options for parse_all_models_by_Q.pl are:</summary>
 
 ```
--m (--matches)	*.GESAMT.matches generated by descriptive_GESAMT_matches.pl
+-a (--align)	Alignment tool: gesamt or foldseek [Default: gesamt]
+-m (--matches)	Foldseek/GESAMT matches parsed by descriptive_matches.pl
 -o (--out)	Output file in TSV format [Default: All_GESAMT_matches_per_protein.tsv]
 -x (--max)	Max number of distinct RCSB/chain hits to keep [Default: 50]
 -r (--redun)	Keep all entries for redundant RCSB chains [Default: off]
@@ -1133,7 +1202,7 @@ parse_all_models_by_Q.pl \
 
 #### Structural alignment and visualization
 ##### About alignment and visualization
-Visually inspecting the predicted 3D structure of a protein is an important step in determing the validity of any identified structural homolog. Though a .pdb file may be obtained from a protein structure prediction tool, the quality of the fold may be low. Alternatively, though GESAMT may return a structural homolog with a reasonable Q-score, the quality of the alignment may be low. A low fold/alignment-quality can result in both false-positives (finding a structural homolog when one doesn't exist) and false-negatives (not finding a structural homolog when one exists). Visually inspecting protein structures and structural homolog alignments is an easy way to prevent these outcomes. This can be done with the excellent [ChimeraX](https://www.rbvi.ucsf.edu/chimerax/) molecular visualization program.
+Visually inspecting the predicted 3D structure of a protein is an important step in determing the validity of any identified structural homolog. Though a .pdb file may be obtained from a protein structure prediction tool, the quality of the fold may be low. Alternatively, though Foldseek/GESAMT may return a structural homolog with a reasonable quality score, the quality of the alignment may be low. A low fold/alignment-quality can result in both false-positives (finding a structural homolog when one doesn't exist) and false-negatives (not finding a structural homolog when one exists). Visually inspecting protein structures and structural homolog alignments is an easy way to prevent these outcomes. This can be done with the excellent [ChimeraX](https://www.rbvi.ucsf.edu/chimerax/) molecular visualization program.
 
 Examples:
 - A [good result](https://github.com/PombertLab/3DFI/blob/master/Images/Good_Match.png), in which both the folding and the alignment are good.
@@ -1150,7 +1219,8 @@ export RCSB_PDB=$TDFI_DB/RCSB_PDB/
 
 ## Preparing data for visualization:
 prepare_visualizations.pl \
-    -g $TDFI_HOME/Examples/Results_3DFI/Homology/GESAMT/ALPHAFOLD_GESAMT_per_model.matches \
+    -a gesamt \
+    -m $TDFI_HOME/Examples/Results_3DFI/Homology/GESAMT/ALPHAFOLD_GESAMT_per_model.matches \
     -p $TDFI_HOME/Examples/Results_3DFI/Folding/ALPHAFOLD_3D_Parsed/ \
     -r $RCSB_PDB \
     -o $RESULTS/Visualization
@@ -1160,7 +1230,8 @@ prepare_visualizations.pl \
   <summary>Options for prepare_visualizations.pl are:</summary>
 
 ```
--g (--gesamt)	GESAMT descriptive matches ## generated by descriptive_matches.pl
+-a (--align)	3D alignment tool: foldseek or gesamt [Default: gesamt]
+-m (--matches)	Foldseek/GESAMT matches parsed by descriptive_matches.pl
 -p (--pred)	Absolute path to predicted .pdb files
 -r (--rcsb)	Absolute path to RCSB .ent.gz files
 -k (--keep)	Keep unzipped RCSB .ent files
@@ -1182,7 +1253,7 @@ The output should result in something similar to the following:
   - Viewing only proteins with matches
 
 |=============================================================================================================================|
-  Selection  Q-Score     Predicted Structure     PDB-File => Chain     Structural Homolog Description
+  Selection    Score      Predicted Structure    PDB-File => Chain     Structural Homolog Description
 |=============================================================================================================================|
       1       0.822       RAPTORX => Model 4         3KDF => B         REPLICATION PROTEIN A 32 KDA SUBUNIT
       2       0.785       RAPTORX => Model 4         1QUQ => A         PROTEIN (REPLICATION PROTEIN A 32 KD SUBUNIT)

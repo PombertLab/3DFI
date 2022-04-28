@@ -32,6 +32,7 @@ GENERAL OPTIONS:
 -p (--pred)		Structure predictor(s): alphafold, rosettafold, and/or raptorx
 -c (--cpu)		# of CPUs to use [Default: 10]
 -3do (--3D_only)	3D folding only; no structural homology search(es) / structural alignment(s)
+-a (--align)		3D alignment/homology search tool: foldseek or gesamt [Default: foldseek]
 -v (--viz)		Turn on visualization once the structural homology searches are completed
 --mican		Perform alignment scoring (TM-score) with MICAN
 USAGE
@@ -54,8 +55,7 @@ ADVANCED OPTIONS:
 -k (--ranks)		RAPTORX: # Number of top ranks to model [Default: 5]
 --modeller		RAPTORX: Modeller version [Default: mod10.1]
 
-## Structural homology searches
--a (--align)		3D alignment search tool: foldseek or gesamt [Default: foldseek]
+## Structural alignment/homology searches
 --fskdb			foldseek database to query [Default: \$TDFI_DB/FOLDSEEK/rcsb]
 --ftype			Foldseek alignment type [Default: 2];
 			  0: 3Di Gotoh-Smith-Waterman 
