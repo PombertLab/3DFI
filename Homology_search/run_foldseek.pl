@@ -72,7 +72,7 @@ my $gnuzip;
 GetOptions(
 	'd|db=s' => \$db,
 	'l|log=s' => \$log,
-	't|thread=i' => \$threads,
+	't|threads=i' => \$threads,
 	'v|verbosity=i' => \$verbosity,
 	'c|create' => \$create,
 	'p|pdb=s' => \$pdb,
