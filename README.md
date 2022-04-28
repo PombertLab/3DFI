@@ -1705,5 +1705,7 @@ This work was supported in part by the National Institute of Allergy and Infecti
 
 10) [A local superposition-free score for comparing protein structures and models using distance difference tests](https://pubmed.ncbi.nlm.nih.gov/23986568/). **Mariani V, Biasini M, Barbato A, Schwede T**. Bioinformatics. 2013 Nov 1;29(21):2722-8.  PMID: 23986568 PMCID: PMC3799472 DOI: 10.1093/bioinformatics/btt473.
 
-11) [Foldseek: fast and accurate protein structure search](https://www.biorxiv.org/content/10.1101/2022.02.07.479398). **van Kempen M, Kim S, Tumescheit C, Mirdita M, Söding J, Steinegger M**  bioRxiv 2022. DOI:10.1101/2022.02.07.479398
+11) [Foldseek: fast and accurate protein structure search](https://www.biorxiv.org/content/10.1101/2022.02.07.479398). **van Kempen M, Kim S, Tumescheit C, Mirdita M, Söding J, Steinegger M**. bioRxiv 2022. DOI:10.1101/2022.02.07.479398
+
+12) [MICAN-SQ: a sequential protein structure alignment program that is applicable to monomers and all types of oligomers](https://pubmed.ncbi.nlm.nih.gov/29726907/). **Minami S, Sawada K, Ota M, Chikenji G**. Bioinformatics. 2018. Oct 1;34(19):3324-3331. PMID: 29726907 DOI: 10.1093/bioinformatics/bty369. 
 </details>
