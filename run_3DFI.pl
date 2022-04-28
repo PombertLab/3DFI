@@ -698,10 +698,11 @@ foreach my $predictor (@predictors){
 if ($mican){
 	$time = localtime;
 	print "\n".'###############################################################################################';
-	print "\n# $time: Performing aligments between queries and best matches with MICAN\n";
+	print "\n# $time: Performing alignments between queries and best matches with MICAN\n";
 	sleep (2);
 
-	system "$homology_scripts_home"."run_MICAN_on_GESAMT_results.pl \\
+	system "$homology_scripts_home"."run_MICAN_on_homology_results.pl \\
+		-a $aligner \\
 		-t $outdir \\
 		-r $database/RCSB_PDB $database/RCSB_PDB_obsolete \\
 		-o $hm_dir/MICAN_RESULTS
