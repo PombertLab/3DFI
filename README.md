@@ -262,16 +262,16 @@ cd $TDFI_HOME
 
 # GESAMT options
 --make_gesamt	Create a GESAMT archive from the RCSB PDB files instead of 
-				downloading a pre-built version
+		downloading a pre-built version
 --update_gesamt	Update an existing GESAMT archive made with --make_gesamt
 
 ### Approximate download size / disk usage
-# TOTAL							669 Gb / 3.2 Tb
-# RSCB PDB						39 Gb / 42 Gb inflated
+# TOTAL				669 Gb / 3.2 Tb
+# RSCB PDB			39 Gb / 42 Gb inflated
 # BFD (AlphaFold/RoseTTAFold)	272 Gb / 1.8 Tb inflated
-# AlphaFold (minus BFD)			176 Gb / 0.6 Tb inflated
-# RoseTTAFold (minus BFD)		146 Gb / 849 Gb inflated
-# RaptorX						37 Gb / 76 Gb inflated
+# AlphaFold (minus BFD)		176 Gb / 0.6 Tb inflated
+# RoseTTAFold (minus BFD)	146 Gb / 849 Gb inflated
+# RaptorX			37 Gb / 76 Gb inflated
 ```
 </details>
 
@@ -332,7 +332,7 @@ run_3DFI.pl \
 -3do (--3D_only)	3D folding only; no structural homology search(es) / structural alignment(s)
 -a (--align)		3D alignment/homology search tool: foldseek or gesamt [Default: foldseek]
 -v (--viz)		Turn on visualization once the structural homology searches are completed
---mican		Perform alignment scoring (TM-score) with MICAN
+--mican			Perform alignment scoring (TM-score) with MICAN
 ```
 </details>
 
@@ -360,7 +360,7 @@ run_3DFI.pl \
 --modeller		RAPTORX: Modeller version [Default: mod10.1]
 
 ## Structural alignment/homology searches
---fskdb			foldseek database to query [Default: \$TDFI_DB/FOLDSEEK/rcsb]
+--fskdb			foldseek database to query [Default: $TDFI_DB/FOLDSEEK/rcsb]
 --ftype			Foldseek alignment type [Default: 2];
 			  0: 3Di Gotoh-Smith-Waterman 
 			  1: TMalign 
@@ -368,7 +368,7 @@ run_3DFI.pl \
 -q (--qscore)		Mininum quality score to keep [Default: 200]
 			# Recommended: 3Di+AA => 200; TMalign => 50; GESAMT => 0.1
 -b (--best)		Keep the best match(es) only (top X hits) [Default: 5]
--d (--db)		3DFI Foldseek/GESAMT databases location [Default: \$TDFI_DB]
+-d (--db)		3DFI Foldseek/GESAMT databases location [Default: $TDFI_DB]
 --query			Models to query per protein and predictor: all or best [Default: all]
 ```
 </details>
@@ -1005,22 +1005,22 @@ The list created should look like this:
 A foldseek-formatted database is required to perform structural homology searches with [Foldseek](https://github.com/PombertLab/3DFI/tree/foldseek). The foldseek database can be created automatically with [create_3DFI_db.pl](https://github.com/PombertLab/3DFI/blob/master/create_3DFI_db.pl). The database can also be created manually with [run_foldseek.pl](https://github.com/PombertLab/3DFI/master/foldseek/Homology_search/run_foldseek.pl).
 
 ```Bash
-## Creating environment variables pointing to our GESAMT archive:
+## Creating environment variables pointing to our Foldseek database:
 export TDFI_DB=/media/FatCat/databases/3DFI
 export FSEEK_DB=$TDFI_DB/FOLDSEEK/
 
-## To create a FOLDSEEK database
+## To create a Foldseek database
 run_foldseek.pl \
    -create \
    -db $FSEEK_DB/rcsb \
    -pdb $RCSB_PDB
 
-## To query a FOLDSEEK database
+## To query a Foldseek database
 run_foldseek.pl \
    -query \
    -db $FSEEK_DB/rcsb \
    -input *.pdb \
-   -o FOLDSEEK \
+   -o FSEEK_RESULTS \
    -z
 ```
 
@@ -1028,10 +1028,10 @@ run_foldseek.pl \
   <summary>Options for run_foldseek.pl are:</summary>
 
 ```
--d (--db)	Foldseek database to create or query
--t (--threads)	CPU threads [Default: 12]
+-d (--db)			Foldseek database to create or query
+-t (--threads)			CPU threads [Default: 12]
 -v (--verbosity)	Verbosity: 0: quiet, 1: +errors, 2: +warnings, 3: +info [Default: 3]
--l (--log)	Log file [Default: foldseek.log]
+-l (--log)			Log file [Default: foldseek.log]
 
 ## Creating a Foldseek database
 -c (--create)	Create a foldseek database
@@ -1210,7 +1210,7 @@ Examples:
 - A [false-positive](https://github.com/PombertLab/3DFI/blob/master/Images/Bad_Match.png), where the quality of the fold is high, but the alignment-quality is low and a pseudo-structural homolog is found.
 
 ##### Aligning protein structures and inspecting alignments with ChimeraX
-To prepare visualizations for inspection, we can use [prepare_visualizations.pl](https://github.com/PombertLab/3DFI/blob/master/Visualization/prepare_visualizations.pl) to automatically align predicted proteins with their GESAMT-determined structural homologs. These alignments are performed with [ChimeraX](https://www.rbvi.ucsf.edu/chimerax/) via its API.
+To prepare visualizations for inspection, we can use [prepare_visualizations.pl](https://github.com/PombertLab/3DFI/blob/master/Visualization/prepare_visualizations.pl) to automatically align predicted proteins with their structural homologs determined with Foldseek or GESAMT. These alignments are performed with [ChimeraX](https://www.rbvi.ucsf.edu/chimerax/) via its API.
 
 ```bash
 ## Creating shortcut to results directory
@@ -1242,6 +1242,7 @@ prepare_visualizations.pl \
 To inspect the 3D structures, we can run [run_visualizations.pl](https://github.com/PombertLab/3DFI/blob/master/run_visualizations.pl) on the 3DFI results directory:
 ```bash
 run_visualizations.pl \
+    -a gesamt \
     -r $RESULTS
 ```
 
@@ -1253,7 +1254,7 @@ The output should result in something similar to the following:
   - Viewing only proteins with matches
 
 |=============================================================================================================================|
-  Selection    Score      Predicted Structure    PDB-File => Chain     Structural Homolog Description
+  Selection   Score       Predicted Structure    PDB-File => Chain     Structural Homolog Description
 |=============================================================================================================================|
       1       0.822       RAPTORX => Model 4         3KDF => B         REPLICATION PROTEIN A 32 KDA SUBUNIT
       2       0.785       RAPTORX => Model 4         1QUQ => A         PROTEIN (REPLICATION PROTEIN A 32 KD SUBUNIT)
