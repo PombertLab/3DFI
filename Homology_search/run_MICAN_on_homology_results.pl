@@ -130,7 +130,7 @@ while (my $line = <IN>){
 
 		## Checking to see if this calculation has been performed previously
 		if ($resume{$query}{$predictor}{$rcsb_code}{$chain}){
-			print($resume{$query}{$predictor}{$rcsb_code}{$chain}."\n");
+			print MICAN $resume{$query}{$predictor}{$rcsb_code}{$chain}."\n";
 			next;
 		}
 
