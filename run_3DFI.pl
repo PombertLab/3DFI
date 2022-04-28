@@ -715,7 +715,8 @@ if ($mican){
 		-a $aligner \\
 		-t $outdir \\
 		-r $database/RCSB_PDB $database/RCSB_PDB_obsolete \\
-		-o $hm_dir/MICAN \\
+		-outdir $hm_dir/MICAN \\
+		-outfile MICAN.tsv \\
 		-nobar
 	";
 }
