@@ -25,7 +25,8 @@ OPTION
 -t (--tdfi)		3DFI output folder
 -r (--rcsb)		Path to RCSB PDB structures
 -a (--align)	3D alignment tool: folseek or gesamt [Default: gesamt]
--o (--outdir)		Output directory (Default: MICAN)
+-o (--outdir)		Output directory [Default: MICAN]
+-f (--outfile)		MICAN filename [Default: MICAN.tsv]
 -n (--nobar)	Turn off progress bar
 EXIT
 
@@ -41,13 +42,15 @@ my %Folds = ("ALPHAFOLD" => "ALPHAFOLD_3D_Parsed",
 my $tdfi;
 my @rcsb;
 my $aligner = 'gesamt';
-my $outdir = "MICAN";
+my $outdir = 'MICAN';
+my $outfile = 'MICAN.tsv';
 my $nobar;
 GetOptions(
 	't|tdif=s{1}' => \$tdfi,
 	'r|rcsb=s@{1,}' => \@rcsb,
 	'a|align=s' => \$aligner,
 	'o|outdir=s' => \$outdir,
+	'f|outfile=s' => \$outfile,
 	'n|nobar' => \$nobar
 );
 
@@ -58,9 +61,9 @@ unless(-d $outdir){
 }
 
 my %resume;
-if(-f "$outdir/MICAN_raw.tsv"){
-	open RAW, "<", "$outdir/MICAN_raw.tsv";
-	while (my $line = <RAW>){
+if (-f "$outdir/$outfile"){
+	open MICAN, "<", "$outdir/$outfile";
+	while (my $line = <MICAN>){
 		chomp($line);
 		if($line =~ /\w+/){
 			my ($locus,$predictor,$rcsb_code,$rcsb_chain) = split("\t",$line);
@@ -86,8 +89,8 @@ while (my $line = <IN>){
 close IN;
 
 open IN, "<", $tsv_name or die "Unable to open $tsv_name: $!\n";
-open RAW, ">", "$outdir/MICAN_raw.tsv";
-print RAW "### Query\tPredictor\tRCSB Code\tChain\tsTMscore\tTMscore\tDali_Z\tSPscore\tLength\tRMSD\tSeq_Id\n";
+open MICAN, ">", "$outdir/$outfile";
+print MICAN "### Query\tPredictor\tRCSB Code\tChain\tsTMscore\tTMscore\tDali_Z\tSPscore\tLength\tRMSD\tSeq_Id\n";
 
 my $alignment_counter = 0;
 while (my $line = <IN>){
@@ -150,7 +153,7 @@ while (my $line = <IN>){
 				print "\n\t$status\t".($alignment_counter)."/$total_alignments\n\t";
 			}
 			else {
-				print "\n\tAligning $query to $rcsb_code with MICAN\n";
+				print "\tAligning $query to $rcsb_code with MICAN\n";
 			}
 
 			system "cp $rcsb_file_location $rcsb_temp_dir/$rcsb_file\n";
@@ -193,7 +196,7 @@ while (my $line = <IN>){
 				if (($grab) && ($line =~ /^\s+(1.*)/)){
 					undef($grab);
 					($rank,$sTMscore,$TMscore,$Dali_Z,$SPscore,$Length,$RMSD,$Seq_Id) = split(/\s+/,$1);
-					print RAW "$query\t$predictor\t$rcsb_code\t$chain\t$sTMscore\t$TMscore\t$Dali_Z\t$SPscore\t$Length\t$RMSD\t$Seq_Id\n";
+					print MICAN "$query\t$predictor\t$rcsb_code\t$chain\t$sTMscore\t$TMscore\t$Dali_Z\t$SPscore\t$Length\t$RMSD\t$Seq_Id\n";
 				}
 			}
 		}
@@ -203,10 +206,10 @@ while (my $line = <IN>){
 
 	}
 	elsif ($line =~ /^### (\w+)/){
-		print RAW "### $1\n";
+		print MICAN "### $1\n";
 	}
 	else{
-		print RAW "\n";
+		print MICAN "\n";
 	}
 }
 
@@ -215,5 +218,5 @@ $datestring = localtime();
 print LOG "Completed on $datestring\n";
 
 close IN;
-close RAW;
+close MICAN;
 close LOG;
