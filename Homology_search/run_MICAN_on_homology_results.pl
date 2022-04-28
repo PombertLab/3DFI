@@ -26,6 +26,7 @@ OPTION
 -r (--rcsb)		Path to RCSB PDB structures
 -a (--align)	3D alignment tool: folseek or gesamt [Default: gesamt]
 -o (--outdir)		Output directory (Default: MICAN)
+-n (--nobar)	Turn off progress bar
 EXIT
 
 die "\n$usage\n" unless @ARGV;
@@ -41,12 +42,13 @@ my $tdfi;
 my @rcsb;
 my $aligner = 'gesamt';
 my $outdir = "MICAN";
-
+my $nobar;
 GetOptions(
 	't|tdif=s{1}' => \$tdfi,
 	'r|rcsb=s@{1,}' => \@rcsb,
 	'a|align=s' => \$aligner,
 	'o|outdir=s' => \$outdir,
+	'n|nobar' => \$nobar
 );
 
 my $rcsb_temp_dir = "$outdir/tmp_rcsb";
@@ -139,12 +141,17 @@ while (my $line = <IN>){
 		}
 
 		if ($rcsb_file_location){
-			system "clear";
-			print "\n\tAligning $query to $rcsb_code\n";
-			my $remaining = "." x (int((($total_alignments-$alignment_counter)/$total_alignments)*100));
-			my $progress = "|" x (100-int((($total_alignments-$alignment_counter)/$total_alignments)*100));
-			my $status = "[".$progress.$remaining."]";
-			print "\n\t$status\t".($alignment_counter)."/$total_alignments\n\t";
+			unless ($nobar){
+				system "clear";
+				print "\n\tAligning $query to $rcsb_code with MICAN\n";
+				my $remaining = "." x (int((($total_alignments-$alignment_counter)/$total_alignments)*100));
+				my $progress = "|" x (100-int((($total_alignments-$alignment_counter)/$total_alignments)*100));
+				my $status = "[".$progress.$remaining."]";
+				print "\n\t$status\t".($alignment_counter)."/$total_alignments\n\t";
+			}
+			else {
+				print "\n\tAligning $query to $rcsb_code with MICAN\n";
+			}
 
 			system "cp $rcsb_file_location $rcsb_temp_dir/$rcsb_file\n";
 
