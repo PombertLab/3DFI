@@ -1002,7 +1002,7 @@ The list created should look like this:
 ```
 
 ##### Creating, updating or querying a Foldseek database
-A foldseek-formatted database is required to perform structural homology searches with [Foldseek](https://github.com/PombertLab/3DFI/tree/foldseek). The foldseek database can be created automatically with [create_3DFI_db.pl](https://github.com/PombertLab/3DFI/blob/master/create_3DFI_db.pl). The database can also be created manually with [run_foldseek.pl]().
+A foldseek-formatted database is required to perform structural homology searches with [Foldseek](https://github.com/PombertLab/3DFI/tree/foldseek). The foldseek database can be created automatically with [create_3DFI_db.pl](https://github.com/PombertLab/3DFI/blob/master/create_3DFI_db.pl). The database can also be created manually with [run_foldseek.pl](https://github.com/PombertLab/3DFI/master/foldseek/Homology_search/run_foldseek.pl).
 
 ```Bash
 ## Creating environment variables pointing to our GESAMT archive:
