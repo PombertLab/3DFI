@@ -385,11 +385,12 @@ system "wget \\
 	-P $root_3D/ \\
 	$foldseek_url";
 
-chdir "$root_3D";
-system "tar -zxvf foldseek-linux-avx2.tar.gz";
-system "mv ./foldseek/bin/foldseek ./";
-system "chmod +x ./foldseek";
-system "rm -R ./foldseek/";
+system "tar -zxvf $root_3D/foldseek-linux-avx2.tar.gz -C $root_3D/";
+system "mv $root_3D/foldseek $root_3D/tmp";
+system "mv $root_3D/tmp/bin/foldseek $root_3D/";
+system "chmod +x $root_3D/foldseek";
+system "rm -R $root_3D/tmp/";
+
 chdir "$root_dir";
 
 
