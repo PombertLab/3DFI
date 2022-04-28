@@ -445,6 +445,7 @@ sub set_path {
 	print $fh "\n"."$bar"."\n";
 	print $fh '# 3DFI PATH variables'."\n";
 	print $fh "PATH=\$PATH:$abs_path_3DFI\n";
+	print $fh "PATH=\$PATH:$abs_path_3DFI/3D\n";
 	print $fh "PATH=\$PATH:$abs_path_3DFI/Prediction/RaptorX\n";
 	print $fh "PATH=\$PATH:$abs_path_3DFI/Prediction/AlphaFold2\n";
 	print $fh "PATH=\$PATH:$abs_path_3DFI/Prediction/RoseTTAFold\n";
