@@ -25,7 +25,7 @@ OPTION
 -t (--tdfi)		3DFI output folder
 -r (--rcsb)		Path to RCSB PDB structures
 -a (--align)	3D alignment tool: folseek or gesamt [Default: gesamt]
--o (--outdir)		Output directory (Default: MICAN_RESULTS)
+-o (--outdir)		Output directory (Default: MICAN)
 EXIT
 
 die "\n$usage\n" unless @ARGV;
@@ -40,7 +40,7 @@ my %Folds = ("ALPHAFOLD" => "ALPHAFOLD_3D_Parsed",
 my $tdfi;
 my @rcsb;
 my $aligner = 'gesamt';
-my $outdir = "MICAN_RESULTS";
+my $outdir = "MICAN";
 
 GetOptions(
 	't|tdif=s{1}' => \$tdfi,

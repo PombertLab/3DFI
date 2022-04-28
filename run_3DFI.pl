@@ -715,7 +715,7 @@ if ($mican){
 		-a $aligner \\
 		-t $outdir \\
 		-r $database/RCSB_PDB $database/RCSB_PDB_obsolete \\
-		-o $hm_dir/MICAN_RESULTS
+		-o $hm_dir/MICAN
 	";
 }
 
