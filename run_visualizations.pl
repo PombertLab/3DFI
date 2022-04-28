@@ -179,11 +179,11 @@ WHILE: while(0==0){
 				$q_score = sprintf("   %-6.3f",$match[4]);
 			}
 			elsif ($aligner eq 'foldseek'){
-				if ($match[1] =~ /^pdb(\w{4}).ent.gz_(\S+)$/){
+				if ($match[2] =~ /^pdb(\w{4}).ent.gz_(\S+)$/){
 					$match_id = $1;
 					$match_chain = $2;
 				}
-				elsif ($match[1] =~ /^pdb(\w{4}).ent.gz$/){
+				elsif ($match[2] =~ /^pdb(\w{4}).ent.gz$/){
 					$match_id = $1;
 					$match_chain = 'A';
 				}
