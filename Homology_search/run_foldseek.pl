@@ -1,8 +1,8 @@
 #!/usr/bin/perl
 ## Pombert Lab 2022
-my $version = '0.1';
+my $version = '0.2';
 my $name = 'run_foldseek.pl';
-my $updated = '2022-04-26';
+my $updated = '2022-04-28';
 
 use strict;
 use warnings;
@@ -24,7 +24,7 @@ SYNOPSIS	Run foldseek searches against PDB structures
 REQUIREMENTS	Foldseek - https://github.com/steineggerlab/foldseek
 
 CREATE DB	${name} -create -db /media/Data_2/FSEEK/rcsb -pdb /media/Data_2/PDB/
-QUERY DB	${name} -query -db /media/Data_2/FSEEK/rcsb -input *.pdb -o ./ -z
+QUERY DB	${name} -query -db /media/Data_2/FSEEK/rcsb -input *.pdb -o ./FSEEK_RESULTS -z
 
 OPTIONS:
 -d (--db)	Foldseek database to create or query
