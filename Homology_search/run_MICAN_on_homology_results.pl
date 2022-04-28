@@ -1,7 +1,7 @@
 #!/usr/bin/perl
 ## Pombert Lab 2022
 
-my $name = "run_MICAN_on_GESAMT_results.pl";
+my $name = "run_MICAN_on_homology_results.pl";
 my $version = "0.2a";
 my $updated = "2022-04-27";
 
@@ -24,6 +24,7 @@ USAGE
 OPTION
 -t (--tdfi)		3DFI output folder
 -r (--rcsb)		Path to RCSB PDB structures
+-a (--align)	3D alignment tool: folseek or gesamt [Default: gesamt]
 -o (--outdir)		Output directory (Default: MICAN_RESULTS)
 EXIT
 
@@ -38,12 +39,14 @@ my %Folds = ("ALPHAFOLD" => "ALPHAFOLD_3D_Parsed",
 
 my $tdfi;
 my @rcsb;
+my $aligner = 'gesamt';
 my $outdir = "MICAN_RESULTS";
 
 GetOptions(
-	'-t|--tdif=s{1}' => \$tdfi,
-	'-r|--rcsb=s@{1,}' => \@rcsb,
-	'-o|--outdir=s' => \$outdir,
+	't|tdif=s{1}' => \$tdfi,
+	'r|rcsb=s@{1,}' => \@rcsb,
+	'a|align=s' => \$aligner,
+	'o|outdir=s' => \$outdir,
 );
 
 my $rcsb_temp_dir = "$outdir/tmp_rcsb";
@@ -69,7 +72,8 @@ open LOG, ">", "$outdir/MICAN.log" or die "Unable to create file $outdir/MICAN.l
 print LOG "$0 \\\n-t $tdfi \\\n-r @rcsb \\\n-o $outdir\n\n";
 print LOG "Started on $datestring\n";
 
-my $tsv_name = "$tdfi/Homology/GESAMT/All_GESAMT_matches_per_protein.tsv";
+my $ualigner = uc($aligner);
+my $tsv_name = "$tdfi/Homology/$ualigner/All_${ualigner}_matches_per_protein.tsv";
 open IN, "<", $tsv_name or die "Unable to open $tsv_name: $!\n";
 my $total_alignments;
 while (my $line = <IN>){
@@ -90,7 +94,33 @@ while (my $line = <IN>){
 
 	unless (($line =~ /^###/) || ($line eq "")){
 
-		my ($query,$predictor,$rcsb_code,$chain,$qscore,$rmsd,$seq_id,$nAlign,$nRes,$rcsb_file,$annotation) = split("\t",$line);
+		my $query;
+		my $predictor;
+		my $rcsb_code;
+		my $chain;
+		my $rcsb_file;
+		my $rcsb_code_and_chain;
+
+		my @columns = split("\t",$line);
+		$query = $columns[0];
+		$predictor = $columns[1];
+		if ($aligner eq 'gesamt'){
+			$rcsb_code = $columns[2];
+			$chain  = $columns[3];
+			$rcsb_file = $columns[9];
+		}
+		elsif ($aligner eq 'foldseek'){
+			$rcsb_code_and_chain = $columns[2];
+			($rcsb_file) = $rcsb_code_and_chain =~ /^(pdb\w{4}.ent.gz)/;
+			if ($rcsb_code_and_chain =~ /^pdb(\w{4}).ent.gz_(\S+)$/){
+				$rcsb_code = $1;
+				$chain = $2;
+			}
+			elsif ($rcsb_code_and_chain =~ /^pdb(\w{4}).ent.gz$/){
+				$rcsb_code = $1;
+				$chain = 'A';
+			}
+		}
 		my ($rcsb_sub_folder) = lc($rcsb_code) =~ /\w(\w{2})\w/;
 
 		## Checking to see if this calculation has been performed previously
@@ -108,9 +138,9 @@ while (my $line = <IN>){
 			}
 		}
 
-		if($rcsb_file_location){
+		if ($rcsb_file_location){
 			system "clear";
-			print("\n\tAligning $query to $rcsb_code\n");
+			print "\n\tAligning $query to $rcsb_code\n";
 			my $remaining = "." x (int((($total_alignments-$alignment_counter)/$total_alignments)*100));
 			my $progress = "|" x (100-int((($total_alignments-$alignment_counter)/$total_alignments)*100));
 			my $status = "[".$progress.$remaining."]";
