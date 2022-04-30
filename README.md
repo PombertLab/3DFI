@@ -330,6 +330,7 @@ run_3DFI.pl \
 -p (--pred)		Structure predictor(s): alphafold, rosettafold, and/or raptorx
 -c (--cpu)		# of CPUs to use [Default: 10]
 -3do (--3D_only)	3D folding only; no structural homology search(es) / structural alignment(s)
+-3dh (--3D_hom)		3D folding + homology; no (pre-)vizualization step with ChimeraX
 -a (--align)		3D alignment/homology search tool: foldseek or gesamt [Default: foldseek]
 -v (--viz)		Turn on visualization once the structural homology searches are completed
 --mican			Perform alignment scoring (TM-score) with MICAN
@@ -356,10 +357,10 @@ run_3DFI.pl \
 -s (--preset)		ALPHAFOLD: full_dbs or reduced_dbs [Default: full_dbs]
 -i (--docker_image)	ALPHAFOLD: docker image name [Default: alphafold_3dfi]
 -u (--use_msas)		ALPHAFOLD: Use precomputed MSAs
--k (--ranks)		RAPTORX: \# Number of top ranks to model [Default: 5]
+-k (--ranks)		RAPTORX: # Number of top ranks to model [Default: 5]
 --modeller		RAPTORX: Modeller version [Default: mod10.1]
 
-## Structural alignment/homology searches
+## Structural homology/alignment searches
 --fskdb			foldseek database to query [Default: $TDFI_DB/FOLDSEEK/rcsb]
 --ftype			Foldseek alignment type [Default: 2];
 			  0: 3Di Gotoh-Smith-Waterman 

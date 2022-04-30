@@ -1,8 +1,8 @@
 #!/usr/bin/perl
 ## Pombert Lab, Illinois Tech, 2021
 my $name = 'run_3DFI.pl';
-my $version = '0.7 alpha 2';
-my $updated = '2022-04-27';
+my $version = '0.7a';
+my $updated = '2022-04-30';
 
 use strict;
 use warnings;
@@ -32,9 +32,10 @@ GENERAL OPTIONS:
 -p (--pred)		Structure predictor(s): alphafold, rosettafold, and/or raptorx
 -c (--cpu)		# of CPUs to use [Default: 10]
 -3do (--3D_only)	3D folding only; no structural homology search(es) / structural alignment(s)
+-3dh (--3D_hom)		3D folding + homology; no (pre-)vizualization step with ChimeraX
 -a (--align)		3D alignment/homology search tool: foldseek or gesamt [Default: foldseek]
 -v (--viz)		Turn on visualization once the structural homology searches are completed
---mican		Perform alignment scoring (TM-score) with MICAN
+--mican			Perform alignment scoring (TM-score) with MICAN
 USAGE
 die "\n$usage\n" unless @ARGV;
 
@@ -55,7 +56,7 @@ ADVANCED OPTIONS:
 -k (--ranks)		RAPTORX: # Number of top ranks to model [Default: 5]
 --modeller		RAPTORX: Modeller version [Default: mod10.1]
 
-## Structural alignment/homology searches
+## Structural homology/alignment searches
 --fskdb			foldseek database to query [Default: \$TDFI_DB/FOLDSEEK/rcsb]
 --ftype			Foldseek alignment type [Default: 2];
 			  0: 3Di Gotoh-Smith-Waterman 
@@ -76,6 +77,7 @@ my $outdir = 'Results_3DFI';
 my @predictors;
 my $cpu = 10;
 my $tdo;
+my $tdh;
 my $mican;
 
 ## Advanced
@@ -114,6 +116,7 @@ GetOptions(
 	'p|pred=s@{1,}' => \@predictors,
 	'c|cpu=i' => \$cpu,
 	'3do|3D_only' => \$tdo,
+	'3dh|3D_hom' => \$tdh,
 	'mican' => \$mican,
 	
 	## Advanced
@@ -648,7 +651,12 @@ elsif ($aligner eq 'gesamt'){
 
 ##### End of structural homology searches
 
-
+if ($tdh){
+	$time = localtime;
+	print "\n# $time: Structural homology searches completed. -3dh (--3D_hom) flag detected.\n";
+	print "Skipping structural aligments between queries and best matches with ChimeraX, as requested.\n\n";
+	exit;
+}
 
 ######################################################################
 ## Structural aligments between queries and best matches with ChimeraX
