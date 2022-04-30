@@ -471,6 +471,9 @@ foreach my $predictor (@predictors){
 }
 ##### End of protein folding
 
+########################################################################################
+##### Exiting if 3D folding only flag is set
+
 if ($tdo){
 	$time = localtime;
 	print "\n# $time: Folding step completed. -3do (--3D_only) flag detected.\n";
@@ -655,6 +658,30 @@ elsif ($aligner eq 'gesamt'){
 
 ##### End of structural homology searches
 
+########################################################################################
+## Alignment with MICAN
+
+if ($mican){
+	$time = localtime;
+	print "\n".'###############################################################################################';
+	print "\n# $time: Performing alignments between queries and best matches with MICAN\n";
+	sleep (2);
+
+	system "$homology_scripts_home"."run_MICAN_on_homology_results.pl \\
+		-a $aligner \\
+		-t $outdir \\
+		-r $database/RCSB_PDB $database/RCSB_PDB_obsolete \\
+		-outdir $hm_dir/MICAN \\
+		-outfile MICAN.tsv \\
+		-nobar
+	";
+}
+
+##### End of MICAN alignments
+
+########################################################################################
+##### Exiting if 3D folding + homology searches flag is set
+
 if ($tdh){
 	$time = localtime;
 	print "\n# $time: Structural homology searches completed. -3dh (--3D_hom) flag detected.\n";
@@ -662,7 +689,7 @@ if ($tdh){
 	exit;
 }
 
-######################################################################
+########################################################################################
 ## Structural aligments between queries and best matches with ChimeraX
 
 $time = localtime;
@@ -714,28 +741,7 @@ foreach my $predictor (@predictors){
 
 ##### End of ChimeraX structural alignments
 
-######################################################################
-## Alignment with MICAN
-
-if ($mican){
-	$time = localtime;
-	print "\n".'###############################################################################################';
-	print "\n# $time: Performing alignments between queries and best matches with MICAN\n";
-	sleep (2);
-
-	system "$homology_scripts_home"."run_MICAN_on_homology_results.pl \\
-		-a $aligner \\
-		-t $outdir \\
-		-r $database/RCSB_PDB $database/RCSB_PDB_obsolete \\
-		-outdir $hm_dir/MICAN \\
-		-outfile MICAN.tsv \\
-		-nobar
-	";
-}
-
-##### End of MICAN alignments
-
-######################################################################
+########################################################################################
 ## Visualization with ChimeraX
 if ($visualization){
 	print "\n".'##########################################################################';
