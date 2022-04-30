@@ -111,9 +111,9 @@ if ($create){
 		die "\nERROR: Please enter folder containing the PDB files for the database.";
 	}
 
-	my ($dbname,$path) = fileparse($db);
-	unless (-d $path){ 
-		make_path( $path, { mode => 0755 } ) or die "Can't create folder $path: $!\n";
+	my ($dbname,$dbpath) = fileparse($db);
+	unless (-d $dbpath){ 
+		make_path( $dbpath, { mode => 0755 } ) or die "Can't create folder $dbpath: $!\n";
 	}
 
 	system "foldseek \\
