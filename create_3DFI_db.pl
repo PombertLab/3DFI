@@ -1,8 +1,8 @@
 #!/usr/bin/perl
 ## Pombert Lab, Illinois Tech, 2021
 my $name = 'create_3DFI_db.pl';
-my $version = '0.5a';
-my $updated = '2022-04-27';
+my $version = '0.5b';
+my $updated = '2022-04-30';
 
 use strict;
 use warnings;
@@ -130,7 +130,7 @@ print "\nSpace available on device = $space_left\n\n";
 
 
 ################################################
-# Checking for aria2, unpigz and gesamt
+# Checking for aria2, unpigz, foldseek and gesamt
 
 # Aria2
 my $aria2 = `echo \$(command -v aria2c)`;
@@ -140,6 +140,19 @@ if ($aria2 eq ''){
 	print "[E] To install aria2 on Fedora, type: sudo dnf install aria2\n";
 	print "Exiting...\n";
 	exit;
+}
+
+# Foldseek
+if ($rcsb or $all_databases){
+	my $fseek = `echo \$(command -v foldseek)`;
+	chomp $fseek;
+	if ($fseek eq ''){
+		print "[E] foldseek not found in the \$PATH. Please check if foldseek is installed\n";
+		print "[E] Foldseek is installed automatically in \$TDFI_HOME/3D\n";
+		print "[E] Foldseek is available at https://github.com/steineggerlab/foldseek";
+		print "Exiting...\n";
+		exit;
+	}
 }
 
 # Pigz
