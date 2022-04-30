@@ -267,6 +267,7 @@ foreach my $pred (@predictors){
 }
 
 unless ($tdo){
+
 	if ($aligner eq 'gesamt'){
 		my $gesamt_check = `echo \$(command -v gesamt)`;
 		chomp $gesamt_check;
@@ -284,12 +285,15 @@ unless ($tdo){
 		}
 	}
 
-	my $chimerax_check = `echo \$(command -v chimerax)`;
-	chomp $chimerax_check;
-	if ($chimerax_check eq ''){ 
-		print STDERR "\n[E]: Cannot find chimerax. Please install ChimeraX in your \$PATH. Exiting..\n\n";
-		exit;
+	unless ($tdh){
+		my $chimerax_check = `echo \$(command -v chimerax)`;
+		chomp $chimerax_check;
+		if ($chimerax_check eq ''){ 
+			print STDERR "\n[E]: Cannot find chimerax. Please install ChimeraX in your \$PATH. Exiting..\n\n";
+			exit;
+		}
 	}
+
 }
 
 ### Check if output directory / subdirs can be created
