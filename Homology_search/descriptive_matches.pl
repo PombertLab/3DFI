@@ -149,9 +149,9 @@ while (my $match = shift@matches){
 			}
 			elsif ($data[1] =~ /^pdb(\w{4}).ent.gz$/){
 				$pdb_code = $1;
-				## Unique chains can have names other than A
+				## Unique chains can have names other than A in RCSB PBDs
 				## e.g. A [Auth C] => C
-				## Grabbing the chain name from our RCSB_PDB_titles.list
+				## Grabbing the chain name from our RCSB_PDB_titles.tsv
 				my @keys = keys %{$rcsb_titles{$pdb_code}};
 				my $key;
 				for (@keys){
