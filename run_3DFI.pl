@@ -735,6 +735,7 @@ foreach my $predictor (@predictors){
 		-m $hm_tool_dir/${predictor}_${hm_tool}_per_model.matches \\
 		-p $PDB_dir/ \\
 		-r $database/RCSB_PDB \\
+		--rlist $database/RCSB_PDB_titles.tsv \\
 		-o $vz_dir/$predictor \\
 		-l $vz_dir/predicted_structures.log";
 }

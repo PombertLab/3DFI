@@ -1,8 +1,8 @@
 #!/usr/bin/perl
 ## Pombert Lab, Illinois Tech, 2021
 my $name = "prepare_visualizations.pl";
-my $version = "0.6";
-my $updated = "2022-04-27";
+my $version = "0.6a";
+my $updated = "2022-05-01";
 
 use strict;
 use warnings;
@@ -22,6 +22,7 @@ USAGE	${name} \\
 		-a gesamt \\
 		-m GESAMT.RCSB.matches \\
 		-r /media/FatCat/Databases/RCSB/PDB /media/FatCat/Databases/RCSB/PDB_obsolete \\
+		--rlist RCSB_PDB_titles.tsv \\
 		-p Pred_PDB \\
 		-k 
 
@@ -30,6 +31,7 @@ OPTIONS
 -m (--matches)	Foldseek/GESAMT matches parsed by descriptive_matches.pl
 -p (--pred)	Absolute path to predicted .pdb files
 -r (--rcsb)	Absolute path to RCSB .ent.gz files
+--rlist		\$TDFI_/DB/RCSB_PDB_titles.tsv
 -k (--keep)	Keep unzipped RCSB .ent files
 -o (--outdir)	Output directory for ChimeraX sessions [Default: ./3D_Visualizations]
 -l (--log)	Location for log of predicted structures
@@ -40,6 +42,7 @@ my $aligner = 'gesamt';
 my $match_file;
 my $pdb;
 my @rcsb;
+my $rcsb_list;
 my $keep;
 my $outdir = './3D_Visualizations';
 my $log_file;
@@ -49,6 +52,7 @@ GetOptions(
 	'm|match=s' => \$match_file,
 	'p|pdb=s' => \$pdb,
 	'r|rcsb=s@{1,}' => \@rcsb,
+	'rlist=s' => \$rcsb_list,
 	'k|keep' => \$keep,
 	'o|out=s' => \$outdir,
 	'l|log=s' => \$log_file,
@@ -73,8 +77,23 @@ if (-e $log_file){
 	close LOG;
 }
 
+## Loading data from RCSB PDB list file
+my %rcsb_titles;
+if ($rcsb_list){
+	## Creating a database of RSCB stuctures and their descriptions; PDB 4-letter code => description
+	open DB, "<", "$rcsb_list" or die "Can't open tab-delimited file $rcsb_list: $!\n";
+	while (my $line = <DB>){
+		chomp $line;
+		my @columns = split ("\t", $line);
+		my $pdb_locus = $columns[0];
+		my $chain_or_title = $columns[1];
+		my $description = $columns[2];
+		$rcsb_titles{$pdb_locus}{$chain_or_title} = $description;
+	}
+}
+
 ## Load predicted pdb filenames into database
-if($log_file){
+if ($log_file){
 	open LOG,">>","$log_file" or die "\n[WARNING]\tUnable to access $log_file: $!\n";
 }
 my %pred;
@@ -154,7 +173,24 @@ while (my $line = <MATCH>){
 			}
 			elsif ($data[1] =~ /^(pdb\w{4}.ent.gz)$/){
 				$pdb_file = $1;
-				$pdb_chain = 'A';
+				if ($rcsb_list){
+					## Unique chains can have names other than A
+					## e.g. A [Auth C] => C
+					## Grabbing the chain name from our RCSB_PDB_titles.list
+					my @keys = keys %{$rcsb_titles{$pdb_file}};
+					my $key;
+					for (@keys){
+						if ($_ eq 'TITLE'){ next; }
+						else {
+							$key = $_;
+							last;
+						}
+					}
+					$pdb_chain = $key;
+				}
+				else {
+					$pdb_chain = 'A';
+				}
 			}
 		}
 		push (@{$sessions{$model_tag}}, "$db{$pdb_file};$pdb_chain");

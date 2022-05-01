@@ -20,7 +20,7 @@ SYNOPSIS	Adds descriptive information from PDB headers to the foldseek/gesamt ma
 
 EXAMPLE		${name} \\
 		  -a gesamt \\
-		  -r /media/Data_2/PDB/PDB_titles.tsv \\
+		  -r \$TDFI_/DB/RCSB_PDB_titles.tsv \\
 		  -m *.gesamt.gz \\
 		  -q 0.3 \\
 		  -b 5 \\
