@@ -99,6 +99,7 @@ if ($log_file){
 my %pred;
 opendir (PRED,$pdb) or die "\n[ERROR]\tCan't open $pdb: $!\n";
 while (my $file = readdir(PRED)){
+	print "PDB: $file\n";
 	if ($file =~ /^(\S+)\.pdb/){
 		my $model = $1;
 		$pred{$model} = "$pdb/$file";
