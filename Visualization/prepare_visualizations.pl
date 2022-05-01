@@ -99,24 +99,28 @@ if ($log_file){
 my %pred;
 opendir (PRED,$pdb) or die "\n[ERROR]\tCan't open $pdb: $!\n";
 while (my $file = readdir(PRED)){
-	print "PDB: $file\n";
-	if ($file =~ /^(\S+)\.pdb/){
-		my $model = $1;
-		$pred{$model} = "$pdb/$file";
-		## Make a directory for each locus that has a pdb file
-		unless (-d "$outdir/$model"){
-			mkdir ("$outdir/$model",0755) or die "Can't create $outdir/$model: $!\n";
-		}
-		## Copy the pdb file to the locus directory
-		system "cp $pdb/$file $outdir/$model/$file";
-		unless ($stored_pred{"$outdir/$model/$file"}){
-			if ($log_file){
-				print LOG "$outdir/$model/$file\n";
+	unless (-d $file){
+		print "PDB: $file\n";
+		if ($file =~ /^(\S+)\.pdb/){
+			my $model = $1;
+			$pred{$model} = "$pdb/$file";
+			## Make a directory for each locus that has a pdb file
+			unless (-d "$outdir/$model"){
+				mkdir ("$outdir/$model",0755) or die "Can't create $outdir/$model: $!\n";
+			}
+			## Copy the pdb file to the locus directory
+			system "cp $pdb/$file $outdir/$model/$file";
+			unless ($stored_pred{"$outdir/$model/$file"}){
+				if ($log_file){
+					print LOG "$outdir/$model/$file\n";
+				}
 			}
 		}
 	}
 }
 closedir PRED;
+
+exit;
 
 ## Link RCSB PDB files to their file locations
 my %db;
