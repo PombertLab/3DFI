@@ -93,9 +93,9 @@ if ($rcsb_list){
 }
 
 ## Load predicted pdb filenames into database
-# if ($log_file){
+if ($log_file){
 	open LOG,">>","$log_file" or die "\n[WARNING]\tUnable to access $log_file: $!\n";
-# }
+}
 my %pred;
 opendir (PRED,$pdb) or die "\n[ERROR]\tCan't open $pdb: $!\n";
 while (my $file = readdir(PRED)){
@@ -109,7 +109,9 @@ while (my $file = readdir(PRED)){
 		## Copy the pdb file to the locus directory
 		system "cp $pdb/$file $outdir/$model/$file";
 		unless ($stored_pred{"$outdir/$model/$file"}){
-			print LOG "$outdir/$model/$file\n";
+			if ($log_file){
+				print LOG "$outdir/$model/$file\n";
+			}
 		}
 	}
 }
