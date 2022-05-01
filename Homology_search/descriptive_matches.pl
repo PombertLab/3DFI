@@ -159,7 +159,7 @@ while (my $match = shift@matches){
 					}
 				}
 				$chain = $key;
-				print "key = $KEY\n\n";
+				print "key = $key\n\n";
 			}
 			$qscore = $data[-1];
 		}
