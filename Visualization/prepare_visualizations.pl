@@ -173,11 +173,12 @@ while (my $line = <MATCH>){
 			}
 			elsif ($data[1] =~ /^(pdb\w{4}.ent.gz)$/){
 				$pdb_file = $1;
+				my ($pdb_code) = $pdb_file =~ /^pdb(\w{4}).ent.gz$/;
 				if ($rcsb_list){
 					## Unique chains can have names other than A
 					## e.g. A [Auth C] => C
 					## Grabbing the chain name from our RCSB_PDB_titles.list
-					my @keys = keys %{$rcsb_titles{$pdb_file}};
+					my @keys = keys %{$rcsb_titles{$pdb_code}};
 					my $key;
 					for (@keys){
 						if ($_ eq 'TITLE'){ next; }
@@ -194,7 +195,7 @@ while (my $line = <MATCH>){
 			}
 		}
 		push (@{$sessions{$model_tag}}, "$db{$pdb_file};$pdb_chain");
-		print "PDB: $pdb_file \tChain: $pdb_chain\n";
+		# print "PDB: $pdb_file \tChain: $pdb_chain\n";
 	}
 }
 close MATCH;
