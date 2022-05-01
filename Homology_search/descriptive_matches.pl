@@ -149,7 +149,16 @@ while (my $match = shift@matches){
 			}
 			elsif ($data[1] =~ /^pdb(\w{4}).ent.gz$/){
 				$pdb_code = $1;
-				$chain = 'A';
+				my @keys = keys %{$rcsb_titles{$pdb_code}};
+				my $key;
+				for (@keys){
+					if ($_ eq 'TITLE'){ next; }
+					else {
+						$key = $_;
+						last;
+					}
+				}
+				$chain = $key;
 			}
 			$qscore = $data[-1];
 		}
