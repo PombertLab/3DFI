@@ -1,8 +1,8 @@
 #!/usr/bin/perl
 ## Pombert Lab 2020
-my $version = '0.8';
+my $version = '0.8a';
 my $name = 'descriptive_matches.pl';
-my $updated = '2022-04-27';
+my $updated = '2022-05-01';
 
 use strict;
 use warnings;
