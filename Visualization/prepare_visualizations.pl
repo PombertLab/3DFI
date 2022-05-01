@@ -1,7 +1,7 @@
 #!/usr/bin/perl
 ## Pombert Lab, Illinois Tech, 2021
 my $name = "prepare_visualizations.pl";
-my $version = "0.6a";
+my $version = "0.6b";
 my $updated = "2022-05-01";
 
 use strict;
@@ -210,7 +210,7 @@ my $script = "$dir/Helper_Scripts/chimerax_session_creator.py";
 foreach my $locus (sort(keys(%sessions))){
 	my $pred_file = $pred{$locus};
 	## If there are any matches with RCSB, create those visualizations 
-	if (scalar(@{$sessions{$locus}}) > 1){
+	if (scalar(@{$sessions{$locus}}) >= 1){
 		foreach my $match (@{$sessions{$locus}}){
 			if ($match){
 				my @data = split(";",$match);
