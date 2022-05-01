@@ -108,7 +108,7 @@ while (my $fasta_path = shift@fasta){
 	## Skipping folding if pdb file(s) are present
 	if (-e "$abs_path_outdir/PDB/$protein-m$topk.pdb"){
 		print LOG "RaptorX PDB files have already been created for $fasta, moving to next file\n";
-		print "RaptorX PDB files have already been created for $fasta, moving to next file\n";
+		print "  RaptorX PDB files have already been created for $fasta, moving to next file\n";
 		next;
 	}
 

@@ -175,7 +175,7 @@ while (my $fasta = shift@fasta){
 		unless ($window){
 			open OUT, ">", "$out/$locus.$ext" or die "Can't open $locus.$ext in directory $out: $!\n";
 	
-			if ($verbose){ print "Creating $locus.$ext in $out ...\n"; }
+			if ($verbose){ print "  Creating $locus.$ext in $out ...\n"; }
 	
 			print OUT ">$locus\n";
 			my @fsa = unpack ("(A60)*", $sequence);
