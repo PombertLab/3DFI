@@ -1,8 +1,8 @@
 #!/usr/bin/perl
 ## Pombert Lab, Illinois Tech, 2021
 my $name = 'run_3DFI.pl';
-my $version = '0.7a';
-my $updated = '2022-04-30';
+my $version = '0.7b';
+my $updated = '2022-05-01';
 
 use strict;
 use warnings;
@@ -543,7 +543,7 @@ if ($aligner eq 'foldseek'){
 			-log $log_dir/Foldseek_${predictor}_${date}.log \\
 			-atype $ftype \\
 			-mseq 300 \\
-			-verbosity 3 \\
+			-verbosity 0 \\
 			-gzip";
 		
 		## Adding descriptive information to GESAMT matches
