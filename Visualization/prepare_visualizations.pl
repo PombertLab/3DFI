@@ -31,7 +31,7 @@ OPTIONS
 -m (--matches)	Foldseek/GESAMT matches parsed by descriptive_matches.pl
 -p (--pred)	Absolute path to predicted .pdb files
 -r (--rcsb)	Absolute path to RCSB .ent.gz files
---rlist		\$TDFI_/DB/RCSB_PDB_titles.tsv
+--rlist		\$TDFI_DB/RCSB_PDB_titles.tsv ## Useful for foldseek predictions with undescribed chains
 -k (--keep)	Keep unzipped RCSB .ent files
 -o (--outdir)	Output directory for ChimeraX sessions [Default: ./3D_Visualizations]
 -l (--log)	Location for log of predicted structures
