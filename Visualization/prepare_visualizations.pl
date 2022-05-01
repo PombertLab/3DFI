@@ -194,7 +194,7 @@ while (my $line = <MATCH>){
 			}
 		}
 		push (@{$sessions{$model_tag}}, "$db{$pdb_file};$pdb_chain");
-		print "PDB: $pdb_file \tChain: $pdb_chain"
+		print "PDB: $pdb_file \tChain: $pdb_chain\n";
 	}
 }
 close MATCH;
