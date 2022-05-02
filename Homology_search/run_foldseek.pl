@@ -163,7 +163,7 @@ if ($query){
 			
 			if ($gnuzip){
 				## Compressing data with GZIP to save some space
-				print "\nCompressing $outdir/$pdb.fseek with GZIP ...\n";
+				print "\n  Compressing $outdir/$pdb.fseek with GZIP ...\n";
 				system "gzip $outdir/$pdb.fseek";
 			}
 		}
