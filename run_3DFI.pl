@@ -297,6 +297,7 @@ unless ($tdo){
 }
 
 ### Check if output directory / subdirs can be created
+$outdir =~ s/\/$//;
 my $fd_dir = "$outdir/Folding";
 my $hm_dir = "$outdir/Homology";
 my $vz_dir = "$outdir/Visualization";
