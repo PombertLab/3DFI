@@ -1,8 +1,8 @@
 #!/usr/bin/perl
 ## Pombert Lab 2020
-my $version = '0.8a';
+my $version = '0.9';
 my $name = 'descriptive_matches.pl';
-my $updated = '2022-05-01';
+my $updated = '2022-05-12';
 
 use strict;
 use warnings;
@@ -19,7 +19,6 @@ SYNOPSIS	Adds descriptive information from PDB headers to the foldseek/gesamt ma
 		Parses results by quality scores, and concatenates the output into a single file
 
 EXAMPLE		${name} \\
-		  -a gesamt \\
 		  -r \$TDFI_/DB/RCSB_PDB_titles.tsv \\
 		  -m *.gesamt.gz \\
 		  -q 0.3 \\
@@ -27,7 +26,6 @@ EXAMPLE		${name} \\
 		  -o GESAMT.matches
 
 OPTIONS:
--a (--align)	Structural alignment tool used: foldseek or gesamt [Default: gesamt]
 -r (--rcsb)	Tab-delimited list of RCSB structures and their titles ## see PDB_headers.pl 
 -m (--matches)	Results from homology searches ## Supports GZIPPEd files; see run_GESAMT.pl/run_foldseek.pl
 -q (--qscore)	Quality score cut-off [Default: 0.3]
@@ -39,7 +37,6 @@ OPTIONS
 die "\n$USAGE\n" unless @ARGV;
 
 ## Defining options
-my $aligner = 'gesamt';
 my $rcsb;
 my @matches;
 my $qthreshold = 0.3;
@@ -48,7 +45,6 @@ my $output = 'GESAMT.matches';
 my $nobar;
 my $regex = 'nonspace';
 GetOptions(
-	'a|align=s' => \$aligner,
 	'r|rcsb=s' => \$rcsb,
 	'm|matches=s@{1,}' => \@matches,
 	'q|qscore=s' => \$qthreshold,
@@ -58,6 +54,7 @@ GetOptions(
 	'x|regex=s' => \$regex
 );
 
+my $aligner;
 my %rcsb_titles;
 if ($rcsb){
 	## Creating a database of RSCB stuctures and their descriptions; PDB 4-letter code => description
@@ -82,13 +79,15 @@ while (my $match = shift@matches){
 	if ($regex eq 'word'){ $rgx = '\w+'; }
 
 	my ($basename, $path) = fileparse($match);
-	my $prefix;
+	my $query;
 	my $mode;
-	if ($aligner eq 'gesamt'){
-		($prefix, $mode) = $basename =~ /^($rgx).*\.(normal|high).gesamt(.gz)?$/;
+	if ($basename =~ /\.gesamt(\.gz)?$/){
+		($query, $mode) = $basename =~ /^($rgx).*\.(normal|high)\.gesamt(\.gz)?$/;
+		$aligner = 'gesamt';
 	}
-	elsif ($aligner eq 'foldseek'){
-		($prefix) = $basename =~ /^($rgx).*\.fseek(.gz)?$/;
+	elsif ($basename =~ /\.fseek(.gz)?$/){
+		($query) = $basename =~ /^($rgx).*\.fseek(\.gz)?$/;
+		$aligner = 'foldseek';
 	}
 
 	unless ($nobar) { ## Progress bar
@@ -102,15 +101,19 @@ while (my $match = shift@matches){
 
 	## Working on foldseek / GESAMT file
 	my $gzip = '';
-	if ($match =~ /.gz$/){ $gzip = ':gzip'; }
+	
+	if ($match =~ /.gz$/){
+		$gzip = ':gzip';
+	}
+	
 	open MA, "<$gzip", "$match" or die "Can't read file $match: $!\n";
 
 	## Header per protein
 	if ($aligner eq 'gesamt'){
-		print OUT '### '."$prefix"."; Query mode = $mode\n";
+		print OUT '### '."$query"."; Query mode = $mode\n";
 	}
 	elsif ($aligner eq 'foldseek'){
-		print OUT '### '."$prefix"."\n";
+		print OUT '### '."$query"."\n";
 	}
 
 	if ($nobar) { print "  Getting descriptive matches from $match\n"; }
@@ -154,10 +157,9 @@ while (my $match = shift@matches){
 				## Grabbing the chain name from our RCSB_PDB_titles.tsv
 				my @keys = keys %{$rcsb_titles{$pdb_code}};
 				my $key;
-				for (@keys){
-					if ($_ eq 'TITLE'){ next; }
-					else {
-						$key = $_;
+				for my $item (@keys){
+					unless ($item eq 'TITLE'){
+						$key = $item;
 						last;
 					}
 				}
@@ -171,8 +173,18 @@ while (my $match = shift@matches){
 			if ($best){
 				if ($best >= $hit_number){
 					if ($rcsb){
-						print OUT "$prefix\t";
-						for (1..$#data){ print OUT "$data[$_]\t"; }
+						print OUT "$query\t";
+
+						if ($aligner eq 'gesamt'){
+							print OUT $data[1]."\t";
+						}
+						else{
+							print OUT "pdb".$pdb_code.".ent.gz_".$chain."\t";
+						}
+						
+						for my $datum (@data[2..$#data]){
+							print OUT "$datum\t";
+						}
 						if ($rcsb_titles{$pdb_code}){
 							print OUT "$rcsb_titles{$pdb_code}{$chain}\n";
 						}
@@ -184,15 +196,25 @@ while (my $match = shift@matches){
 			}
 			else {
 				if ($rcsb){
-					print OUT "$prefix\t";
-					for (1..$#data){ print OUT "$data[$_]\t"; }
-					if ($rcsb_titles{$pdb_code}){
-						print OUT "$rcsb_titles{$pdb_code}{$chain}\n";
+						print OUT "$query\t";
+
+						if ($aligner eq 'gesamt'){
+							print OUT $data[1]."\t";
+						}
+						else{
+							print OUT "pdb".$pdb_code.".ent.gz_".$chain."\t";
+						}
+						
+						for my $datum (@data[2..$#data]){
+							print OUT "$datum\t";
+						}
+						if ($rcsb_titles{$pdb_code}){
+							print OUT "$rcsb_titles{$pdb_code}{$chain}\n";
+						}
+						else {
+							print OUT "No PDB entry. Verify if obsolete PDB ID...\n";
+						}
 					}
-					else {
-						print OUT "No PDB entry. Verify if obsolete PDB ID...\n";
-					}
-				}
 			}
 		}
 	}
