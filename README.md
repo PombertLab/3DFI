@@ -1223,7 +1223,6 @@ prepare_visualizations.pl \
     -a gesamt \
     -m $TDFI_HOME/Examples/Results_3DFI/Homology/GESAMT/ALPHAFOLD_GESAMT_per_model.matches \
     -p $TDFI_HOME/Examples/Results_3DFI/Folding/ALPHAFOLD_3D_Parsed/ \
-    -r $RCSB_PDB \
     -o $RESULTS/Visualization
 ```
 
@@ -1235,7 +1234,6 @@ prepare_visualizations.pl \
 -m (--matches)	Foldseek/GESAMT matches parsed by descriptive_matches.pl
 -p (--pred)	Absolute path to predicted .pdb files
 -r (--rcsb)	Absolute path to RCSB .ent.gz files
---rlist		$TDFI_DB/RCSB_PDB_titles.tsv ## Useful for foldseek predictions with undescribed chains
 -k (--keep)	Keep unzipped RCSB .ent files
 -o (--outdir)	Output directory for ChimeraX sessions [Default: ./3D_Visualizations]
 ```

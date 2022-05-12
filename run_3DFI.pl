@@ -1,8 +1,8 @@
 #!/usr/bin/perl
 ## Pombert Lab, Illinois Tech, 2021
 my $name = 'run_3DFI.pl';
-my $version = '0.7b';
-my $updated = '2022-05-01';
+my $version = '0.7c';
+my $updated = '2022-05-12';
 
 use strict;
 use warnings;
@@ -736,7 +736,6 @@ foreach my $predictor (@predictors){
 		-m $hm_tool_dir/${predictor}_${hm_tool}_per_model.matches \\
 		-p $PDB_dir/ \\
 		-r $database/RCSB_PDB \\
-		--rlist $database/RCSB_PDB_titles.tsv \\
 		-o $vz_dir/$predictor \\
 		-l $vz_dir/predicted_structures.log";
 }
