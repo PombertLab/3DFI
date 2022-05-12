@@ -29,7 +29,7 @@ OPTIONS
 -r (--rcsb)		RCSB .pdb file
 -m (--match)	RCSB match name
 -c (--chain)	RCSB matched chain
--o (--outdir)		Output directory for .cxs files [Default: ./3D_Visualizations]
+-o (--outdir)	Output directory for .cxs files [Default: ./3D_Visualizations]
 '''
 
 if len(argv) < 2:
@@ -48,7 +48,7 @@ args = parser.parse_args()
 pred = args.pred
 rcsb_match = args.match
 rcsb = args.rcsb
-chain = args.chain
+rcsb_chain = args.chain
 if(args.outdir):
 	outdir = args.outdir
 
@@ -66,22 +66,19 @@ model_rcsb_name = (model_rcsb.id_string)
 run(session,"hide atoms")
 run(session,"hide ribbons")
 
-match = run(session,f"match #{model_pred_name} to #{model_rcsb_name}/{chain}")
-
-chain_pred_rcsb = re.search("\#\d+\/([0-9a-zA-Z])",str(match[0]["final match atoms"][0])).group(1)
-chain_rcsb = re.search("\#\d+\/([0-9a-zA-Z])",str(match[0]["final ref atoms"][0])).group(1)
+match = run(session,f"match #{model_pred_name} to #{model_rcsb_name}/{rcsb_chain}")
 
 ## Color reference structure a diferrent color
-run(session,f"color #{model_rcsb_name}/{chain_rcsb} #00FFFF ribbons")
+run(session,f"color #{model_rcsb_name}/{rcsb_chain} #00FFFF ribbons")
 
 ## Show only matching chains
 run(session,f"show #{model_pred_name} ribbons")
-run(session,f"show #{model_rcsb_name}/{chain_rcsb} ribbons")
+run(session,f"show #{model_rcsb_name}/{rcsb_chain} ribbons")
 
 ## Orient the chain to view
 run(session,"view")
 
 ## Save match as a new file
-run(session,f"save {outdir}/{locus_tag}_{rcsb_match}_{chain_rcsb}.cxs format session")
+run(session,f"save {outdir}/{locus_tag}_{rcsb_match}_{rcsb_chain}.cxs format session")
 
 quit()

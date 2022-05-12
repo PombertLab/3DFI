@@ -22,7 +22,6 @@ USAGE	${name} \\
 		-a gesamt \\
 		-m GESAMT.RCSB.matches \\
 		-r /media/FatCat/Databases/RCSB/PDB /media/FatCat/Databases/RCSB/PDB_obsolete \\
-		--rlist RCSB_PDB_titles.tsv \\
 		-p Pred_PDB \\
 		-k 
 
@@ -31,7 +30,6 @@ OPTIONS
 -m (--matches)	Foldseek/GESAMT matches parsed by descriptive_matches.pl
 -p (--pred)	Absolute path to predicted .pdb files
 -r (--rcsb)	Absolute path to RCSB .ent.gz files
---rlist		\$TDFI_DB/RCSB_PDB_titles.tsv ## Useful for foldseek predictions with undescribed chains
 -k (--keep)	Keep unzipped RCSB .ent files
 -o (--outdir)	Output directory for ChimeraX sessions [Default: ./3D_Visualizations]
 -l (--log)	Location for log of predicted structures
@@ -126,11 +124,11 @@ foreach my $rcsb (@rcsb){
 	opendir (EXT,$rcsb) or die "\n[ERROR]\tCan't open $rcsb: $!\n";
 	while (my $dir = readdir(EXT)){
 		## Ignoring files, if any
-		unless (-f $dir){
+		if ($dir =~ /^\w+/){
 			opendir (INT,"$rcsb/$dir") or die "Can't open $rcsb/$dir: $!\n";
 			while (my $file = readdir(INT)){
 				## Store the absolute file path under the filename of the .ent.gz file
-				if ($file =~ /\w+/){
+				if ($file =~ /^\w+/){
 					$db{$file} = "$rcsb/$dir/$file";
 				}
 			}
@@ -142,30 +140,25 @@ foreach my $rcsb (@rcsb){
 
 ## For each match, get the filename of the best match for RCSB
 open MATCH, "<", "$match_file" or die "Can't open $match_file: $!\n";
-my $match;
+
 my $model_tag;
 my %sessions;
+
 while (my $line = <MATCH>){
 	chomp $line;
 	## Check the PDB headers for proteins that are in the selection provided
 	if ($line =~ /^###/){
 		my $filename = (fileparse($line))[0];
 		($model_tag) = $filename =~ /### (\S+)\;?/;
-		if (-d "$outdir/$model_tag"){
-			$match = 1;
-		}
-		else {
-			$match = undef;
-		}
 	}
 	## Store the matching RCSB .ent.gz filepath  under the locus tag
-	elsif ($match){
+	else{
 		my @data = split("\t",$line);
 		my $pdb_file;
 		my $pdb_chain;
 		if ($aligner eq 'gesamt'){
-			$pdb_file = $data[9];
 			$pdb_chain = $data[3];
+			$pdb_file = $data[9];
 		}
 		elsif ($aligner eq 'foldseek'){
 			## Data columns for foldseek files are:
@@ -175,30 +168,13 @@ while (my $line = <MATCH>){
 				$pdb_file = $1;
 				$pdb_chain = $2;
 			}
-			elsif ($data[1] =~ /^(pdb\w{4}.ent.gz)$/){
-				$pdb_file = $1;
-				my ($pdb_code) = $pdb_file =~ /^pdb(\w{4}).ent.gz$/;
-				if ($rcsb_list){
-					## Unique chains can have names other than A in RCSB PDBs
-					## e.g. A [Auth C] => C
-					## Grabbing the chain name from our RCSB_PDB_titles.tsv
-					my @keys = keys %{$rcsb_titles{$pdb_code}};
-					my $key;
-					for (@keys){
-						if ($_ eq 'TITLE'){ next; }
-						else {
-							$key = $_;
-							last;
-						}
-					}
-					$pdb_chain = $key;
-				}
-				else {
-					$pdb_chain = 'A';
-				}
-			}
 		}
-		push (@{$sessions{$model_tag}}, "$db{$pdb_file};$pdb_chain");
+		if ($db{$pdb_file}){
+			push (@{$sessions{$model_tag}}, "$db{$pdb_file};$pdb_chain");
+		}
+		else{
+			print $model_tag." will not be aligned to ".$pdb_file." because ".$pdb_file." could not be found!\n";
+		}
 	}
 }
 close MATCH;
@@ -233,7 +209,7 @@ foreach my $locus (sort(keys(%sessions))){
 						-r $temp \\
 						-m $rcsb_name \\
 						-c $chain \\
-						-o $outdir/$locus"
+						-o $outdir/$locus\n"
 					;
 				}
 				## Remove temporary file unless explicitly told not to
