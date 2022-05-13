@@ -1,8 +1,8 @@
 #!/usr/bin/perl
 ## Pombert Lab, Illinois Tech, 2021
 my $name = "prepare_visualizations.pl";
-my $version = "0.6b";
-my $updated = "2022-05-01";
+my $version = "0.7";
+my $updated = "2022-05-13";
 
 use strict;
 use warnings;
@@ -50,7 +50,6 @@ GetOptions(
 	'm|match=s' => \$match_file,
 	'p|pdb=s' => \$pdb,
 	'r|rcsb=s@{1,}' => \@rcsb,
-	'rlist=s' => \$rcsb_list,
 	'k|keep' => \$keep,
 	'o|out=s' => \$outdir,
 	'l|log=s' => \$log_file,
@@ -73,21 +72,6 @@ if (-e $log_file){
 		$stored_pred{$line} = 1;
 	}
 	close LOG;
-}
-
-## Loading data from RCSB PDB list file
-my %rcsb_titles;
-if ($rcsb_list){
-	## Creating a database of RSCB stuctures and their descriptions; PDB 4-letter code => description
-	open DB, "<", "$rcsb_list" or die "Can't open tab-delimited file $rcsb_list: $!\n";
-	while (my $line = <DB>){
-		chomp $line;
-		my @columns = split ("\t", $line);
-		my $pdb_locus = $columns[0];
-		my $chain_or_title = $columns[1];
-		my $description = $columns[2];
-		$rcsb_titles{$pdb_locus}{$chain_or_title} = $description;
-	}
 }
 
 ## Load predicted pdb filenames into database
@@ -149,7 +133,13 @@ while (my $line = <MATCH>){
 	## Check the PDB headers for proteins that are in the selection provided
 	if ($line =~ /^###/){
 		my $filename = (fileparse($line))[0];
-		($model_tag) = $filename =~ /### (\S+)\;?/;
+		if ($aligner eq "gesamt"){
+			($model_tag) = $filename =~ /### (\S+)\;/;
+		}
+		elsif ($aligner eq "foldseek"){
+			($model_tag) = $filename =~ /### (\S+)/;
+		}
+		
 	}
 	## Store the matching RCSB .ent.gz filepath  under the locus tag
 	else{
