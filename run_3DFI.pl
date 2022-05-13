@@ -1,8 +1,8 @@
 #!/usr/bin/perl
 ## Pombert Lab, Illinois Tech, 2021
 my $name = 'run_3DFI.pl';
-my $version = '0.7c';
-my $updated = '2022-05-12';
+my $version = '0.7d';
+my $updated = '2022-05-13';
 
 use strict;
 use warnings;
@@ -62,7 +62,7 @@ ADVANCED OPTIONS:
 			  0: 3Di Gotoh-Smith-Waterman 
 			  1: TMalign 
 			  2: 3Di+AA Gotoh-Smith-Waterman
--q (--qscore)		Mininum quality score to keep [Default: 200]
+-q (--qscore)		Mininum quality score to keep [Defaults: 0.1 => GESAMT; 200 => FOLDSEEK]
 			# Recommended: 3Di+AA => 200; TMalign => 50; GESAMT => 0.1
 -b (--best)		Keep the best match(es) only (top X hits) [Default: 5]
 -d (--db)		3DFI Foldseek/GESAMT databases location [Default: \$TDFI_DB]
@@ -101,7 +101,8 @@ my $aligner = 'foldseek';
 my $fskdb;
 my $ftype = 2;
 my $database;
-my $qscore = 0.3;
+my $qscore;
+my $custom_qscore;
 my $best = 5;
 my $query = 'all';
 
@@ -140,7 +141,7 @@ GetOptions(
 	'fskdb=s' => \$fskdb,
 	'ftype=i' => \$ftype,
 	'd|db=s' => \$database,
-	'q|qscore=s' => \$qscore,
+	'q|qscore=s' => \$custom_qscore,
 	'b|best=i' => \$best,
 	'query=s' => \$query,
 
@@ -177,7 +178,7 @@ unless ($tdo){
 		}
 	}
 
-	### Check if Foldseek/GESAMT dbs exist in $DB_3DFI or --db location
+	### Check requested 3D homology search tool
 	my %align_tools = ( 'foldseek' => undef, 'gesamt' => undef );
 	$aligner = lc($aligner);
 
@@ -187,6 +188,18 @@ unless ($tdo){
 		exit;
 	}
 
+	### Setting quality score; custom or default settings
+	if ($custom_qscore){ $qscore = $custom_qscore; }
+	else {
+		if ($aligner eq 'foldseek'){
+			$qscore = 200;
+		}
+		else {
+			$qscore = 0.1;
+		}
+	}
+
+	### Check if Foldseek/GESAMT dbs exist in $DB_3DFI or --db location
 	if ($aligner eq 'foldseek'){
 		my $foldseek_db = "$database/FOLDSEEK/rcsb";
 		if ($fskdb){
