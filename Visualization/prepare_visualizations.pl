@@ -149,7 +149,7 @@ while (my $line = <MATCH>){
 	## Check the PDB headers for proteins that are in the selection provided
 	if ($line =~ /^###/){
 		my $filename = (fileparse($line))[0];
-		($model_tag) = $filename =~ /### (\S+)\;?/;
+		($model_tag) = $filename =~ /### (\S+)\;/;
 	}
 	## Store the matching RCSB .ent.gz filepath  under the locus tag
 	else{
