@@ -191,15 +191,8 @@ sub checksig {
 	my $exit_value = $?;
 	my $modulo = $exit_value % 255;
 
-	print "value = $exit_value\n";
-	print "modulo = $modulo\n";
-
-	if ($modulo == 2) {
-		print "\n\nSIGINT detected: Ctrl+C. Exiting...\n\n";
-		exit(1);
-	}
-	elsif ($modulo == 131) {
-		print "\n\nSIGTERM detected: Ctrl+\\. Exiting...\n\n";
+	if ($modulo == 1) {
+		print "\n\nNon-zero exit value detected ($exit_value; $modulo). Exiting ...\n\n";
 		exit(1);
 	}
 

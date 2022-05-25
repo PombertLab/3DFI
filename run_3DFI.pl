@@ -548,7 +548,7 @@ if ($aligner eq 'foldseek'){
 		$query = lc($query);
 		if ($query eq 'best'){ $pdb_to_query = '*-m1.pdb'; }
 
-		system "$homology_scripts_home"."run_foldseek.pl \\
+		system ("$homology_scripts_home"."run_foldseek.pl \\
 			-threads $cpu \\
 			-query \\
 			-db $foldseek_db \\
@@ -558,7 +558,7 @@ if ($aligner eq 'foldseek'){
 			-atype $ftype \\
 			-mseq 300 \\
 			-verbosity 0 \\
-			-gzip";
+			-gzip") == 0 or die "Non-zero status detected. Exiting...\n\n";
 		
 		## Adding descriptive information to GESAMT matches
 		$time = localtime;
