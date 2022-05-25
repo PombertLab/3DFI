@@ -466,7 +466,7 @@ foreach my $predictor (@predictors){
 			$gpu_devices \\
 			$maxdate_flag \\
 			$msas_flag \\
-			-o $af_dir") == 0 or die "\n\nKeyborad interrupt detected. Exiting...\n\n";
+			-o $af_dir") == 0 or die "Keyboard interrupt detected. Exiting...\n\n";
 		
 		## Parsing AlphaFold output folders
 		$time = localtime;
