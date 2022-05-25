@@ -171,11 +171,11 @@ sub checksig {
 	my $modulo = $exit_value % 255;
 
 	if ($modulo == 2) {
-		print "\n\nSIGINT detected (Ctrl+c), exiting ...\n\n";
+		print "\n\nSIGINT detected (Ctrl+C). Exiting ...\n\n";
 		exit(1);
 	}
 	elsif ($modulo == 131) {
-		print "\n\nSIGTERM detected (Ctrl+\\), exiting ...\n\n";
+		print "\n\nSIGTERM detected (Ctrl+\\), Exiting ...\n\n";
 		exit(1);
 	}
 
