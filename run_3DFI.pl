@@ -459,14 +459,14 @@ foreach my $predictor (@predictors){
 		## Running alphafold
 		$time = localtime;
 		print "\n# $time: Running AlphaFold protein structure prediction\n";
-		system "$pred_scripts_home"."alphafold.pl \\
+		system ("$pred_scripts_home"."alphafold.pl \\
 			--fasta $fasta_dir/*.fasta \\
 			--preset $preset \\
 			--docker $docker_image \\
 			$gpu_devices \\
 			$maxdate_flag \\
 			$msas_flag \\
-			-o $af_dir";
+			-o $af_dir") == 0 or die "\n\nKeyborad interrupt detected. Exiting...\n\n";
 		
 		## Parsing AlphaFold output folders
 		$time = localtime;
