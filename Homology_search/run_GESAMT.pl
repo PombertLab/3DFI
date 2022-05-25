@@ -170,15 +170,12 @@ sub checksig {
 	my $exit_value = $?;
 	my $modulo = $exit_value % 255;
 
-	print "exit_value = $exit_value\n";
-	print "modulo = $modulo\n";
-
 	if ($modulo == 2) {
 		print "\n\nSIGINT detected (Ctrl+c), exiting ...\n\n";
 		exit(1);
 	}
 	elsif ($modulo == 131) {
-		print "\n\nSIGTERM detected (Ctrl+\), exiting ...\n\n";
+		print "\n\nSIGTERM detected (Ctrl+\\), exiting ...\n\n";
 		exit(1);
 	}
 

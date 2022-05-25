@@ -628,7 +628,7 @@ elsif ($aligner eq 'gesamt'){
 		$query = lc($query);
 		if ($query eq 'best'){ $pdb_to_query = '*-m1.pdb'; }
 
-		system "$homology_scripts_home"."run_GESAMT.pl \\
+		system ("$homology_scripts_home"."run_GESAMT.pl \\
 			-cpu $cpu \\
 			-query \\
 			-arch $gesamt_archive \\
@@ -636,7 +636,7 @@ elsif ($aligner eq 'gesamt'){
 			-o $GSMT_outdir \\
 			-l $log_dir/GESAMT_${predictor}_${date}.log \\
 			-mode normal \\
-			-z";
+			-z") == 0 or die "Keyboard interrupt detected. Exiting...\n\n";
 		
 		## Adding descriptive information to GESAMT matches
 		$time = localtime;

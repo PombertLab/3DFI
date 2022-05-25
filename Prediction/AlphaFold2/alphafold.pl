@@ -185,7 +185,7 @@ sub checksig {
 		exit(1);
 	}
 	elsif ($modulo == 131) {
-		print "\n\nSIGTERM detected (Ctrl+\), exiting ...\n\n";
+		print "\n\nSIGTERM detected (Ctrl+\\), exiting ...\n\n";
 		exit(1);
 	}
 
