@@ -397,12 +397,12 @@ foreach my $predictor (@predictors){
 
 		$time = localtime;
 		print "\n# $time: Running RaptorX protein structure prediction\n";
-		system "$pred_scripts_home"."raptorx.pl \\
+		system ("$pred_scripts_home"."raptorx.pl \\
 			-t $cpu \\
 			-k $ranks \\
 			-i $fasta_dir \\
 			-m $modeller \\
-			-o $rx_dir";
+			-o $rx_dir") == 0 or die "Non-zero status detected. Exiting...\n\n";
 	}
 
 	## RoseTTAfold
