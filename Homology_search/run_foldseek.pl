@@ -195,9 +195,5 @@ sub checksig {
 		print "\n\nSIGINT detected: Ctrl+C. Exiting...\n\n";
 		exit(1);
 	}
-	elsif ($modulo == 131) {
-		print "\n\nSIGTERM detected: Ctrl+\\. Exiting...\n\n";
-		exit(1);
-	}
 
 }

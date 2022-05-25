@@ -558,7 +558,7 @@ if ($aligner eq 'foldseek'){
 			-atype $ftype \\
 			-mseq 300 \\
 			-verbosity 0 \\
-			-gzip") == 0 or die "Non-zero status detected. Exiting...\n\n";
+			-gzip") == 0 or die "Keyboard interrupt detected. Exiting...\n\n";
 		
 		## Adding descriptive information to GESAMT matches
 		$time = localtime;
