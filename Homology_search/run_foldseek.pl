@@ -150,7 +150,7 @@ if ($query){
 
 			print "\n  Running foldseek on $file...\n";
 
-			system "foldseek \\
+			system ("foldseek \\
 			  easy-search \\
 			  --max-seqs $mseqs \\
 			  --alignment-type $atype \\
@@ -159,7 +159,7 @@ if ($query){
 			  $file \\
 			  $db \\
 			  $outdir/$pdb.fseek \\
-			  $outdir/tmp";
+			  $outdir/tmp") == 0 or checksig();
 			
 			if ($gnuzip){
 				## Compressing data with GZIP to save some space
@@ -184,3 +184,23 @@ $endtime = sprintf ("%.2f", $endtime);
 print LOG "Completed on: $end\n";
 print LOG "Total run time: $endtime minutes\n";
 close LOG;
+
+### Sub
+sub checksig {
+
+	my $exit_value = $?;
+	my $modulo = $exit_value % 255;
+
+	print "value = $exit_value\n";
+	print "modulo = $modulo\n";
+
+	if ($modulo == 2) {
+		print "\n\nSIGINT detected: Ctrl+C. Exiting...\n\n";
+		exit(1);
+	}
+	elsif ($modulo == 131) {
+		print "\n\nSIGTERM detected: Ctrl+\\. Exiting...\n\n";
+		exit(1);
+	}
+
+}
