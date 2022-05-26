@@ -137,7 +137,7 @@ GetOptions(
 	'modeller=s' => \$modeller,
 	
 	# Structural homology
-	'a|aligner=s' => \$aligner,
+	'a|align=s' => \$aligner,
 	'fskdb=s' => \$fskdb,
 	'ftype=i' => \$ftype,
 	'd|db=s' => \$database,
