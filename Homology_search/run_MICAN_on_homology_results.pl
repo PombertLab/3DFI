@@ -173,9 +173,7 @@ while (my $line = <IN>){
 			my $predicted_file_location = "$tdfi/Folding/".$Folds{$predictor}."/$query.pdb";
 
 			my $mican_result = `mican -s $predicted_file_location $temp_file -n 1`;
-			# else {
-			# 	checksig();
-			# }
+
 			$alignment_counter++;
 			
 			system "rm -rf $rcsb_temp_dir/*";
