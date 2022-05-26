@@ -202,15 +202,21 @@ print LOG "RANK/: Contains the lists (.rank) of the best templates/models found 
 print LOG "FASTA_ALN/: Contains pairwise alignments between FASTA sequences and their best template(s)/model(s) found in FASTA format\n";
 print LOG "CNFPRED/: Contains pairwise alignments between FASTA sequences and their best template(s)/model(s) found in CNFPRED format\n";
 
-### Sub
+### Subroutine(s)
 sub checksig {
 
-	my $exit_value = $?;
-	my $modulo = $exit_value % 255;
+	my $exit_code = $?;
+	my $modulo = $exit_code % 255;
 
-	if ($modulo == 1) {
-		print "\n\nNon-zero exit value detected ($exit_value), exiting ...\n\n";
-		exit(1);
+	print "\nExit code = $exit_code; modulo = $modulo \n";
+
+	if ($modulo == 2) {
+		print "\nSIGINT detected: Ctrl+C => exiting...\n\n";
+		exit(2);
+	}
+	elsif ($modulo == 131) {
+		print "\nSIGTERM detected: Ctrl+\\ => exiting...\n\n";
+		exit(131);
 	}
 
 }

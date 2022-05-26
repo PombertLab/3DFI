@@ -91,14 +91,14 @@ while (my $fasta = shift@fasta){
 		my $start = time;
 
 		if (($folding_type eq 'py') or ($folding_type eq 'pyrosetta')){
-			system "$rosetta_home/run_pyrosetta_ver.sh \\
+			system ("$rosetta_home/run_pyrosetta_ver.sh \\
 				$fasta \\
-				$outdir/$prefix";
+				$outdir/$prefix") == 0 or checksig();
 		}
 		elsif (($folding_type eq 'e2e') or ($folding_type eq 'end-to-end')){
-			system "$rosetta_home/run_e2e_ver.sh \\
+			system ("$rosetta_home/run_e2e_ver.sh \\
 				$fasta \\
-				$outdir/$prefix";
+				$outdir/$prefix") == 0 or checksig();
 		}
 		else {
 			die "\nUnrecognized folding type: $folding_type. Please check command line.\n\n";
@@ -110,4 +110,23 @@ while (my $fasta = shift@fasta){
 		print "\nTime to fold $basename: $run_time minutes\n";
 		print LOG "Time to fold $basename: $run_time minutes\n";
 	}
+}
+
+### Subroutine(s)
+sub checksig {
+
+	my $exit_code = $?;
+	my $modulo = $exit_code % 255;
+
+	print "\nExit code = $exit_code; modulo = $modulo \n";
+
+	if ($modulo == 2) {
+		print "\nSIGINT detected: Ctrl+C => exiting...\n\n";
+		exit(2);
+	}
+	elsif ($modulo == 131) {
+		print "\nSIGTERM detected: Ctrl+\\ => exiting...\n\n";
+		exit(131);
+	}
+
 }

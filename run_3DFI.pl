@@ -767,3 +767,22 @@ if ($visualization){
 ##### End of script
 $time = localtime;
 print "\n# $time: run_3DFI.pl tasks completed\n\n";
+
+
+########################################################################################
+## Subroutines
+sub checksig {
+
+	my $exit_code = $?;
+	my $modulo = $exit_code % 255;
+
+	if ($modulo == 2) {
+		print "\nSIGINT detected: Ctrl+C => exiting...\n\n";
+		exit(2);
+	}
+	elsif ($modulo == 131) {
+		print "\nSIGTERM detected: Ctrl+\\ => exiting...\n\n";
+		exit(131);
+	}
+
+}

@@ -116,11 +116,11 @@ if ($create){
 		make_path( $dbpath, { mode => 0755 } ) or die "Can't create folder $dbpath: $!\n";
 	}
 
-	system "foldseek \\
+	system ("foldseek \\
 			  createdb \\
 			  --threads $threads \\
 			  $pdb \\
-			  $db";
+			  $db") == 0 or checksig();
 }
 
 ## Running foldseek queries/Skipping previously done searches
@@ -194,6 +194,25 @@ sub checksig {
 	if ($modulo == 2) {
 		print "\n\nSIGINT detected: Ctrl+C. Exiting...\n\n";
 		exit(1);
+	}
+
+}
+
+### Subroutine(s)
+sub checksig {
+
+	my $exit_code = $?;
+	my $modulo = $exit_code % 255;
+
+	print "\nExit code = $exit_code; modulo = $modulo \n";
+
+	if ($modulo == 2) {
+		print "\nSIGINT detected: Ctrl+C => exiting...\n\n";
+		exit(2);
+	}
+	elsif ($modulo == 131) {
+		print "\nSIGTERM detected: Ctrl+\\ => exiting...\n\n";
+		exit(131);
 	}
 
 }

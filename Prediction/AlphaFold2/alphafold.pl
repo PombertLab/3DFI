@@ -174,19 +174,21 @@ while (my $fasta = shift @fasta){
 
 close LOG;
 
-### Sub
+### Subroutine(s)
 sub checksig {
 
-	my $exit_value = $?;
-	my $modulo = $exit_value % 255;
+	my $exit_code = $?;
+	my $modulo = $exit_code % 255;
+
+	print "\nExit code = $exit_code; modulo = $modulo \n";
 
 	if ($modulo == 2) {
-		print "\n\nSIGINT detected: Ctrl+C. Exiting...\n\n";
-		exit(1);
+		print "\nSIGINT detected: Ctrl+C => exiting...\n\n";
+		exit(2);
 	}
 	elsif ($modulo == 131) {
-		print "\n\nSIGTERM detected: Ctrl+\\. Exiting...\n\n";
-		exit(1);
+		print "\nSIGTERM detected: Ctrl+\\ => exiting...\n\n";
+		exit(131);
 	}
 
 }

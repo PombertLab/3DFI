@@ -105,16 +105,16 @@ unless (-d $arch){
 }
 
 if ($update){
-	system "gesamt \\
+	system ("gesamt \\
 	  --update-archive $arch \\
 	  -pdb $pdb \\
-	  -nthreads=$cpu";
+	  -nthreads=$cpu") == 0 or checksig();
 }
 elsif ($make){
-	system "gesamt \\
+	system ("gesamt \\
 	  --make-archive $arch \\
 	  -pdb $pdb \\
-	  -nthreads=$cpu";
+	  -nthreads=$cpu") == 0 or checksig();
 }
 
 ## Running GESAMT queries/Skipping previously done searches
@@ -164,7 +164,7 @@ print LOG "Completed on: $end\n";
 print LOG "Total run time: $endtime minutes\n";
 close LOG;
 
-### Sub
+### Subroutine(s)
 sub checksig {
 
 	my $exit_value = $?;
