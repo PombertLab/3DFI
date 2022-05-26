@@ -172,7 +172,7 @@ while (my $line = <IN>){
 			my $temp_file = "$rcsb_temp_dir/tmp/pdb".lc($rcsb_code)."/pdb".lc($rcsb_code)."_$chain.pdb";
 			my $predicted_file_location = "$tdfi/Folding/".$Folds{$predictor}."/$query.pdb";
 
-			my $mican_result = `mican -s $predicted_file_location $temp_file -n 1` if $? == 0;
+			my $mican_result = `mican -s $predicted_file_location $temp_file -n 1`;
 			# else {
 			# 	checksig();
 			# }
