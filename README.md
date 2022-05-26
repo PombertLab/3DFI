@@ -1133,7 +1133,6 @@ To add definitions/products to the PDB matches found with Foldseek or GESAMT, we
 
 ```Bash
 descriptive_matches.pl \
-   -a gesamt \
    -r $TDFI_DB/RCSB_PDB_titles.tsv \
    -m $GSMT/*.gesamt.gz \
    -q 0.3 \
@@ -1145,7 +1144,6 @@ descriptive_matches.pl \
   <summary>Options for descriptive_matches.pl are:</summary>
 
 ```
--a (--align)	Structural alignment tool used: foldseek or gesamt [Default: gesamt]
 -r (--rcsb)	Tab-delimited list of RCSB structures and their titles ## see PDB_headers.pl 
 -m (--matches)	Results from GESAMT searches ## Supports GZIPPEd files; see run_GESAMT.pl
 -q (--qscore)	Quality score cut-off [Default: 0.3]
