@@ -402,7 +402,7 @@ foreach my $predictor (@predictors){
 			-k $ranks \\
 			-i $fasta_dir \\
 			-m $modeller \\
-			-o $rx_dir") == 0 or die "Non-zero status detected. Exiting...\n\n";
+			-o $rx_dir") == 0 or checksig();
 	}
 
 	## RoseTTAfold
@@ -420,10 +420,10 @@ foreach my $predictor (@predictors){
 		## Running RoseTTAfold
 		$time = localtime;
 		print "\n# $time: Running RoseTTAfold protein structure prediction\n";
-		system "$pred_scripts_home"."rosettafold.pl \\
+		system ("$pred_scripts_home"."rosettafold.pl \\
 			-f $fasta_dir/*.fasta \\
 			-t $method \\
-			-o $rf_dir";
+			-o $rf_dir") == 0 or checksig();
 
 		## Parsing RoseTTAfold output folders
 		$time = localtime;
@@ -466,7 +466,7 @@ foreach my $predictor (@predictors){
 			$gpu_devices \\
 			$maxdate_flag \\
 			$msas_flag \\
-			-o $af_dir") == 0 or die "Keyboard interrupt detected. Exiting...\n\n";
+			-o $af_dir") == 0 or checksig();
 		
 		## Parsing AlphaFold output folders
 		$time = localtime;
@@ -558,7 +558,7 @@ if ($aligner eq 'foldseek'){
 			-atype $ftype \\
 			-mseq 300 \\
 			-verbosity 0 \\
-			-gzip") == 0 or die "Keyboard interrupt detected. Exiting...\n\n";
+			-gzip") == 0 or checksig();
 		
 		## Adding descriptive information to GESAMT matches
 		$time = localtime;
@@ -635,7 +635,7 @@ elsif ($aligner eq 'gesamt'){
 			-o $GSMT_outdir \\
 			-l $log_dir/GESAMT_${predictor}_${date}.log \\
 			-mode normal \\
-			-z") == 0 or die "Keyboard interrupt detected. Exiting...\n\n";
+			-z") == 0 or checksig();
 		
 		## Adding descriptive information to GESAMT matches
 		$time = localtime;
@@ -679,14 +679,14 @@ if ($mican){
 	print "\n# $time: Performing alignments between queries and best matches with MICAN\n";
 	sleep (2);
 
-	system "$homology_scripts_home"."run_MICAN_on_homology_results.pl \\
+	system ("$homology_scripts_home"."run_MICAN_on_homology_results.pl \\
 		-a $aligner \\
 		-t $outdir \\
 		-r $database/RCSB_PDB $database/RCSB_PDB_obsolete \\
 		-outdir $hm_dir/MICAN \\
 		-outfile MICAN.tsv \\
 		-nobar
-	";
+	") == 0 or checksig();
 }
 
 ##### End of MICAN alignments
