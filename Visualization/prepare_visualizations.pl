@@ -199,8 +199,7 @@ foreach my $locus (sort(keys(%sessions))){
 						-r $temp \\
 						-m $rcsb_name \\
 						-c $chain \\
-						-o $outdir/$locus\n"
-					;) == 0 or checksig();
+						-o $outdir/$locus\n") == 0 or checksig();
 				}
 				## Remove temporary file unless explicitly told not to
 				unless ($keep){
