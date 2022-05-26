@@ -121,11 +121,11 @@ sub checksig {
 	print "\nExit code = $exit_code; modulo = $modulo \n";
 
 	if ($modulo == 2) {
-		print "\nSIGINT detected: Ctrl+C => exiting...\n\n";
+		print "\nSIGINT detected: Ctrl+C => exiting...\n";
 		exit(2);
 	}
 	elsif ($modulo == 131) {
-		print "\nSIGTERM detected: Ctrl+\\ => exiting...\n\n";
+		print "\nSIGTERM detected: Ctrl+\\ => exiting...\n";
 		exit(131);
 	}
 
