@@ -64,7 +64,7 @@ if ($nice){ $prg = "nice -n $nice"; }
 
 ## Running task with adjusted niceness, if desired
 print "Downloading $type RCSB PDB files with rsync:\n\n";
-system "$prg \\
+system ("$prg \\
   rsync \\
   -rlpt \\
   --info=progress2 \\
@@ -72,5 +72,21 @@ system "$prg \\
   --delete \\
   --port=33444 \\
   rsync.rcsb.org::ftp_data/structures/$data/pdb/ \\
-  $outdir";
+  $outdir") == 0 or checksig();
 
+### Subroutine(s)
+sub checksig {
+
+	my $exit_value = $?;
+	my $modulo = $exit_value % 255;
+
+	if ($modulo == 2) {
+		print "\n\nSIGINT detected: Ctrl+C. Exiting...\n\n";
+		exit(1);
+	}
+	elsif ($modulo == 131) {
+		print "\n\nSIGTERM detected: Ctrl+\\. Exiting...\n\n";
+		exit(1);
+	}
+
+}

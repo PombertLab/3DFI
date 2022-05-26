@@ -159,11 +159,11 @@ while (my $line = <IN>){
 			system "cp $rcsb_file_location $rcsb_temp_dir/$rcsb_file\n";
 
 			if (-f "$pipeline_dir/split_PDB.pl"){
-				system "$pipeline_dir/split_PDB.pl \\
+				system ("$pipeline_dir/split_PDB.pl \\
 						-p $rcsb_temp_dir/$rcsb_file \\
 						-o $rcsb_temp_dir/tmp/ \\
 						-e pdb
-				";
+				") == 0 or checksig();
 			}
 			else {
 				print STDERR "[E] Cannot find $pipeline_dir/split_PDB.pl\n";
@@ -173,6 +173,7 @@ while (my $line = <IN>){
 			my $predicted_file_location = "$tdfi/Folding/".$Folds{$predictor}."/$query.pdb";
 
 			my $mican_result = `mican -s $predicted_file_location $temp_file -n 1`;
+
 			$alignment_counter++;
 			
 			system "rm -rf $rcsb_temp_dir/*";
@@ -220,3 +221,20 @@ print LOG "Completed on $datestring\n";
 close IN;
 close MICAN;
 close LOG;
+
+### Subroutine(s)
+sub checksig {
+
+	my $exit_value = $?;
+	my $modulo = $exit_value % 255;
+
+	if ($modulo == 2) {
+		print "\n\nSIGINT detected: Ctrl+C. Exiting...\n";
+		exit(1);
+	}
+	elsif ($modulo == 131) {
+		print "\n\nSIGTERM detected: Ctrl+\\. Exiting...\n";
+		exit(1);
+	}
+
+}

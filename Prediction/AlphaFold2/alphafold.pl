@@ -1,8 +1,8 @@
 #!/usr/bin/perl
 ## Pombert Lab, Illinois Tech, 2021
 my $name = 'alphafold.pl';
-my $version = '0.5c'; ## Updated to match Alphafold 2.1.1 cmd line switches
-my $updated = '2022-01-29';
+my $version = '0.6'; ## Updated to match Alphafold 2.1.1 cmd line switches
+my $updated = '2022-05-25';
 
 use strict;
 use warnings;
@@ -151,7 +151,7 @@ while (my $fasta = shift @fasta){
 		if ($precomputed_msas){ $msa = 'True'; }
 
 		# Folding
-		system "python3 \\
+		system ("python3 \\
 			$alpha_home/docker/run_docker.py \\
 			--fasta_paths=$fasta \\
 			--docker_image_name=$docker_image_name \\
@@ -162,7 +162,7 @@ while (my $fasta = shift @fasta){
 			--use_precomputed_msas=$msa \\
 			$gpu_devices \\
 			$gpu_check
-		";
+		") == 0 or checksig();
 
 		my $run_time = time - $start;
 		$run_time = $run_time/60;
@@ -173,3 +173,22 @@ while (my $fasta = shift @fasta){
 }
 
 close LOG;
+
+### Subroutine(s)
+sub checksig {
+
+	my $exit_code = $?;
+	my $modulo = $exit_code % 255;
+
+	print "\nExit code = $exit_code; modulo = $modulo \n";
+
+	if ($modulo == 2) {
+		print "\nSIGINT detected: Ctrl+C => exiting...\n";
+		exit(2);
+	}
+	elsif ($modulo == 131) {
+		print "\nSIGTERM detected: Ctrl+\\ => exiting...\n";
+		exit(131);
+	}
+
+}

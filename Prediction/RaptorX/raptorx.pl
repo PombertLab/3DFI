@@ -115,10 +115,10 @@ while (my $fasta_path = shift@fasta){
 	## Generating the feature file (.tgt)
 	$time = localtime;
 	print "\n$time: Generating the feature file (.tgt) for $fasta with buildFeature\n\n";
-	system "$raptorx_home"."buildFeature \\
+	system ("$raptorx_home"."buildFeature \\
 	  -i $fasta_path \\
 	  -o $abs_path_outdir/TGT/$protein.tgt \\
-	  -c $threads";
+	  -c $threads") == 0 or checksig();
 
 	unless (-e "tmp/$protein.acc"){
 		print "$fasta failed to predict, moving to next protein\n";
@@ -128,11 +128,11 @@ while (my $fasta_path = shift@fasta){
 	##  Searching databases for top hits
 	$time = localtime;
 	print "\n$time: Generating list of top hits (.rank) for $fasta with CNFsearch\n\n";
-	system "$raptorx_home"."CNFsearch \\
+	system ("$raptorx_home"."CNFsearch \\
 	  -a $threads \\
 	  -q $protein \\
 	  -g $abs_path_outdir/TGT \\
-	  -o $abs_path_outdir/RANK/$protein.rank";
+	  -o $abs_path_outdir/RANK/$protein.rank") == 0 or checksig();
 
 	## Populating list of top models from .rank file
 	open IN, "<", "$abs_path_outdir/RANK/$protein.rank";
@@ -148,20 +148,20 @@ while (my $fasta_path = shift@fasta){
 	$time = localtime;
 	print "\n$time: Aligning $fasta to top model(s) with CNFalign_lite\n\n";
 	for (0..$topk-1){
-		system "$raptorx_home"."CNFalign_lite \\
+		system ("$raptorx_home"."CNFalign_lite \\
 		  -t $models[$_] \\
 		  -q $protein \\
 		  -g $abs_path_outdir/TGT \\
-		  -d $abs_path_outdir";
+		  -d $abs_path_outdir") == 0 or checksig();
 	}
 	
 	## Creating 3D models for the top k ranks
 	$time = localtime;
 	print "\n$time: Building PDB file(s) for $fasta from top model(s) with buildTopModels\n\n";
-	system "$raptorx_home"."buildTopModels \\
+	system ("$raptorx_home"."buildTopModels \\
 		-i $abs_path_outdir/RANK/$protein.rank \\
 		-k $topk \\
-		-m $modeller";
+		-m $modeller") == 0 or checksig();
 
 	## Writing timestamp to log file
 	my $pfold_time = (time - $pstart)/60; ## Time elapsed per protein
@@ -201,3 +201,22 @@ print LOG "TGT/: Contains the feature files (.tgt) generated for each FASTA file
 print LOG "RANK/: Contains the lists (.rank) of the best templates/models found for each FASTA files\n";
 print LOG "FASTA_ALN/: Contains pairwise alignments between FASTA sequences and their best template(s)/model(s) found in FASTA format\n";
 print LOG "CNFPRED/: Contains pairwise alignments between FASTA sequences and their best template(s)/model(s) found in CNFPRED format\n";
+
+### Subroutine(s)
+sub checksig {
+
+	my $exit_code = $?;
+	my $modulo = $exit_code % 255;
+
+	print "\nExit code = $exit_code; modulo = $modulo \n";
+
+	if ($modulo == 2) {
+		print "\nSIGINT detected: Ctrl+C => exiting...\n";
+		exit(2);
+	}
+	elsif ($modulo == 131) {
+		print "\nSIGTERM detected: Ctrl+\\ => exiting...\n";
+		exit(131);
+	}
+
+}

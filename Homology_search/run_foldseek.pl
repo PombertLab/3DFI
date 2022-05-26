@@ -116,11 +116,11 @@ if ($create){
 		make_path( $dbpath, { mode => 0755 } ) or die "Can't create folder $dbpath: $!\n";
 	}
 
-	system "foldseek \\
+	system ("foldseek \\
 			  createdb \\
 			  --threads $threads \\
 			  $pdb \\
-			  $db";
+			  $db") == 0 or checksig();
 }
 
 ## Running foldseek queries/Skipping previously done searches
@@ -150,7 +150,7 @@ if ($query){
 
 			print "\n  Running foldseek on $file...\n";
 
-			system "foldseek \\
+			system ("foldseek \\
 			  easy-search \\
 			  --max-seqs $mseqs \\
 			  --alignment-type $atype \\
@@ -159,7 +159,7 @@ if ($query){
 			  $file \\
 			  $db \\
 			  $outdir/$pdb.fseek \\
-			  $outdir/tmp";
+			  $outdir/tmp") == 0 or checksig();
 			
 			if ($gnuzip){
 				## Compressing data with GZIP to save some space
@@ -184,3 +184,35 @@ $endtime = sprintf ("%.2f", $endtime);
 print LOG "Completed on: $end\n";
 print LOG "Total run time: $endtime minutes\n";
 close LOG;
+
+### Sub
+sub checksig {
+
+	my $exit_value = $?;
+	my $modulo = $exit_value % 255;
+
+	if ($modulo == 2) {
+		print "\n\nSIGINT detected: Ctrl+C. Exiting...\n\n";
+		exit(1);
+	}
+
+}
+
+### Subroutine(s)
+sub checksig {
+
+	my $exit_code = $?;
+	my $modulo = $exit_code % 255;
+
+	print "\nExit code = $exit_code; modulo = $modulo \n";
+
+	if ($modulo == 2) {
+		print "\nSIGINT detected: Ctrl+C => exiting...\n";
+		exit(2);
+	}
+	elsif ($modulo == 131) {
+		print "\nSIGTERM detected: Ctrl+\\ => exiting...\n";
+		exit(131);
+	}
+
+}

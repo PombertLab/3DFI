@@ -105,16 +105,16 @@ unless (-d $arch){
 }
 
 if ($update){
-	system "gesamt \\
+	system ("gesamt \\
 	  --update-archive $arch \\
 	  -pdb $pdb \\
-	  -nthreads=$cpu";
+	  -nthreads=$cpu") == 0 or checksig();
 }
 elsif ($make){
-	system "gesamt \\
+	system ("gesamt \\
 	  --make-archive $arch \\
 	  -pdb $pdb \\
-	  -nthreads=$cpu";
+	  -nthreads=$cpu") == 0 or checksig();
 }
 
 ## Running GESAMT queries/Skipping previously done searches
@@ -138,11 +138,11 @@ if ($query){
 		my ($pdb, $dir) = fileparse($file);
 		$pdb =~ s/.pdb$//;
 		unless (exists $results{$pdb}){
-			system "gesamt $file \\
+			system ("gesamt $file \\
 			  -archive $arch \\
 			  -nthreads=$cpu \\
 			  -$mode \\
-			  -o $outdir/$pdb.$mode.gesamt";
+			  -o $outdir/$pdb.$mode.gesamt") == 0 or checksig();
 			
 			if ($gnuzip){
 				## Compressing data with GZIP to save some space
@@ -163,3 +163,20 @@ $endtime = sprintf ("%.2f", $endtime);
 print LOG "Completed on: $end\n";
 print LOG "Total run time: $endtime minutes\n";
 close LOG;
+
+### Subroutine(s)
+sub checksig {
+
+	my $exit_value = $?;
+	my $modulo = $exit_value % 255;
+
+	if ($modulo == 2) {
+		print "\n\nSIGINT detected: Ctrl+C. Exiting...\n";
+		exit(1);
+	}
+	elsif ($modulo == 131) {
+		print "\n\nSIGTERM detected: Ctrl+\\. Exiting...\n";
+		exit(1);
+	}
+
+}

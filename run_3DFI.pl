@@ -397,12 +397,12 @@ foreach my $predictor (@predictors){
 
 		$time = localtime;
 		print "\n# $time: Running RaptorX protein structure prediction\n";
-		system "$pred_scripts_home"."raptorx.pl \\
+		system ("$pred_scripts_home"."raptorx.pl \\
 			-t $cpu \\
 			-k $ranks \\
 			-i $fasta_dir \\
 			-m $modeller \\
-			-o $rx_dir";
+			-o $rx_dir") == 0 or checksig();
 	}
 
 	## RoseTTAfold
@@ -420,10 +420,10 @@ foreach my $predictor (@predictors){
 		## Running RoseTTAfold
 		$time = localtime;
 		print "\n# $time: Running RoseTTAfold protein structure prediction\n";
-		system "$pred_scripts_home"."rosettafold.pl \\
+		system ("$pred_scripts_home"."rosettafold.pl \\
 			-f $fasta_dir/*.fasta \\
 			-t $method \\
-			-o $rf_dir";
+			-o $rf_dir") == 0 or checksig();
 
 		## Parsing RoseTTAfold output folders
 		$time = localtime;
@@ -459,14 +459,14 @@ foreach my $predictor (@predictors){
 		## Running alphafold
 		$time = localtime;
 		print "\n# $time: Running AlphaFold protein structure prediction\n";
-		system "$pred_scripts_home"."alphafold.pl \\
+		system ("$pred_scripts_home"."alphafold.pl \\
 			--fasta $fasta_dir/*.fasta \\
 			--preset $preset \\
 			--docker $docker_image \\
 			$gpu_devices \\
 			$maxdate_flag \\
 			$msas_flag \\
-			-o $af_dir";
+			-o $af_dir") == 0 or checksig();
 		
 		## Parsing AlphaFold output folders
 		$time = localtime;
@@ -548,7 +548,7 @@ if ($aligner eq 'foldseek'){
 		$query = lc($query);
 		if ($query eq 'best'){ $pdb_to_query = '*-m1.pdb'; }
 
-		system "$homology_scripts_home"."run_foldseek.pl \\
+		system ("$homology_scripts_home"."run_foldseek.pl \\
 			-threads $cpu \\
 			-query \\
 			-db $foldseek_db \\
@@ -558,7 +558,7 @@ if ($aligner eq 'foldseek'){
 			-atype $ftype \\
 			-mseq 300 \\
 			-verbosity 0 \\
-			-gzip";
+			-gzip") == 0 or checksig();
 		
 		## Adding descriptive information to GESAMT matches
 		$time = localtime;
@@ -627,7 +627,7 @@ elsif ($aligner eq 'gesamt'){
 		$query = lc($query);
 		if ($query eq 'best'){ $pdb_to_query = '*-m1.pdb'; }
 
-		system "$homology_scripts_home"."run_GESAMT.pl \\
+		system ("$homology_scripts_home"."run_GESAMT.pl \\
 			-cpu $cpu \\
 			-query \\
 			-arch $gesamt_archive \\
@@ -635,7 +635,7 @@ elsif ($aligner eq 'gesamt'){
 			-o $GSMT_outdir \\
 			-l $log_dir/GESAMT_${predictor}_${date}.log \\
 			-mode normal \\
-			-z";
+			-z") == 0 or checksig();
 		
 		## Adding descriptive information to GESAMT matches
 		$time = localtime;
@@ -679,14 +679,14 @@ if ($mican){
 	print "\n# $time: Performing alignments between queries and best matches with MICAN\n";
 	sleep (2);
 
-	system "$homology_scripts_home"."run_MICAN_on_homology_results.pl \\
+	system ("$homology_scripts_home"."run_MICAN_on_homology_results.pl \\
 		-a $aligner \\
 		-t $outdir \\
 		-r $database/RCSB_PDB $database/RCSB_PDB_obsolete \\
 		-outdir $hm_dir/MICAN \\
 		-outfile MICAN.tsv \\
 		-nobar
-	";
+	") == 0 or checksig();
 }
 
 ##### End of MICAN alignments
@@ -742,13 +742,13 @@ foreach my $predictor (@predictors){
 		$hm_tool_dir = $fsk_dir;
 	}
 
-	system "$visualization_scripts_home"."prepare_visualizations.pl \\
+	system ("$visualization_scripts_home"."prepare_visualizations.pl \\
 		-a $atool \\
 		-m $hm_tool_dir/${predictor}_${hm_tool}_per_model.matches \\
 		-p $PDB_dir/ \\
 		-r $database/RCSB_PDB \\
 		-o $vz_dir/$predictor \\
-		-l $vz_dir/predicted_structures.log";
+		-l $vz_dir/predicted_structures.log") == 0 or checksig();
 }
 
 ##### End of ChimeraX structural alignments
@@ -767,3 +767,22 @@ if ($visualization){
 ##### End of script
 $time = localtime;
 print "\n# $time: run_3DFI.pl tasks completed\n\n";
+
+
+########################################################################################
+## Subroutines
+sub checksig {
+
+	my $exit_code = $?;
+	my $modulo = $exit_code % 255;
+
+	if ($modulo == 2) {
+		print "\nSIGINT detected: Ctrl+C => exiting...\n\n";
+		exit(2);
+	}
+	elsif ($modulo == 131) {
+		print "\nSIGTERM detected: Ctrl+\\ => exiting...\n\n";
+		exit(131);
+	}
+
+}
