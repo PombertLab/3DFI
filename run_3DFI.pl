@@ -1,8 +1,8 @@
 #!/usr/bin/perl
 ## Pombert Lab, Illinois Tech, 2021
 my $name = 'run_3DFI.pl';
-my $version = '0.7d';
-my $updated = '2022-05-13';
+my $version = '0.7e';
+my $updated = '2022-05-26';
 
 use strict;
 use warnings;
@@ -565,7 +565,6 @@ if ($aligner eq 'foldseek'){
 		
 		print "\n# $time: Getting match descriptions from $FSK_outdir\n";
 		system "$homology_scripts_home"."descriptive_matches.pl \\
-			-a foldseek \\
 			-r $database/RCSB_PDB_titles.tsv \\
 			-m $FSK_outdir/*.fseek.gz \\
 			-q $qscore \\
@@ -643,7 +642,6 @@ elsif ($aligner eq 'gesamt'){
 		
 		print "\n# $time: Getting match descriptions from $GSMT_outdir\n";
 		system "$homology_scripts_home"."descriptive_matches.pl \\
-			-a gesamt \\
 			-r $database/RCSB_PDB_titles.tsv \\
 			-m $GSMT_outdir/*.gesamt.gz \\
 			-q $qscore \\
