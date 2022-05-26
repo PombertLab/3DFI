@@ -194,13 +194,13 @@ foreach my $locus (sort(keys(%sessions))){
 				else {
 					# ChimeraX API calling
 					print "  Aligning $locus to chain $chain from $rcsb_name with ChimeraX\n";
-					system "chimerax 1> /dev/null --nogui $script \\
+					system ("chimerax 1> /dev/null --nogui $script \\
 						-p $pred_file \\
 						-r $temp \\
 						-m $rcsb_name \\
 						-c $chain \\
 						-o $outdir/$locus\n"
-					;
+					;) == 0 or checksig();
 				}
 				## Remove temporary file unless explicitly told not to
 				unless ($keep){
@@ -216,4 +216,23 @@ sub Check_Mand_Args{
 	die "\n[ERROR]\tGESAMT descriptive match file not provided\n\n$usage\n\n" unless $match_file;
 	die "\n[WARNING]\tRCSB PDB directory(s) not provided, no visualizations will be made" unless @rcsb;
 	die "\n[ERROR]\tPredicted PDB directory not provided\n\n$usage\n\n" unless $pdb;
+}
+
+### Subroutine(s)
+sub checksig {
+
+	my $exit_code = $?;
+	my $modulo = $exit_code % 255;
+
+	print "\nExit code = $exit_code; modulo = $modulo \n";
+
+	if ($modulo == 2) {
+		print "\nSIGINT detected: Ctrl+C => exiting...\n";
+		exit(2);
+	}
+	elsif ($modulo == 131) {
+		print "\nSIGTERM detected: Ctrl+\\ => exiting...\n";
+		exit(131);
+	}
+
 }

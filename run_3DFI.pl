@@ -742,13 +742,13 @@ foreach my $predictor (@predictors){
 		$hm_tool_dir = $fsk_dir;
 	}
 
-	system "$visualization_scripts_home"."prepare_visualizations.pl \\
+	system ("$visualization_scripts_home"."prepare_visualizations.pl \\
 		-a $atool \\
 		-m $hm_tool_dir/${predictor}_${hm_tool}_per_model.matches \\
 		-p $PDB_dir/ \\
 		-r $database/RCSB_PDB \\
 		-o $vz_dir/$predictor \\
-		-l $vz_dir/predicted_structures.log";
+		-l $vz_dir/predicted_structures.log") == 0 or checksig();
 }
 
 ##### End of ChimeraX structural alignments
