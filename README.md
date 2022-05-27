@@ -2,7 +2,7 @@
 
 The 3DFI pipeline automates protein structure predictions, structural homology searches and alignments with putative structural homologs at the genome scale. Protein structures predicted in PDB format are searched against a local copy of the [RSCB PDB](https://www.rcsb.org/) database with [Foldseek](https://github.com/steineggerlab/foldseek) or GESAMT (General Efficient Structural Alignment of Macromolecular Targets) from the [CCP4](https://www.ccp4.ac.uk/) package. Known PDB structures can also be searched against sets of predicted structures to identify potential structural homologs in predicted datasets. These structural homologs are then aligned for visual inspection with [ChimeraX](https://www.rbvi.ucsf.edu/chimerax/download.html).
 
-<a href="https://zenodo.org/badge/latestdoi/279375246"><p align="right"><img src="https://zenodo.org/badge/279375246.svg" alt="DOI"></a>
+<a href="https://doi.org/10.5281/zenodo.5525018"><p align="right"><img src="https://zenodo.org/badge/279375246.svg" alt="DOI"></a>
 
 <hr size="8" width="100%">  
 
