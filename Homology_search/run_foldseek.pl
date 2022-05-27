@@ -185,19 +185,6 @@ print LOG "Completed on: $end\n";
 print LOG "Total run time: $endtime minutes\n";
 close LOG;
 
-### Sub
-sub checksig {
-
-	my $exit_value = $?;
-	my $modulo = $exit_value % 255;
-
-	if ($modulo == 2) {
-		print "\n\nSIGINT detected: Ctrl+C. Exiting...\n\n";
-		exit(1);
-	}
-
-}
-
 ### Subroutine(s)
 sub checksig {
 
