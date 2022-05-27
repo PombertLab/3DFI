@@ -2,8 +2,8 @@
 ## Pombert Lab 2022
 
 my $name = "run_MICAN_on_homology_results.pl";
-my $version = "0.2a";
-my $updated = "2022-04-27";
+my $version = "0.2b";
+my $updated = "2022-05-27";
 
 use strict;
 use warnings;
@@ -35,8 +35,10 @@ die "\n$usage\n" unless @ARGV;
 my ($script,$pipeline_dir) = fileparse($0);
 $pipeline_dir =~ s/Homology_search/Misc_tools/;
 
-my %Folds = ("ALPHAFOLD" => "ALPHAFOLD_3D_Parsed",
-			 "RAPTORX" => "RAPTORX_3D/PDB"
+my %Folds = (
+	"ALPHAFOLD" => "ALPHAFOLD_3D_Parsed",
+	"ROSETTAFOLD" => "ROSETTAFOLD_3D_Parsed",
+	"RAPTORX" => "RAPTORX_3D/PDB"
 );
 
 my $tdfi;
