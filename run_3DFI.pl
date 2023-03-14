@@ -1,8 +1,8 @@
 #!/usr/bin/perl
 ## Pombert Lab, Illinois Tech, 2021
 my $name = 'run_3DFI.pl';
-my $version = '0.7e';
-my $updated = '2022-05-26';
+my $version = '0.7.6';
+my $updated = '2023-03-14';
 
 use strict;
 use warnings;
@@ -201,11 +201,11 @@ unless ($tdo){
 
 	### Check if Foldseek/GESAMT dbs exist in $DB_3DFI or --db location
 	if ($aligner eq 'foldseek'){
-		my $foldseek_db = "$database/FOLDSEEK/rcsb";
+		my $foldseek_db = "$database/RCSB_FOLDSEEK";
 		if ($fskdb){
 			$foldseek_db = $fskdb;
 		}
-		unless (-f "$foldseek_db"){ 
+		unless (-d $foldseek_db){ 
 			print "Foldseek database $foldseek_db not found.\n";
 			print "Exiting\n\n"; 
 			exit;
@@ -533,7 +533,7 @@ if ($aligner eq 'foldseek'){
 
 		## Running Foldseek
 		my $date = strftime('%Y-%m-%d', localtime);
-		my $foldseek_db = "$database/FOLDSEEK/rcsb";
+		my $foldseek_db = "$database/RCSB_FOLDSEEK";
 		if ($fskdb){
 			$foldseek_db = $fskdb;
 		}

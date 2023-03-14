@@ -1,8 +1,8 @@
 #!/usr/bin/perl
 ## Pombert Lab, Illinois Tech, 2021
 my $name = 'create_3DFI_db.pl';
-my $version = '0.5b';
-my $updated = '2022-04-30';
+my $version = '0.5.3';
+my $updated = '2023-03-14';
 
 use strict;
 use warnings;
@@ -208,16 +208,16 @@ if ($rcsb or $all_databases){
 			-v 1000";
 
 	## Creating a foldseek database
-	my $fskdir = "$database/FOLDSEEK";
+	my $fskdir = "$database/RCSB_FOLDSEEK";
 	unless (-d $fskdir){
 		mkdir ($fskdir, 0755) or die "Can't create $fskdir: $!\n";
 	}
 	system "run_foldseek.pl \\
 			-create \\
-			-db $fskdir/rcsb \\
+			-db $fskdir \\
 			-pdb $PDB \\
 			-threads $cpu \\
-			-log $fskdir/foldseek.log";
+			-log $database/foldseek.log";
 
 	### Downloading GESAMT or creating one
 	# Create a new GESAMT archive from the RCSB PDB files. Can take a few hours...
